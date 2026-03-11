@@ -1,0 +1,185 @@
+# ─────────────────────────────────────────────────────
+# Decap CMS Configuration for Lisle Coombs Portfolio
+# This file controls what you can edit in your admin panel
+# ─────────────────────────────────────────────────────
+
+backend:
+  name: git-gateway
+  branch: main   # ← Change this to 'master' if your repo uses that name
+
+# Where uploaded images will be stored in your repo
+media_folder: "images"
+public_folder: "/images"
+
+show_preview_links: true
+
+collections:
+
+  - name: "site_content"
+    label: "My Site 🌿"
+    files:
+
+      # ── PROFILE PHOTOS ────────────────────────────────
+      - name: "profile_photos"
+        label: "My Photo & Maggie 🌸"
+        file: "data/gallery.json"
+        fields:
+
+          - label: "About Me Text"
+            name: "about_text"
+            widget: "text"
+            hint: "The paragraph in your About section. A few sentences is plenty."
+            required: false
+
+          - label: "My Portrait Photo"
+            name: "portrait"
+            widget: "image"
+            allow_multiple: false
+            hint: "Appears on the homepage. Square or portrait crops work best."
+            required: false
+
+          - label: "Maggie's Photo 🐾"
+            name: "cat_photo"
+            widget: "image"
+            allow_multiple: false
+            hint: "Maggie's photo in the About section."
+            required: false
+
+          - label: "Maggie's caption"
+            name: "cat_caption"
+            widget: "string"
+            default: "studio assistant, chief nap inspector"
+            hint: "The little line under Maggie's photo."
+            required: false
+
+          # ── PAINTINGS ─────────────────────────────────
+          - label: "Paintings 🎨"
+            name: "paintings"
+            widget: "list"
+            summary: "{{fields.title}} ({{fields.year}})"
+            hint: "Add, remove, or reorder paintings. Drag the ☰ handle to reorder."
+            fields:
+              - label: "Title"
+                name: "title"
+                widget: "string"
+                hint: "e.g. 'Dusk Study' or 'Untitled No. 3'"
+              - label: "Year"
+                name: "year"
+                widget: "string"
+                hint: "e.g. '2024'"
+                required: false
+              - label: "Medium"
+                name: "medium"
+                widget: "string"
+                hint: "e.g. 'Oil on canvas' or 'Watercolour on paper'"
+                required: false
+              - label: "Dimensions"
+                name: "dimensions"
+                widget: "string"
+                hint: "e.g. '30 × 40 cm' or '12 × 16 in'"
+                required: false
+              - label: "Description"
+                name: "description"
+                widget: "text"
+                hint: "Optional note about the work. Shows in the lightbox when clicked."
+                required: false
+              - label: "Image"
+                name: "image"
+                widget: "image"
+                hint: "JPG or PNG, under 5MB recommended."
+
+          # ── DRAWINGS ──────────────────────────────────
+          - label: "Drawings ✏️"
+            name: "drawings"
+            widget: "list"
+            summary: "{{fields.title}} ({{fields.year}})"
+            hint: "Add, remove, or reorder drawings."
+            fields:
+              - label: "Title"
+                name: "title"
+                widget: "string"
+              - label: "Year"
+                name: "year"
+                widget: "string"
+                required: false
+              - label: "Medium"
+                name: "medium"
+                widget: "string"
+                hint: "e.g. 'Graphite on paper' or 'Ink and watercolour'"
+                required: false
+              - label: "Dimensions"
+                name: "dimensions"
+                widget: "string"
+                hint: "e.g. '21 × 29.7 cm (A4)'"
+                required: false
+              - label: "Description"
+                name: "description"
+                widget: "text"
+                required: false
+              - label: "Image"
+                name: "image"
+                widget: "image"
+
+          # ── SCULPTURE ─────────────────────────────────
+          - label: "Sculpture 🏺"
+            name: "sculpture"
+            widget: "list"
+            summary: "{{fields.title}} ({{fields.year}})"
+            hint: "Add, remove, or reorder sculptures."
+            fields:
+              - label: "Title"
+                name: "title"
+                widget: "string"
+              - label: "Year"
+                name: "year"
+                widget: "string"
+                required: false
+              - label: "Medium"
+                name: "medium"
+                widget: "string"
+                hint: "e.g. 'Stoneware clay, wood-fired' or 'Cast plaster'"
+                required: false
+              - label: "Dimensions"
+                name: "dimensions"
+                widget: "string"
+                hint: "e.g. '15 × 8 × 8 cm' (height × width × depth)"
+                required: false
+              - label: "Description"
+                name: "description"
+                widget: "text"
+                required: false
+              - label: "Image"
+                name: "image"
+                widget: "image"
+
+          # ── PHOTOGRAPHY ───────────────────────────────
+          - label: "Photography 📷"
+            name: "photography"
+            widget: "list"
+            summary: "{{fields.title}} ({{fields.year}})"
+            hint: "Add, remove, or reorder photographs."
+            fields:
+              - label: "Title"
+                name: "title"
+                widget: "string"
+              - label: "Year"
+                name: "year"
+                widget: "string"
+                required: false
+              - label: "Medium"
+                name: "medium"
+                widget: "string"
+                hint: "e.g. 'Digital photograph' or '35mm film, C-print'"
+                required: false
+              - label: "Dimensions"
+                name: "dimensions"
+                widget: "string"
+                hint: "e.g. '40 × 60 cm print'"
+                required: false
+              - label: "Description"
+                name: "description"
+                widget: "text"
+                required: false
+              - label: "Image"
+                name: "image"
+                widget: "image"
