@@ -1,5 +1,8 @@
 project:
   type: website
+  output-dir: docs
+  
+# ~ additional metadata excluded for brevity ~
 
 website:
   title: "lislecoombs.github.io"
