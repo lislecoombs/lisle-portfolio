@@ -1,0 +1,30 @@
+{
+  "about_text": "",
+  "portrait": "/images/IMG_0828.jpg",
+  "cat_photo": "/images/IMG_0875.jpeg",
+  "cat_caption": "cutest angel kitty LOML",
+  "paintings": [
+    {
+      "image": "/images/frontal-lobe.jpg",
+      "title": "Frontal Lobe",
+      "medium": "",
+      "year": "2024"
+    },
+    {
+      "image": "/images/Golden-Bayou.jpg",
+      "title": "Golden Bayou",
+      "medium": "Oil on Canvas"
+    },
+    {
+      "image": "/images/Growth.jpg",
+      "title": "Entropy"
+    },
+    {
+      "image": "/images/lower-half.jpg",
+      "title": "Lower Half"
+    }
+  ],
+  "drawings": [],
+  "sculpture": [],
+  "photography": []
+}
