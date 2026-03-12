@@ -777,7 +777,7 @@
         <span class="typewriter" id="tw"></span>
       </div>
       <p style="font-family:'Lora',serif;font-style:italic;font-size:.95rem;color:var(--mushroom);line-height:1.8;max-width:280px;">
-        based somewhere with good light and too many plants 🪴
+        based in beautiful Talkeeta, Alaska
       </p>
     </div>
   </div>
@@ -796,21 +796,9 @@
       <div class="about-grid">
         <div>
           <span class="section-tag">→ a bit about me</span>
-          <h2 class="section-title">hello, I'm<br><em>Lisle</em> 🌼</h2>
+          <h2 class="section-title">Hi! I'm<br><em>Lisle</em> 🌼</h2>
           <div class="about-text">
-            <p id="about-text-cms">I make things. Paintings, drawings, sculptures, photographs — anything that helps me pay attention to the world a bit more carefully.</p>
-            <p>My work tends to start with something <strong>small and ordinary</strong> — a bit of bark, the way light hits a window, mud, or a pile of autumn leaves — and turns into something I didn't quite plan.</p>
-            <p>I like process as much as product. The studio is a bit chaotic, the sketchbooks are full, and there's always something drying somewhere it shouldn't be 🍂</p>
-          </div>
-          <div class="about-tags">
-            <span class="tag">🎨 painter</span>
-            <span class="tag">✏️ draughtsperson</span>
-            <span class="tag">🏺 sculptor</span>
-            <span class="tag">📷 photographer</span>
-            <span class="tag">🌿 nature nerd</span>
-            <span class="tag">🍄 texture collector</span>
-            <span class="tag">🕯️ late-night studio</span>
-            <span class="tag">📚 sketchbook hoarder</span>
+            <p id="about-text-cms">Thanks for visiting my site. My name is pronouced like lyle lyle crocodile. I make things that help me pay attention to the world a bit more carefully.</p>
           </div>
         </div>
 
@@ -826,7 +814,7 @@
             </div>
           </div>
           <div class="cat-caption">
-            <span>Maggie</span> 🐾 <span id="cat-caption-cms">studio assistant, chief nap inspector</span>
+            <span>Maggie</span> 🐾 <span id="cat-caption-cms">studio assistant</span>
           </div>
         </div>
       </div>
@@ -884,8 +872,8 @@
         Always happy to chat — about commissions, collaborations, or just what you're working on 🌿
       </p>
       <div class="contact-links">
-        <a href="mailto:hello@lislecoombs.com" class="contact-link">✉ email</a>
-        <a href="https://instagram.com" class="contact-link" target="_blank">📷 instagram</a>
+        <a href="mailto:lislecoombs@gmail.com" class="contact-link">✉ email</a>
+        <a href="https://www.instagram.com/lislecoombs/" class="contact-link" target="_blank">📷 instagram</a>
         <a href="#" class="contact-link">🌱 work with me</a>
       </div>
     </div>
@@ -962,12 +950,11 @@ drawFlies();
    TYPEWRITER
 ════════════════════════════════════ */
 const phrases = [
-  'painter of mossy things',
-  'collector of good light',
-  'drawer of tangled lines',
-  'lover of muddy studios',
-  'photographer of small worlds',
-  'keeper of overfull sketchbooks',
+  'horror movie fan',
+  'amateur rock climber',
+  'Alaska born and raised',
+  'cat lover',
+  '#1 fan of gummy worms',
 ];
 let pi=0,ci=0,del=false;
 const tw=document.getElementById('tw');
@@ -1249,6 +1236,18 @@ document.querySelectorAll('.tag').forEach(t=>{
    YEAR
 ════════════════════════════════════ */
 document.getElementById('yr').textContent=new Date().getFullYear();
+</script>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script>
+  if (window.netlifyIdentity) {
+    window.netlifyIdentity.on("init", user => {
+      if (!user) {
+        window.netlifyIdentity.on("login", () => {
+          document.location.href = "/admin/";
+        });
+      }
+    });
+  }
 </script>
 </body>
 </html>
