@@ -1,6 +1,6 @@
 {
   "about_text": "",
-  "portrait": "",
+  "portrait": "/images/IMG_0828.jpg",
   "cat_photo": "",
   "cat_caption": "studio assistant",
   "paintings": [
@@ -9,9 +9,28 @@
       "title": "Frontal Lobe",
       "medium": "",
       "year": "2024"
+    },
+    {
+      "image": "/images/Golden-Bayou.jpg",
+      "title": "Golden Bayou",
+      "medium": "Oil on Canvas"
+    },
+    {
+      "image": "/images/Growth.jpg",
+      "title": "Entropy"
+    },
+    {
+      "image": "/images/lower-half.jpg",
+      "title": "Lower Half"
     }
   ],
   "drawings": [],
-  "sculpture": [],
+  "sculpture": [
+    {
+      "image": "/images/Lisle_Coombs_(Carcinisation)1.jpeg",
+      "title": "Carcinisation",
+      "year": "2025"
+    }
+  ],
   "photography": []
 }
