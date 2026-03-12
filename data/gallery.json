@@ -2,8 +2,15 @@
   "about_text": "",
   "portrait": "",
   "cat_photo": "",
-  "cat_caption": "studio assistant, chief nap inspector",
-  "paintings": [],
+  "cat_caption": "studio assistant",
+  "paintings": [
+    {
+      "image": "/images/frontal-lobe.jpg",
+      "title": "Frontal Lobe",
+      "medium": "",
+      "year": "2024"
+    }
+  ],
   "drawings": [],
   "sculpture": [],
   "photography": []
