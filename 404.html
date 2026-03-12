@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 — Lisle Coombs</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Caveat:wght@400;600&family=Lora:ital@1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f4edd8; --sage: #7a9e7e; --rose: #c9847a;
+    --mushroom: #9e8a72; --wheat: #d4b896; --deep: #070c05;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--deep);
+    font-family: 'Lora', serif;
+    color: var(--cream);
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 40px;
+    cursor: url('/cursors/cursor.png') 18 4, auto;
+    overflow: hidden;
+  }
+  canvas { position:fixed; inset:0; z-index:0; pointer-events:none; }
+  .content { position:relative; z-index:1; }
+
+  .kaomoji {
+    font-family: 'Caveat', cursive;
+    font-size: 3.5rem;
+    color: var(--sage);
+    display: block;
+    margin-bottom: 24px;
+    animation: float 4s ease-in-out infinite;
+  }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(2rem, 6vw, 4rem);
+    color: var(--wheat);
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  p {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--mushroom);
+    line-height: 1.8;
+    max-width: 420px;
+    margin: 0 auto 36px;
+  }
+  a {
+    font-family: 'Caveat', cursive;
+    font-size: 1.2rem;
+    color: var(--wheat);
+    text-decoration: none;
+    padding: 12px 32px;
+    border: 1px solid rgba(212,184,150,.3);
+    border-radius: 2px;
+    transition: all .3s;
+    cursor: url('/cursors/pointer.png') 10 2, pointer;
+  }
+  a:hover {
+    color: var(--cream);
+    border-color: var(--rose);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(201,132,122,.15);
+  }
+  .small {
+    display: block;
+    margin-top: 24px;
+    font-family: 'Caveat', cursive;
+    font-size: .85rem;
+    color: var(--sage);
+    opacity: .5;
+  }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="content">
+  <span class="kaomoji">(´･_･`)</span>
+  <h1>page not found</h1>
+  <p>this path doesn't seem to exist — maybe it wandered off into the woods</p>
+  <a href="/">take me home</a>
+  <span class="small">error 404</span>
+</div>
+<script>
+  // Mini starfield
+  const cv=document.getElementById('c'),cx=cv.getContext('2d');
+  let W,H,stars=[];
+  function resize(){ W=cv.width=window.innerWidth; H=cv.height=window.innerHeight; }
+  resize(); window.addEventListener('resize',resize);
+  const cols=['#f4edd8','#d4b896','#7a9e7e','#d4a09a'];
+  stars=Array.from({length:200},()=>({
+    x:Math.random()*window.innerWidth, y:Math.random()*window.innerHeight,
+    r:Math.random()*1.4+.2, a:Math.random()*.6+.1,
+    vx:(Math.random()-.5)*.04, vy:(Math.random()-.5)*.04,
+    p:Math.random()*Math.PI*2, sp:Math.random()*.008+.003,
+    c:cols[Math.floor(Math.random()*cols.length)]
+  }));
+  let f=0;
+  (function draw(){
+    cx.clearRect(0,0,W,H); f++;
+    stars.forEach(s=>{
+      s.x+=s.vx; s.y+=s.vy;
+      if(s.x<0)s.x=W; if(s.x>W)s.x=0;
+      if(s.y<0)s.y=H; if(s.y>H)s.y=0;
+      cx.beginPath(); cx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      cx.fillStyle=s.c;
+      cx.globalAlpha=s.a*(.5+.5*Math.sin(f*s.sp+s.p));
+      cx.fill(); cx.globalAlpha=1;
+    });
+    requestAnimationFrame(draw);
+  })();
+</script>
+</body>
+</html>
