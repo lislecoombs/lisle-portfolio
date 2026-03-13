@@ -11,6 +11,10 @@
       "year": "2024"
     },
     {
+      "image": "/images/lower-half.jpg",
+      "title": "Lower Half"
+    },
+    {
       "image": "/images/Golden-Bayou.jpg",
       "title": "Golden Bayou",
       "medium": "Oil on Canvas"
@@ -20,8 +24,9 @@
       "title": "Entropy"
     },
     {
-      "image": "/images/lower-half.jpg",
-      "title": "Lower Half"
+      "image": "/images/portrait-of-tracy.jpg",
+      "title": "Portrait of Tracey",
+      "year": "2023"
     }
   ],
   "drawings": [],
