@@ -24,33 +24,47 @@ collections:
         label: "My Photo & Maggie 🌸"
         file: "data/gallery.json"
         fields:
-
+ 
           - label: "About Me Text"
             name: "about_text"
             widget: "text"
             hint: "The paragraph in your About section. A few sentences is plenty."
             required: false
-
-          - label: "My Portrait Photo"
+ 
+          - label: "My Portrait Photos"
             name: "portrait"
-            widget: "image"
-            allow_multiple: false
-            hint: "Appears on the homepage. Square or portrait crops work best."
+            widget: "list"
+            summary: "{{fields.image}}"
+            hint: "Add multiple portrait photos — they'll stack on the homepage. Drag ☰ to reorder."
             required: false
-
-          - label: "Maggie's Photo 🐾"
+            fields:
+              - label: "Photo"
+                name: "image"
+                widget: "image"
+                hint: "JPG or PNG. Square or portrait crops work best."
+              - label: "Caption"
+                name: "caption"
+                widget: "string"
+                hint: "Optional caption shown under or on hover."
+                required: false
+ 
+          - label: "Maggie's Photos 🐾"
             name: "cat_photo"
-            widget: "image"
-            allow_multiple: false
-            hint: "Maggie's photo in the About section."
+            widget: "list"
+            summary: "{{fields.image}}"
+            hint: "Add multiple Maggie photos — they'll stack in the About section. Drag ☰ to reorder."
             required: false
-
-          - label: "Maggie's caption"
-            name: "cat_caption"
-            widget: "string"
-            default: "studio assistant, chief nap inspector"
-            hint: "The little line under Maggie's photo."
-            required: false
+            fields:
+              - label: "Photo"
+                name: "image"
+                widget: "image"
+                hint: "JPG or PNG."
+              - label: "Caption"
+                name: "caption"
+                widget: "string"
+                default: "studio assistant, chief nap inspector"
+                hint: "The little line under this photo."
+                required: false
 
           # ── PAINTINGS ─────────────────────────────────
           - label: "Paintings 🎨"
