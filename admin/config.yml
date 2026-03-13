@@ -19,7 +19,7 @@ collections:
     label: "My Site 🌿"
     files:
 
-      # ── PROFILE PHOTOS ────────────────────────────────
+            # ── PROFILE PHOTOS ────────────────────────────────
       - name: "profile_photos"
         label: "My Photo & Maggie 🌸"
         file: "data/gallery.json"
@@ -34,28 +34,28 @@ collections:
           - label: "My Portrait Photos"
             name: "portrait"
             widget: "list"
-            summary: "{{fields.image}}"
-            hint: "Add multiple portrait photos — they'll stack on the homepage. Drag ☰ to reorder."
+            summary: "{{fields.caption}}"
+            hint: "Add, remove, or reorder portrait photos. Drag ☰ to reorder."
             required: false
             fields:
-              - label: "Photo"
+              - label: "Image"
                 name: "image"
                 widget: "image"
                 hint: "JPG or PNG. Square or portrait crops work best."
               - label: "Caption"
                 name: "caption"
                 widget: "string"
-                hint: "Optional caption shown under or on hover."
+                hint: "Optional — a short label for this photo."
                 required: false
  
           - label: "Maggie's Photos 🐾"
             name: "cat_photo"
             widget: "list"
-            summary: "{{fields.image}}"
-            hint: "Add multiple Maggie photos — they'll stack in the About section. Drag ☰ to reorder."
+            summary: "{{fields.caption}}"
+            hint: "Add, remove, or reorder Maggie's photos. Drag ☰ to reorder."
             required: false
             fields:
-              - label: "Photo"
+              - label: "Image"
                 name: "image"
                 widget: "image"
                 hint: "JPG or PNG."
