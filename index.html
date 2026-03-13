@@ -104,16 +104,16 @@
   .cat-caption span{color:var(--rose);}
   .pixel-bunny{display:block;image-rendering:pixelated;width:70px;margin:14px auto 0;opacity:.65;animation:drift 5s ease-in-out infinite;}
   /* FAVORITES BULLETIN BOARD */
-  .fav-board{display:flex;flex-direction:row;align-items:flex-start;margin-top:32px;padding-bottom:24px;gap:0;}
-  .fav-card{position:relative;background:rgba(244,237,216,.04);border:1px solid rgba(244,237,216,.1);border-radius:2px;padding:14px 16px 12px;padding-top:20px;font-family:'Caveat',cursive;transform:rotate(var(--rot,0deg)) translate(var(--tx,0),var(--ty,0));box-shadow:2px 3px 14px rgba(0,0,0,.45);transition:transform .25s,box-shadow .25s;flex-shrink:0;width:165px;}
+  .fav-board{display:grid;grid-template-columns:1fr 1fr;gap:28px 20px;margin-top:32px;padding-bottom:8px;}
+  .fav-card{position:relative;background:rgba(244,237,216,.04);border:1px solid rgba(244,237,216,.1);border-radius:2px;padding:14px 16px 14px;padding-top:22px;font-family:'Caveat',cursive;transform:rotate(var(--rot,0deg));box-shadow:2px 3px 14px rgba(0,0,0,.45);transition:transform .25s,box-shadow .25s;width:100%;}
   .fav-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--terra),var(--rose),transparent);border-radius:2px 2px 0 0;opacity:.45;}
-  .fav-card:hover{transform:rotate(0deg) translate(0,0) translateY(-5px) scale(1.08);z-index:10!important;box-shadow:4px 8px 24px rgba(0,0,0,.65);}
+  .fav-card:hover{transform:rotate(0deg) scale(1.04);z-index:10!important;box-shadow:4px 8px 24px rgba(0,0,0,.65);}
   .fav-tape{position:absolute;top:-9px;left:50%;transform:translateX(-50%) rotate(-2deg);width:38px;height:12px;background:rgba(212,184,150,.18);border-radius:1px;z-index:2;}
-  .fav-heading{font-size:.75rem;font-weight:600;color:var(--terra);margin-bottom:5px;letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap;}
+  .fav-heading{font-size:.75rem;font-weight:600;color:var(--terra);margin-bottom:6px;letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap;}
   .fav-link{color:var(--mushroom);font-size:.75rem;text-decoration:underline dotted;transition:color .2s;}
   .fav-link:hover{color:var(--wheat);}
-  .fav-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0;}
-  .fav-list li{font-size:.83rem;color:var(--mushroom);line-height:1.45;}
+  .fav-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:2px;}
+  .fav-list li{font-size:.83rem;color:var(--mushroom);line-height:1.5;padding-left:1em;text-indent:-1em;}
   .fav-list li em{color:var(--wheat);font-style:italic;}
   .fav-item{position:relative;cursor:default;display:inline-flex;align-items:center;gap:6px;}
   .fav-item .fav-text{transition:opacity .15s;}
@@ -123,7 +123,7 @@
   .fav-surfsup{cursor:pointer;}
   .fav-jojo{cursor:pointer;transition:color .2s,text-shadow .2s;}
   .fav-jojo.jojo-active{color:#b47aff;text-shadow:0 0 8px rgba(180,0,255,.5);}
-  @media(max-width:900px){.fav-board{flex-direction:column;gap:20px;}.fav-card{transform:none!important;width:auto;}}
+  @media(max-width:900px){.fav-board{grid-template-columns:1fr;gap:20px;}.fav-card{transform:none!important;width:auto;}}
   #gallery .inner{max-width:1200px;margin:0 auto;}
   .gallery-header{text-align:center;margin-bottom:48px;}
   .gallery-tabs{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-top:20px;align-items:flex-end;}
@@ -309,7 +309,7 @@
           </div>
           <!-- FAVORITES STICKY NOTE -->
           <div class="fav-board">
-            <div class="fav-card" style="--rot:-4.5deg;--tx:8px;--ty:10px;z-index:1;">
+            <div class="fav-card" style="--rot:-2deg;z-index:1;">
               <div class="fav-tape"></div>
               <p class="fav-heading">(*) <a href="https://letterboxd.com/lethepdf/" target="_blank" class="fav-link" style="color:var(--terra);text-decoration:none;">movies ↗</a></p>
               <ul class="fav-list">
@@ -322,17 +322,17 @@
                 <li>Perfect Blue</li>
               </ul>
             </div>
-            <div class="fav-card" style="--rot:2.8deg;--tx:-28px;--ty:-6px;z-index:2;">
+            <div class="fav-card" style="--rot:1.5deg;z-index:2;">
               <div class="fav-tape"></div>
               <p class="fav-heading">(*) books</p>
               <ul class="fav-list">
                 <li>All About Love — Bell Hooks</li>
-                <li>Aristotle and Dante...</li>
+                <li>Aristotle and Dante Discover the Secrets of the Universe — Benjamin Alire Sáenz</li>
                 <li>Entangled Life — Merlin Sheldrake</li>
                 <li><em>lowkey...</em> The Hunger Games</li>
               </ul>
             </div>
-            <div class="fav-card" style="--rot:-1.5deg;--tx:-52px;--ty:4px;z-index:3;">
+            <div class="fav-card" style="--rot:-1deg;z-index:3;">
               <div class="fav-tape"></div>
               <p class="fav-heading">(*) shows</p>
               <ul class="fav-list">
@@ -343,11 +343,12 @@
                   <img class="fav-hover-img" src="" alt="Dimple" />
                 </li>
                 <li>The Last of Us</li>
+                <li>Fleabag</li>
                 <li>Arcane</li>
-                <li>WWDITS</li>
+                <li>What We Do In The Shadows</li>
               </ul>
             </div>
-            <div class="fav-card" style="--rot:-3deg;--tx:-48px;--ty:14px;z-index:4;width:220px;">
+            <div class="fav-card" style="--rot:2.5deg;z-index:4;">
               <div class="fav-tape"></div>
               <p class="fav-heading">(*) other things i love</p>
               <ul class="fav-list" style="gap:4px;">
