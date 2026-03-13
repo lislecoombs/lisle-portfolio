@@ -5,14 +5,14 @@
   "cat_caption": "this is my cat Maggie! ",
   "paintings": [
     {
+      "image": "/images/lower-half.jpg",
+      "title": "Lower Half"
+    },
+    {
       "image": "/images/frontal-lobe.jpg",
       "title": "Frontal Lobe",
       "medium": "",
       "year": "2024"
-    },
-    {
-      "image": "/images/lower-half.jpg",
-      "title": "Lower Half"
     },
     {
       "image": "/images/Golden-Bayou.jpg",
