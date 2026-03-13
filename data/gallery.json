@@ -3,9 +3,21 @@
   "portrait": [
     {
       "image": "/images/IMG_0828.jpg"
+    },
+    {
+      "image": "/images/screenshot-2026-03-13-at-11.22.27 am-medium.jpeg"
     }
   ],
-  "cat_photo": [],
+  "cat_photo": [
+    {
+      "caption": "studio assistant",
+      "image": "/images/IMG_0875.jpeg"
+    },
+    {
+      "caption": "",
+      "image": "/images/screenshot-2026-03-13-at-11.10.55 am-medium.jpeg"
+    }
+  ],
   "cat_caption": "this is my cat Maggie! ",
   "paintings": [
     {
