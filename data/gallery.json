@@ -27,9 +27,31 @@
       "image": "/images/portrait-of-tracy.jpg",
       "title": "Portrait of Tracey",
       "year": "2023"
+    },
+    {
+      "image": "/images/bigredcoat.jpeg",
+      "title": "Big Red Coat",
+      "year": "2022"
     }
   ],
-  "drawings": [],
-  "sculpture": [],
+  "drawings": [
+    {
+      "image": "/images/Lull2.jpg",
+      "title": "Study of \"Lull 2\"",
+      "year": "2023"
+    }
+  ],
+  "sculpture": [
+    {
+      "image": "/images/IMG_2123 Medium.jpeg",
+      "title": "Tulipiere",
+      "year": "2025"
+    },
+    {
+      "image": "/images/Lisle_Coombs_(Carcinisation)1 Medium.jpeg",
+      "title": "Carcinisation",
+      "year": "2025"
+    }
+  ],
   "photography": []
 }
