@@ -653,14 +653,21 @@ async function loadCMS(){
     var res=await fetch('/data/gallery.json');
     if(!res.ok)throw 0;
     var d=await res.json();
-    buildStack(document.getElementById('portrait-stack'),[d.portrait,d.portrait_2,d.portrait_3].filter(Boolean));
+    // portrait: support both new list format [{image,caption}] and old flat string fields
+    var portraitImgs=Array.isArray(d.portrait)?d.portrait.map(function(p){return p.image;}).filter(Boolean):[d.portrait,d.portrait_2,d.portrait_3].filter(Boolean);
+    buildStack(document.getElementById('portrait-stack'),portraitImgs);
     var lbl=document.createElement('span');lbl.className='portrait-label';lbl.textContent="✴︎˚｡⋆that's me ⋆˚࿔ ";
     document.getElementById('portrait-stack').appendChild(lbl);
-    buildStack(document.getElementById('cat-stack-inner'),[d.cat_photo,d.cat_photo_2,d.cat_photo_3].filter(Boolean));
+    // cat_photo: support both new list format [{image,caption}] and old flat string fields
+    var catList=Array.isArray(d.cat_photo)?d.cat_photo:null;
+    var catImgs=catList?catList.map(function(p){return p.image;}).filter(Boolean):[d.cat_photo,d.cat_photo_2,d.cat_photo_3].filter(Boolean);
+    buildStack(document.getElementById('cat-stack-inner'),catImgs);
     document.getElementById('cat-stack').addEventListener('mouseenter',function(){play(SND.meow);});
-    if(d.cat_photo)document.getElementById('konami-cat').src=d.cat_photo;
+    var firstCatImg=catList&&catList[0]?catList[0].image:(typeof d.cat_photo==='string'?d.cat_photo:null);
+    if(firstCatImg)document.getElementById('konami-cat').src=firstCatImg;
     if(d.about_text)document.getElementById('about-text-cms').textContent=d.about_text;
-    if(d.cat_caption)document.getElementById('cat-caption-cms').textContent=d.cat_caption;
+    var catCaption=catList&&catList[0]&&catList[0].caption?catList[0].caption:d.cat_caption;
+    if(catCaption)document.getElementById('cat-caption-cms').textContent=catCaption;
     cats.forEach(function(cat){
       var grid=document.getElementById('grid-'+cat);
       var items=d[cat]||[];
