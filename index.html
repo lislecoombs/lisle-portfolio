@@ -808,7 +808,7 @@ function showTBC(){
     ytPlayer.pauseVideo();
     musicPlaying=false;
     musicBtn.classList.add('paused');
-    musicLabel.textContent='play music';
+    if(musicLabel) musicLabel.textContent='play music';  // ← guard it
   }
   document.getElementById('tbc-sepia').classList.add('on');
   document.getElementById('tbc-overlay').classList.add('on');
