@@ -654,7 +654,7 @@ async function loadCMS(){
     if(!res.ok)throw 0;
     var d=await res.json();
     buildStack(document.getElementById('portrait-stack'),[d.portrait,d.portrait_2,d.portrait_3].filter(Boolean));
-    var lbl=document.createElement('span');lbl.className='portrait-label';lbl.textContent="-- that's me --";
+    var lbl=document.createElement('span');lbl.className='portrait-label';lbl.textContent="✴︎˚｡⋆that's me ⋆˚࿔ ";
     document.getElementById('portrait-stack').appendChild(lbl);
     buildStack(document.getElementById('cat-stack-inner'),[d.cat_photo,d.cat_photo_2,d.cat_photo_3].filter(Boolean));
     document.getElementById('cat-stack').addEventListener('mouseenter',function(){play(SND.meow);});
@@ -672,7 +672,7 @@ async function loadCMS(){
     var pd=document.createElement('div');pd.className='stack-photo';
     pd.innerHTML='<div class="portrait-placeholder"><span style="font-size:2rem;opacity:.4">(˘◡˘)</span>your photo here --<br>add via admin</div>';
     ps.appendChild(pd);
-    var lbl2=document.createElement('span');lbl2.className='portrait-label';lbl2.textContent="-- that's me --";
+    var lbl2=document.createElement('span');lbl2.className='portrait-label';lbl2.textContent="✴︎˚｡⋆that's me ⋆˚࿔ ";
     ps.appendChild(lbl2);
     var cs=document.getElementById('cat-stack-inner');
     var cd=document.createElement('div');cd.className='stack-photo';
