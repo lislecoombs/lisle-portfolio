@@ -53,5 +53,29 @@
       "year": "2025"
     }
   ],
-  "photography": []
+  "photography": [
+    {
+      "image": "/images/coombs02.jpg",
+      "title": "Oblige",
+      "year": "2025",
+      "medium": "35mm film",
+      "description": "from my \"Memento mori/Memento vivere\" project"
+    },
+    {
+      "image": "/images/coombs05.jpg",
+      "description": "from my \"Memento mori/Memento vivere\" project",
+      "title": "Beloved"
+    },
+    {
+      "image": "/images/coombs08.jpg",
+      "description": "from my \"Memento mori/Memento vivere\" project",
+      "title": "Janus",
+      "year": "2025"
+    },
+    {
+      "image": "/images/coombs10.jpg",
+      "title": "Teething",
+      "year": "2025"
+    }
+  ]
 }
