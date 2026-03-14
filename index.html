@@ -719,6 +719,9 @@ async function loadCMS(){
     // portrait: support both new list format [{image,caption}] and old flat string fields
     var portraitImgs=Array.isArray(d.portrait)?d.portrait.map(function(p){return p.image;}).filter(Boolean):[d.portrait,d.portrait_2,d.portrait_3].filter(Boolean);
     buildStack(document.getElementById('portrait-stack'),portraitImgs);
+// hide third photo until easter egg triggers
+    var thirdPortrait=document.querySelectorAll('#portrait-stack .stack-photo')[2];
+    if(thirdPortrait) thirdPortrait.style.display='none';
     var lbl=document.createElement('span');lbl.className='portrait-label';lbl.textContent="✴︎˚｡⋆that's me ⋆˚࿔ ";
     document.getElementById('portrait-stack').appendChild(lbl);
     var portraitClickCount=0;
@@ -727,7 +730,7 @@ document.getElementById('portrait-stack').addEventListener('click',function(){
   portraitClickCount++;
   clearTimeout(portraitTimer);
   portraitTimer=setTimeout(function(){portraitClickCount=0;},600);
-  if(portraitClickCount>=5){
+  if(portraitClickCount>=8){
     portraitClickCount=0;
     var photos=document.getElementById('portrait-stack').querySelectorAll('.stack-photo');
     if(photos[2]){
