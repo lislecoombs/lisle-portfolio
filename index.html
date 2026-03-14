@@ -222,6 +222,8 @@
   .ghost-pixel{position:fixed;bottom:80px;right:22px;z-index:201;image-rendering:pixelated;width:32px;animation:ghostBob 3s ease-in-out infinite;opacity:.5;pointer-events:none;}
   @keyframes ghostBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
   @media(max-width:900px){nav{padding:16px 24px;}section,#guestbook{padding:70px 24px;}.hero-layout{grid-template-columns:1fr;text-align:center;gap:40px;}.hero-left,.hero-right{text-align:center;}.float-title{justify-content:center!important;}.portrait-stack{margin:0 auto 32px;}.about-grid{grid-template-columns:1fr;}.gallery-grid{columns:2 160px;}footer{padding:28px 24px;}.form-row{grid-template-columns:1fr;}}
+  @keyframes portraitShake{0%,100%{transform:rotate(-2deg)}25%{transform:rotate(3deg)}50%{transform:rotate(-3deg)}75%{transform:rotate(2deg)}}
+  .stack-photo.shake{animation:portraitShake .4s ease-in-out 3;}
 </style>
 </head>
 <body>
@@ -382,7 +384,7 @@
     <div class="gallery-header reveal">
       <span class="section-tag">--&gt; my work.</span>
       <div style="position:relative;display:inline-block;width:100%;">
-  <img src="images/brush.gif" alt="" style="position:absolute;top:-70px;right:140px;width:230px;image-rendering:pixelated;opacity:.85;pointer-events:none;" />
+  <img src="images/brush.gif" alt="" style="position:absolute;top:-70px;right:150px;width:230px;image-rendering:pixelated;opacity:.85;pointer-events:none;" />
   <div class="portfolio-float" id="portfolio-title"></div>
 </div>
       <div class="gallery-tabs">
@@ -480,6 +482,7 @@ var SND={
   cj3:   new Audio('sounds/cj3.mp3'),
   cj4:   new Audio('sounds/cj4.mp3'),
   kq:    new Audio('sounds/kq.mp3'),
+  huh: mkAudio('sounds/huh.mp3'),
 };
 function play(snd){try{snd.currentTime=0;snd.play();}catch(e){}}
 
@@ -718,6 +721,25 @@ async function loadCMS(){
     buildStack(document.getElementById('portrait-stack'),portraitImgs);
     var lbl=document.createElement('span');lbl.className='portrait-label';lbl.textContent="✴︎˚｡⋆that's me ⋆˚࿔ ";
     document.getElementById('portrait-stack').appendChild(lbl);
+    var portraitClickCount=0;
+    var portraitTimer=null;
+document.getElementById('portrait-stack').addEventListener('click',function(){
+  portraitClickCount++;
+  clearTimeout(portraitTimer);
+  portraitTimer=setTimeout(function(){portraitClickCount=0;},600);
+  if(portraitClickCount>=5){
+    portraitClickCount=0;
+    var photos=document.getElementById('portrait-stack').querySelectorAll('.stack-photo');
+    if(photos[2]){
+      photos[2].style.display='block';
+      photos[2].classList.remove('shake');
+      void photos[2].offsetWidth; // force reflow so animation restarts
+      photos[2].classList.add('shake');
+    }
+    play(SND.huh);
+    foundEgg('( ˙▿˙ )?');
+  }
+});
     // cat_photo: support both new list format [{image,caption}] and old flat string fields
 var catList=Array.isArray(d.cat_photo)?d.cat_photo:null;
 var catImgs=catList?catList.map(function(p){return p.image;}).filter(Boolean):[d.cat_photo,d.cat_photo_2,d.cat_photo_3].filter(Boolean);
