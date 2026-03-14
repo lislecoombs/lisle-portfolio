@@ -739,6 +739,20 @@ cats.forEach(function(cat){
   if(!items.length){grid.innerHTML='<div class="gallery-empty" style="column-span:all"><span style="font-size:2rem;display:block;margin-bottom:12px">(o)</span>no '+cat+' yet</div>';}
   else{grid.innerHTML=items.map(buildItem).join('');attachLightbox(grid);}
 });
+ }catch(e){
+    var ps=document.getElementById('portrait-stack');
+    var pd=document.createElement('div');pd.className='stack-photo';
+    pd.innerHTML='<div class="portrait-placeholder"><span style="font-size:2rem;opacity:.4">(˘◡˘)</span>your photo here --<br>add via admin</div>';
+    ps.appendChild(pd);
+    var lbl2=document.createElement('span');lbl2.className='portrait-label';lbl2.textContent="✴︎˚｡⋆that's me ⋆˚࿔ ";
+    ps.appendChild(lbl2);
+    var cs=document.getElementById('cat-stack-inner');
+    var cd=document.createElement('div');cd.className='stack-photo';
+    cd.innerHTML='<div class="cat-placeholder"><span style="font-size:2rem;opacity:.4">ฅ^•ﻌ•^ฅ</span>Maggie here --<br>add via admin</div>';
+    cs.appendChild(cd);
+    cats.forEach(function(cat){document.getElementById('grid-'+cat).innerHTML=buildPH(cat);});
+  }
+}
 function attachLightbox(grid){
   grid.querySelectorAll('.gallery-item[data-src]').forEach(function(item){
     item.addEventListener('click',function(){
