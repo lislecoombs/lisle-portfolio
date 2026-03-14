@@ -812,7 +812,7 @@ var tripleTimer=null,tripleCount=0;
 document.addEventListener('click',function(e){
   tripleCount++;clearTimeout(tripleTimer);
   tripleTimer=setTimeout(function(){tripleCount=0;},500);
-  if(tripleCount>=6){tripleCount=0;showStarPlatinum();}
+  if(tripleCount>=10){tripleCount=0;showStarPlatinum();}
 });
 function showStarPlatinum(){
   if(musicReady && musicPlaying){
