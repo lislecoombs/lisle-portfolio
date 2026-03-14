@@ -719,10 +719,9 @@ async function loadCMS(){
     var lbl=document.createElement('span');lbl.className='portrait-label';lbl.textContent="✴︎˚｡⋆that's me ⋆˚࿔ ";
     document.getElementById('portrait-stack').appendChild(lbl);
     // cat_photo: support both new list format [{image,caption}] and old flat string fields
-    var catList=Array.isArray(d.cat_photo)?d.cat_photo:null;
-    var catImgs=catList?catList.map(function(p){return p.image;}).filter(Boolean):[d.cat_photo,d.cat_photo_2,d.cat_photo_3].filter(Boolean);
-    buildStack(document.getElementById('cat-stack-inner'),catImgs);
-    document.getElementById('cat-stack').addEventListener('mouseenter',function(){play(SND.meow);});
+var catList=Array.isArray(d.cat_photo)?d.cat_photo:null;
+var catImgs=catList?catList.map(function(p){return p.image;}).filter(Boolean):[d.cat_photo,d.cat_photo_2,d.cat_photo_3].filter(Boolean);
+buildStack(document.getElementById('cat-stack-inner'),catImgs);
 var catClickCount = 0;
 var catSounds = [SND.meow, new Audio('sounds/cat-purr.mp3'), new Audio('sounds/cat-hissing.mp3')];
 document.getElementById('cat-stack').addEventListener('click',function(){
@@ -730,32 +729,16 @@ document.getElementById('cat-stack').addEventListener('click',function(){
   catClickCount++;
   play(snd);
 });
-    document.getElementById('cat-stack').addEventListener('mouseenter',function(){play(SND.meow);});
-    var firstCatImg=catList&&catList[0]?catList[0].image:(typeof d.cat_photo==='string'?d.cat_photo:null);
-    if(d.about_text)document.getElementById('about-text-cms').textContent=d.about_text;
-    var catCaption=catList&&catList[0]&&catList[0].caption?catList[0].caption:d.cat_caption;
-    if(catCaption)document.getElementById('cat-caption-cms').textContent=catCaption;
-    cats.forEach(function(cat){
-      var grid=document.getElementById('grid-'+cat);
-      var items=d[cat]||[];
-      if(!items.length){grid.innerHTML='<div class="gallery-empty" style="column-span:all"><span style="font-size:2rem;display:block;margin-bottom:12px">(o)</span>no '+cat+' yet</div>';}
-      else{grid.innerHTML=items.map(buildItem).join('');attachLightbox(grid);}
-    });
-  }catch(e){
-    var ps=document.getElementById('portrait-stack');
-    var pd=document.createElement('div');pd.className='stack-photo';
-    pd.innerHTML='<div class="portrait-placeholder"><span style="font-size:2rem;opacity:.4">(˘◡˘)</span>your photo here --<br>add via admin</div>';
-    ps.appendChild(pd);
-    var lbl2=document.createElement('span');lbl2.className='portrait-label';lbl2.textContent="✴︎˚｡⋆that's me ⋆˚࿔ ";
-    ps.appendChild(lbl2);
-    var cs=document.getElementById('cat-stack-inner');
-    var cd=document.createElement('div');cd.className='stack-photo';
-    cd.innerHTML='<div class="cat-placeholder"><span style="font-size:2rem;opacity:.4">ฅ^•ﻌ•^ฅ</span>Maggie here --<br>add via admin</div>';
-    cs.appendChild(cd);
-    document.getElementById('cat-stack').addEventListener('mouseenter',function(){play(SND.meow);});
-    cats.forEach(function(cat){document.getElementById('grid-'+cat).innerHTML=buildPH(cat);});
-  }
-}
+var firstCatImg=catList&&catList[0]?catList[0].image:(typeof d.cat_photo==='string'?d.cat_photo:null);
+if(d.about_text)document.getElementById('about-text-cms').textContent=d.about_text;
+var catCaption=catList&&catList[0]&&catList[0].caption?catList[0].caption:d.cat_caption;
+if(catCaption)document.getElementById('cat-caption-cms').textContent=catCaption;
+cats.forEach(function(cat){
+  var grid=document.getElementById('grid-'+cat);
+  var items=d[cat]||[];
+  if(!items.length){grid.innerHTML='<div class="gallery-empty" style="column-span:all"><span style="font-size:2rem;display:block;margin-bottom:12px">(o)</span>no '+cat+' yet</div>';}
+  else{grid.innerHTML=items.map(buildItem).join('');attachLightbox(grid);}
+});
 function attachLightbox(grid){
   grid.querySelectorAll('.gallery-item[data-src]').forEach(function(item){
     item.addEventListener('click',function(){
