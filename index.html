@@ -788,11 +788,19 @@ var tripleTimer=null,tripleCount=0;
 document.addEventListener('click',function(e){
   tripleCount++;clearTimeout(tripleTimer);
   tripleTimer=setTimeout(function(){tripleCount=0;},500);
-  if(tripleCount>=3){tripleCount=0;showStarPlatinum();}
+  if(tripleCount>=6){tripleCount=0;showStarPlatinum();}
 });
 function showStarPlatinum(){
+  if(musicReady && musicPlaying){
+    ytPlayer.pauseVideo();
+    musicPlaying=false;
+    if(musicBtn) musicBtn.classList.add('paused');
+    if(musicLabel) musicLabel.textContent='play music';
+  }
   var ov=document.getElementById('jojo-overlay');ov.classList.add('on');
-  play(SND.ora);foundEgg('ORA ORA ORA!!');
+  SND.ora.currentTime=0;
+  SND.ora.play().catch(function(e){console.warn('ora audio failed:',e);});
+  foundEgg('ORA ORA ORA!!');
   setTimeout(function(){ov.classList.remove('on');},3000);
 }
 
