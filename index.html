@@ -460,9 +460,9 @@
 /* ═ SOUNDS ═ */
 function mkAudio(src,vol){var a=new Audio(src);a.volume=vol||1;return a;}
 var SND={
-  water: mkAudio('sounds/water.mp3') .25,
-  meow: mkAudio('sounds/meow.mp3') .7,
-  kono: mkAudio('sounds/kono.mp3') .8,
+  water: mkAudio('sounds/water.mp3', .25),
+  meow: mkAudio('sounds/meow.mp3', .7),
+  kono: mkAudio('sounds/kono.mp3', .8),
   ora:   new Audio('sounds/ora.mp3'),
   camera: mkAudio('sounds/camera.mp3'),
   squish: mkAudio('sounds/squish.mp3'),
