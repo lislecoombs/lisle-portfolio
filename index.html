@@ -792,8 +792,10 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')document.get
 
 /* ═ SCROLL REVEAL ═ */
 document.querySelectorAll('.reveal').forEach(function(el){
-  new IntersectionObserver(function(entries){if(entries[0].isIntersecting)el.classList.add('in');},{threshold:.12}).observe(el);
-});
+  new IntersectionObserver(function(entries){
+  console.log('observer fired, intersecting:', entries[0].isIntersecting, 'shown:', tbcShown);
+  if(entries[0].isIntersecting&&!tbcShown){tbcShown=true;showTBC();}
+},{threshold:.5}).observe(document.getElementById('site-footer'));
 
 /* ═ KONAMI ═ */
 var KONAMI=[38,38,40,40,37,39,37,39,66,65];var kp=0;
@@ -838,6 +840,7 @@ function showStarPlatinum(){
 
 /* ═ FOOTER → TO BE CONTINUED ═ */
 function showTBC(){
+  console.log('showTBC fired!');
   if(musicReady && musicPlaying){
     ytPlayer.pauseVideo();
     musicPlaying=false;
