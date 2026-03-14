@@ -714,6 +714,15 @@ async function loadCMS(){
     var catImgs=catList?catList.map(function(p){return p.image;}).filter(Boolean):[d.cat_photo,d.cat_photo_2,d.cat_photo_3].filter(Boolean);
     buildStack(document.getElementById('cat-stack-inner'),catImgs);
     document.getElementById('cat-stack').addEventListener('mouseenter',function(){play(SND.meow);});
+var catClickCount = 0;
+var catSounds = [SND.meow, new Audio('sounds/cat-purr.mp3'), new Audio('sounds/cat-hissing.mp3')];
+document.getElementById('cat-stack').addEventListener('click',function(){
+  var snd = catSounds[catClickCount % catSounds.length];
+  catClickCount++;
+  snd.currentTime = 0;
+  snd.play().catch(function(){});
+});
+    document.getElementById('cat-stack').addEventListener('mouseenter',function(){play(SND.meow);});
     var firstCatImg=catList&&catList[0]?catList[0].image:(typeof d.cat_photo==='string'?d.cat_photo:null);
     if(d.about_text)document.getElementById('about-text-cms').textContent=d.about_text;
     var catCaption=catList&&catList[0]&&catList[0].caption?catList[0].caption:d.cat_caption;
