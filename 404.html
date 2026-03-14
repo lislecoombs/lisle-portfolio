@@ -1,5 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+<style>
+  #bone-gif { display:none; width:80px; image-rendering:pixelated; vertical-align:middle; margin-left:10px; }
+  #home-link:hover #bone-gif { display:inline-block; }
+  #home-link:hover { text-decoration:none; }
+</style>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -86,7 +91,7 @@
   <span class="kaomoji">(•᷄‎ࡇ•᷅)?</span>
   <h1>page not found</h1>
   <p>ooooh you've messed up now...</p>
-  <a href="/">take me home</a>
+  <a href="/" id="home-link">take me home<img src="images/dog-bone.gif" id="bone-gif" alt="" /></a>
   <span class="small">error 404</span>
 </div>
 <script>
