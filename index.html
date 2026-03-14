@@ -793,9 +793,10 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')document.get
 /* ═ SCROLL REVEAL ═ */
 document.querySelectorAll('.reveal').forEach(function(el){
   new IntersectionObserver(function(entries){
-  console.log('observer fired, intersecting:', entries[0].isIntersecting, 'shown:', tbcShown);
-  if(entries[0].isIntersecting&&!tbcShown){tbcShown=true;showTBC();}
-},{threshold:.5}).observe(document.getElementById('site-footer'));
+    if(entries[0].isIntersecting){el.classList.add('visible');}
+  },{threshold:.15}).observe(el);
+});
+
 
 /* ═ KONAMI ═ */
 var KONAMI=[38,38,40,40,37,39,37,39,66,65];var kp=0;
@@ -838,9 +839,14 @@ function showStarPlatinum(){
   };
 }
 
+
 /* ═ FOOTER → TO BE CONTINUED ═ */
+var tbcShown=false;
+new IntersectionObserver(function(entries){
+  if(entries[0].isIntersecting&&!tbcShown){tbcShown=true;showTBC();}
+},{threshold:.5}).observe(document.getElementById('site-footer'));
+
 function showTBC(){
-  console.log('showTBC fired!');
   if(musicReady && musicPlaying){
     ytPlayer.pauseVideo();
     musicPlaying=false;
@@ -852,7 +858,6 @@ function showTBC(){
   SND.round.currentTime=0;
   SND.round.play().catch(function(e){ console.warn('TBC audio failed:', e); });
   foundEgg('To Be Continued...');
-
   function cancelTBC(){
     document.getElementById('tbc-sepia').classList.remove('on');
     document.getElementById('tbc-overlay').classList.remove('on');
@@ -861,12 +866,9 @@ function showTBC(){
     clearTimeout(tbcTimeout);
     window.removeEventListener('scroll', cancelTBC);
   }
-
-  // ← delay so scroll momentum doesn't cancel it immediately
   setTimeout(function(){
     window.addEventListener('scroll', cancelTBC, {passive:true});
   }, 1000);
-
   var tbcTimeout=setTimeout(function(){
     cancelTBC();
   }, 14000);
