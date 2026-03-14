@@ -792,9 +792,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')document.get
 
 /* ═ SCROLL REVEAL ═ */
 document.querySelectorAll('.reveal').forEach(function(el){
-  new IntersectionObserver(function(entries){
-    if(entries[0].isIntersecting){el.classList.add('visible');}
-  },{threshold:.15}).observe(el);
+  new IntersectionObserver(function(entries){if(entries[0].isIntersecting)el.classList.add('in');},{threshold:.12}).observe(el);
 });
 
 
