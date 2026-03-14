@@ -837,10 +837,6 @@ function showStarPlatinum(){
 }
 
 /* ═ FOOTER → TO BE CONTINUED ═ */
-var tbcShown=false;
-new IntersectionObserver(function(entries){
-  if(entries[0].isIntersecting&&!tbcShown){tbcShown=true;showTBC();}
-},{threshold:.5}).observe(document.getElementById('site-footer'));
 function showTBC(){
   if(musicReady && musicPlaying){
     ytPlayer.pauseVideo();
@@ -863,7 +859,10 @@ function showTBC(){
     window.removeEventListener('scroll', cancelTBC);
   }
 
-  window.addEventListener('scroll', cancelTBC, {passive:true});
+  // ← delay so scroll momentum doesn't cancel it immediately
+  setTimeout(function(){
+    window.addEventListener('scroll', cancelTBC, {passive:true});
+  }, 1000);
 
   var tbcTimeout=setTimeout(function(){
     cancelTBC();
