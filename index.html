@@ -845,19 +845,28 @@ function showTBC(){
   if(musicReady && musicPlaying){
     ytPlayer.pauseVideo();
     musicPlaying=false;
-    musicBtn.classList.add('paused');
-    if(musicLabel) musicLabel.textContent='play music';  // ← guard it
+    if(musicBtn) musicBtn.classList.add('paused');
+    if(musicLabel) musicLabel.textContent='play music';
   }
   document.getElementById('tbc-sepia').classList.add('on');
   document.getElementById('tbc-overlay').classList.add('on');
   SND.round.currentTime=0;
   SND.round.play().catch(function(e){ console.warn('TBC audio failed:', e); });
   foundEgg('To Be Continued...');
-  setTimeout(function(){
+
+  function cancelTBC(){
     document.getElementById('tbc-sepia').classList.remove('on');
     document.getElementById('tbc-overlay').classList.remove('on');
     SND.round.pause();
     SND.round.currentTime=0;
+    clearTimeout(tbcTimeout);
+    window.removeEventListener('scroll', cancelTBC);
+  }
+
+  window.addEventListener('scroll', cancelTBC, {passive:true});
+
+  var tbcTimeout=setTimeout(function(){
+    cancelTBC();
   }, 14000);
 }
 
