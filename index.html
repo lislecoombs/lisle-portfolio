@@ -719,8 +719,7 @@ var catSounds = [SND.meow, new Audio('sounds/cat-purr.mp3'), new Audio('sounds/c
 document.getElementById('cat-stack').addEventListener('click',function(){
   var snd = catSounds[catClickCount % catSounds.length];
   catClickCount++;
-  snd.currentTime = 0;
-  snd.play().catch(function(){});
+  play(snd);
 });
     document.getElementById('cat-stack').addEventListener('mouseenter',function(){play(SND.meow);});
     var firstCatImg=catList&&catList[0]?catList[0].image:(typeof d.cat_photo==='string'?d.cat_photo:null);
@@ -918,7 +917,7 @@ document.getElementById('yr').textContent=new Date().getFullYear();
     mobEl.querySelector('.fav-hover-img').src = DIMPLE_IMG;
   }
 
-  // JoJo: play Killer Queen on hover, redirect to 404 on click
+  // JoJo: play Killer Queen on hover, redirect to 404 
  var jojoEl = document.getElementById('fav-jojo');
 if(jojoEl){
   var kqPlaying = false;
