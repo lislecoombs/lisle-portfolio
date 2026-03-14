@@ -222,7 +222,7 @@
   .ghost-pixel{position:fixed;bottom:80px;right:22px;z-index:201;image-rendering:pixelated;width:32px;animation:ghostBob 3s ease-in-out infinite;opacity:.5;pointer-events:none;}
   @keyframes ghostBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
   @media(max-width:900px){nav{padding:16px 24px;}section,#guestbook{padding:70px 24px;}.hero-layout{grid-template-columns:1fr;text-align:center;gap:40px;}.hero-left,.hero-right{text-align:center;}.float-title{justify-content:center!important;}.portrait-stack{margin:0 auto 32px;}.about-grid{grid-template-columns:1fr;}.gallery-grid{columns:2 160px;}footer{padding:28px 24px;}.form-row{grid-template-columns:1fr;}}
-  @keyframes secretReveal{0%{transform:scale(1) rotate(-2deg)}25%{transform:scale(1.18) rotate(3deg)}50%{transform:scale(1.12) rotate(-3deg)}75%{transform:scale(1.15) rotate(2deg)}100%{transform:scale(1.08) rotate(0deg)}}
+  @keyframes secretReveal{0%{transform:scale(1) rotate(-2deg)}25%{transform:scale(1.25) rotate(3deg)}50%{transform:scale(1.2) rotate(-3deg)}75%{transform:scale(1.15) rotate(2deg)}100%{transform:scale(1) rotate(0deg)}}
 .stack-photo.secret-reveal{animation:secretReveal .6s ease-in-out 1 forwards;}
 </style>
 </head>
@@ -718,7 +718,7 @@ async function loadCMS(){
     var d=await res.json();
     // portrait: support both new list format [{image,caption}] and old flat string fields
     var portraitImgs=Array.isArray(d.portrait)?d.portrait.map(function(p){return p.image;}).filter(Boolean):[d.portrait,d.portrait_2,d.portrait_3].filter(Boolean);
-    buildStack(document.getElementById('portrait-stack'),portraitImgs);
+   buildStack(document.getElementById('portrait-stack'),portraitImgs);
 var lbl=document.createElement('span');lbl.className='portrait-label';lbl.textContent="✴︎˚｡⋆that's me ⋆˚࿔ ";
 document.getElementById('portrait-stack').appendChild(lbl);
 var portraitContainer=document.getElementById('portrait-stack');
@@ -726,21 +726,21 @@ var secretRevealed=false;
 var portraitClickCount=0;
 var thirdPortrait=portraitContainer.querySelectorAll('.stack-photo')[2];
 if(thirdPortrait) thirdPortrait.style.display='none';
-portraitContainer.addEventListener('click',function(e){
-  if(!secretRevealed){
-    e.stopImmediatePropagation();
-    portraitClickCount++;
-    if(portraitClickCount>=8){
-      secretRevealed=true;
-      portraitClickCount=0;
-      if(thirdPortrait){
-        thirdPortrait.style.display='block';
-        thirdPortrait.classList.remove('secret-reveal');
-        void thirdPortrait.offsetWidth;
-        thirdPortrait.classList.add('secret-reveal');
-      }
-      play(SND.huh);
-      foundEgg('( ˙▿˙ )?');
+portraitContainer.addEventListener('click',function(){
+  if(secretRevealed) return;
+  portraitClickCount++;
+  if(portraitClickCount>=8){
+    secretRevealed=true;
+    if(thirdPortrait){
+      thirdPortrait.style.display='block';
+      thirdPortrait.classList.remove('secret-reveal');
+      void thirdPortrait.offsetWidth;
+      thirdPortrait.classList.add('secret-reveal');
+    }
+    play(SND.huh);
+    foundEgg('( ˙▿˙ )?');
+  }
+});
     }
   }
 },true);
