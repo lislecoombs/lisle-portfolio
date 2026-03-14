@@ -371,7 +371,7 @@
             <div class="cat-stack-inner" id="cat-stack-inner"></div>
           </div>
           <div class="cat-caption"><span>Maggie</span> (=^･ω･^=) <span id="cat-caption-cms">studio assistant</span></div>
-          <img src="images/fish.gif" alt="" style="display:block;margin:16px auto 0;width:120px;image-rendering:pixelated;opacity:.85;" />
+          <img id="fish-gif" src="images/fish.gif" alt="" style="display:block;margin:16px auto 0;width:120px;image-rendering:pixelated;opacity:.85;" />
           <img class="pixel-bunny" src="undertaledeltarune.gif" alt="" />
         </div>
       </div>
@@ -483,6 +483,7 @@ var SND={
   cj4:   new Audio('sounds/cj4.mp3'),
   kq:    new Audio('sounds/kq.mp3'),
   huh: mkAudio('sounds/huh.mp3'),
+  bubbles: mkAudio('sounds/bubbles.mp3'),
 };
 function play(snd){try{snd.currentTime=0;snd.play();}catch(e){}}
 
@@ -709,6 +710,8 @@ function buildStack(container,photos){
     var cards=Array.from(container.querySelectorAll('.stack-photo'));
     if(cards.length>1)container.insertBefore(cards[cards.length-1],cards[0]);
   });
+  var fishEl=document.getElementById('fish-gif');
+if(fishEl) fishEl.addEventListener('click',function(){ play(SND.bubbles); });
 }
 async function loadCMS(){
   var cats=['paintings','drawings','sculpture','photography'];
