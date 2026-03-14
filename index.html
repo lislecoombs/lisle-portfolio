@@ -904,28 +904,29 @@ document.getElementById('yr').textContent=new Date().getFullYear();
   }
 
   // JoJo: play Killer Queen on hover, redirect to 404 on click
-  var jojoEl = document.getElementById('fav-jojo');
-  if(jojoEl){
-    var kqPlaying = false;
-    jojoEl.addEventListener('mouseenter', function(){
-      if(!kqPlaying){
-        kqPlaying = true;
-        jojoEl.classList.add('jojo-active');
-        SND.kq.currentTime = 0;
-        SND.kq.play().catch(function(){});
-      }
-    });
-    jojoEl.addEventListener('mouseleave', function(){
-      kqPlaying = false;
-      jojoEl.classList.remove('jojo-active');
-      SND.kq.pause();
+ var jojoEl = document.getElementById('fav-jojo');
+if(jojoEl){
+  var kqPlaying = false;
+  jojoEl.addEventListener('mouseenter', function(){
+    if(!kqPlaying){
+      kqPlaying = true;
+      jojoEl.classList.add('jojo-active');
       SND.kq.currentTime = 0;
-    });
-    jojoEl.addEventListener('click', function(){
-      window.location.href = '/404.html';
-    });
-  }
-})();
+      SND.kq.play().catch(function(){});
+      SND.kq.onended = function(){
+        if(kqPlaying){
+          window.location.href = '/404.html';
+        }
+      };
+    }
+  });
+  jojoEl.addEventListener('mouseleave', function(){
+    kqPlaying = false;
+    jojoEl.classList.remove('jojo-active');
+    SND.kq.pause();
+    SND.kq.currentTime = 0;
+  });
+}
 
 /* ═ NOTICE BANNER ═ */
 (function(){
