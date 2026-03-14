@@ -736,6 +736,9 @@ portraitContainer.addEventListener('click',function(){
       thirdPortrait.classList.remove('secret-reveal');
       void thirdPortrait.offsetWidth;
       thirdPortrait.classList.add('secret-reveal');
+thirdPortrait.addEventListener('animationend', function(){
+  thirdPortrait.classList.remove('secret-reveal');
+}, {once:true});
     }
     play(SND.huh);
     foundEgg('( ˙▿˙ )?');
