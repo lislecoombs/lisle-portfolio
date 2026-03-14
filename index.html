@@ -709,7 +709,6 @@ async function loadCMS(){
     buildStack(document.getElementById('cat-stack-inner'),catImgs);
     document.getElementById('cat-stack').addEventListener('mouseenter',function(){play(SND.meow);});
     var firstCatImg=catList&&catList[0]?catList[0].image:(typeof d.cat_photo==='string'?d.cat_photo:null);
-    if(firstCatImg)document.getElementById('konami-cat').src=firstCatImg;
     if(d.about_text)document.getElementById('about-text-cms').textContent=d.about_text;
     var catCaption=catList&&catList[0]&&catList[0].caption?catList[0].caption:d.cat_caption;
     if(catCaption)document.getElementById('cat-caption-cms').textContent=catCaption;
