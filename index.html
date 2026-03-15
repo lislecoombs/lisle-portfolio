@@ -914,6 +914,7 @@ function showTBC(){
       document.getElementById('tbc-sepia').classList.add('on');
       document.getElementById('tbc-overlay').classList.add('on');
       SND.round.play().catch(function(){});
+      if(musicReady&&musicPlaying){ytPlayer.pauseVideo();musicPlaying=false;if(musicBtn)musicBtn.classList.add('paused');if(musicLabel)musicLabel.textContent='play music';}
     } else {
       document.getElementById('tbc-sepia').classList.remove('on');
       document.getElementById('tbc-overlay').classList.remove('on');
