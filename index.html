@@ -159,7 +159,7 @@
   .gallery-caption .yr{color:var(--sage);font-size:.8rem;}
   .gallery-empty{text-align:center;padding:60px 40px;font-family:'Caveat',cursive;font-size:1.1rem;color:rgba(255,255,255,.2);border:1px dashed rgba(255,255,255,.1);border-radius:3px;}
   .art-ph{width:100%;aspect-ratio:var(--ar,3/4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-family:'Caveat',cursive;font-size:.85rem;color:rgba(255,255,255,.18);background:var(--bg,linear-gradient(135deg,#1a1008,#2a2010));}
-  #guestbook{padding:90px 52px;}
+  ##guestbook{padding:90px 52px;position:relative;}
   #guestbook .inner{max-width:780px;margin:0 auto;}
   .guestbook-form{display:flex;flex-direction:column;gap:16px;}
   .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
@@ -200,7 +200,7 @@
   .konami-caption{position:absolute;bottom:22%;font-family:'Playfair Display',serif;font-style:italic;font-size:1.6rem;color:var(--wheat);animation:glow 2s ease-in-out infinite;}
   @keyframes glow{0%,100%{text-shadow:0 0 10px rgba(196,151,58,.3)}50%{text-shadow:0 0 25px rgba(196,151,58,.6)}}
   #jojo-overlay{position:fixed;inset:0;z-index:998;pointer-events:none;display:none;align-items:flex-end;justify-content:center;}
-  #jojo-overlay.on{display:flex;animation:jojoFlash .15s ease-out;}
+  #jojo-overlay.on{display:flex;pointer-events:all;animation:jojoFlash .15s ease-out;}
   #jojo-overlay.fade{animation:jojoFade .8s ease-out forwards;}
   @keyframes jojoFade{from{opacity:1}to{opacity:0}}
   @keyframes jojoFlash{0%{background:rgba(180,0,255,.35)}100%{background:rgba(20,0,40,0)}}
