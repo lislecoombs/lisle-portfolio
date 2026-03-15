@@ -1161,11 +1161,9 @@ function startShake(){
     if(!shaking) return;
     shaking=false;
     sndShake.pause();
-    // Silence everything so nothing plays after shake
     [sndEnter].concat(sndDoctors).forEach(function(s){
       s.pause();s.currentTime=0;s.volume=.8;
     });
-    docClickIdx=0;
   }
 
   window.addEventListener('resize',function(){baseY=window.innerHeight*.78;});
