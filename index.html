@@ -1099,9 +1099,10 @@ if(window.netlifyIdentity){
   el.addEventListener('animationend',function(){el.style.animation='';});
 
   // Click (no water drop, plays enter then doctor cycle)
+  var justDropped=false;
   el.addEventListener('click',function(e){
     e.stopPropagation();
-    if(dragging) return;
+    if(dragging||justDropped) return;
     sndEnter.pause();sndDoctors.forEach(function(s){s.pause();s.currentTime=0;});
     if(docClickIdx===0){
       sndEnter.currentTime=0;sndEnter.play().catch(function(){});
@@ -1127,10 +1128,12 @@ if(window.netlifyIdentity){
     xHist=xHist.filter(function(h){return now-h.t<300;});
     checkShake();
   });
-    document.addEventListener('mouseup',function(){
+  document.addEventListener('mouseup',function(){
     if(!dragging) return;
     dragging=false;el.style.cursor='pointer';
     targetY=ty;baseY=ty;
+    justDropped=true;
+    setTimeout(function(){justDropped=false;},300);
     stopShake();
     if(raf){cancelAnimationFrame(raf);raf=null;}
     animate();
@@ -1147,8 +1150,7 @@ if(window.netlifyIdentity){
   }
   var lastShakeTime=0;
   function startShake(){
-    var now=Date.now();
-    lastShakeTime=now;
+    lastShakeTime=Date.now();
     if(!shaking){
       shaking=true;
       [sndEnter].concat(sndDoctors).forEach(function(s){
@@ -1157,8 +1159,6 @@ if(window.netlifyIdentity){
       sndShake.currentTime=0;
       sndShake.play().catch(function(){});
       checkShakeStop();
-    } else {
-      lastShakeTime=now;
     }
   }
   function checkShakeStop(){
