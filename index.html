@@ -8,6 +8,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;1,400&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
+  @keyframes fishWiggle{0%{transform:rotate(0deg) scale(1)}20%{transform:rotate(-8deg) scale(1.1)}40%{transform:rotate(8deg) scale(1.1)}60%{transform:rotate(-5deg) scale(1.05)}80%{transform:rotate(3deg) scale(1.02)}100%{transform:rotate(0deg) scale(1)}}
+.fish-excited{animation:fishWiggle .5s ease-in-out;}
   @keyframes secretReveal{0%{transform:scale(1) rotate(-2deg)}25%{transform:scale(1.25) rotate(3deg)}50%{transform:scale(1.2) rotate(-3deg)}75%{transform:scale(1.15) rotate(2deg)}100%{transform:scale(1) rotate(0deg)}}
 .stack-photo.secret-reveal{animation:secretReveal .6s ease-in-out 1 forwards;}
   :root {--cream:#f4edd8;--parchment:#ede0c0;--sage:#7a9e7e;--moss:#4a6b4e;--fern:#2e4a30;--rose:#c9847a;--dusty:#d4a09a;--terra:#b8734a;--mushroom:#9e8a72;--bark:#5c3d2e;--wheat:#d4b896;--gold:#c4973a;--night:#0e1409;--deep:#070c05;}
@@ -710,7 +712,13 @@ function buildStack(container,photos){
     if(cards.length>1)container.insertBefore(cards[cards.length-1],cards[0]);
   });
   var fishEl=document.getElementById('fish-gif');
-if(fishEl) fishEl.addEventListener('click',function(){ play(SND.bubbles); });
+if(fishEl) fishEl.addEventListener('click',function(){
+  play(SND.bubbles);
+  fishEl.classList.remove('fish-excited');
+  void fishEl.offsetWidth;
+  fishEl.classList.add('fish-excited');
+  fishEl.addEventListener('animationend',function(){fishEl.classList.remove('fish-excited');},{once:true});
+});
 }
 async function loadCMS(){
   var cats=['paintings','drawings','sculpture','photography'];
