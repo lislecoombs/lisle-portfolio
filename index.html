@@ -918,6 +918,7 @@ function showTBC(){
       document.getElementById('tbc-sepia').classList.remove('on');
       document.getElementById('tbc-overlay').classList.remove('on');
       SND.round.pause();
+      if(wasPlaying&&musicReady){ytPlayer.playVideo();musicPlaying=true;if(musicBtn)musicBtn.classList.remove('paused');if(musicLabel)musicLabel.textContent='music on';}
     }
   }
 
@@ -986,6 +987,7 @@ if(jojoEl){
   jojoEl.addEventListener('mouseenter', function(){
   if(!kqPlaying){
     kqPlaying = true;
+    var kqWasPlaying=musicPlaying;
     jojoEl.classList.add('jojo-active');
     if(musicReady && musicPlaying){
       ytPlayer.pauseVideo();
@@ -1003,12 +1005,11 @@ if(jojoEl){
   }
 });
   jojoEl.addEventListener('mouseleave', function(){
-    var wasPl=kqPlaying;
     kqPlaying = false;
     jojoEl.classList.remove('jojo-active');
     SND.kq.pause();
     SND.kq.currentTime = 0;
-    if(wasPl&&musicReady&&!musicPlaying){ytPlayer.playVideo();musicPlaying=true;if(musicBtn)musicBtn.classList.remove('paused');if(musicLabel)musicLabel.textContent='music on';}
+    if(kqWasPlaying&&musicReady){ytPlayer.playVideo();musicPlaying=true;if(musicBtn)musicBtn.classList.remove('paused');if(musicLabel)musicLabel.textContent='music on';}
   });
 }
 })();
