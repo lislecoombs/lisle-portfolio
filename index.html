@@ -847,6 +847,7 @@ document.addEventListener('click',function(e){
   if(tripleCount>=10){tripleCount=0;showStarPlatinum();}
 });
 function showStarPlatinum(){
+  var wasPlaying=musicPlaying;
   if(musicReady && musicPlaying){
     ytPlayer.pauseVideo();
     musicPlaying=false;
@@ -859,19 +860,21 @@ function showStarPlatinum(){
   SND.ora.currentTime=0;
   SND.ora.play().catch(function(e){console.warn('ora audio failed:',e);});
   foundEgg('ORA ORA ORA!!');
+  function resumeAfterOra(){
+    if(wasPlaying&&musicReady){ytPlayer.playVideo();musicPlaying=true;if(musicBtn)musicBtn.classList.remove('paused');if(musicLabel)musicLabel.textContent='music on';}
+  }
   ov.onclick=function(e){
     e.stopPropagation();
     SND.ora.pause();SND.ora.currentTime=0;
     ov.classList.add('fade');
     ov.onclick=null;
     setTimeout(function(){ov.classList.remove('on');ov.classList.remove('fade');},800);
+    resumeAfterOra();
   };
   SND.ora.onended=function(){
     ov.classList.add('fade');
-    setTimeout(function(){
-      ov.classList.remove('on');
-      ov.classList.remove('fade');
-    }, 800); // matches fade duration
+    setTimeout(function(){ov.classList.remove('on');ov.classList.remove('fade');},800);
+    resumeAfterOra();
   };
 }
 
@@ -883,6 +886,7 @@ new IntersectionObserver(function(entries){
 },{threshold:.5}).observe(document.getElementById('site-footer'));
 
 function showTBC(){
+  var wasPlaying=musicPlaying;
   if(musicReady && musicPlaying){
     ytPlayer.pauseVideo();
     musicPlaying=false;
@@ -899,6 +903,7 @@ function showTBC(){
     document.getElementById('tbc-sepia').classList.remove('on');
     document.getElementById('tbc-overlay').classList.remove('on');
     window.removeEventListener('scroll',tbcScrollHandler);
+    if(wasPlaying&&musicReady){ytPlayer.playVideo();musicPlaying=true;if(musicBtn)musicBtn.classList.remove('paused');if(musicLabel)musicLabel.textContent='music on';}
   };
 
   function tbcScrollHandler(){
@@ -998,10 +1003,12 @@ if(jojoEl){
   }
 });
   jojoEl.addEventListener('mouseleave', function(){
+    var wasPl=kqPlaying;
     kqPlaying = false;
     jojoEl.classList.remove('jojo-active');
     SND.kq.pause();
     SND.kq.currentTime = 0;
+    if(wasPl&&musicReady&&!musicPlaying){ytPlayer.playVideo();musicPlaying=true;if(musicBtn)musicBtn.classList.remove('paused');if(musicLabel)musicLabel.textContent='music on';}
   });
 }
 })();
