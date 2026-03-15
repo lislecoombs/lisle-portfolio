@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;1,400&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-  #tardis{position:fixed;width:75px;image-rendering:pixelated;cursor:pointer;opacity:0;pointer-events:none;z-index:10;transition:opacity 1.5s;filter:drop-shadow(0 0 8px rgba(100,150,255,.3));}
+  #tardis{position:fixed;width:100px;image-rendering:pixelated;cursor:pointer;opacity:0;pointer-events:none;z-index:10;transition:opacity 1.5s;filter:drop-shadow(0 0 8px rgba(100,150,255,.3));}
 @keyframes tardisJiggle{0%{transform:rotate(0)}20%{transform:rotate(-5deg) translateX(-3px)}40%{transform:rotate(5deg) translateX(3px)}60%{transform:rotate(-3deg) translateX(-2px)}80%{transform:rotate(2deg) translateX(2px)}100%{transform:rotate(0)}}
   @keyframes fishWiggle{0%{transform:rotate(0deg) scale(1)}20%{transform:rotate(-8deg) scale(1.1)}40%{transform:rotate(8deg) scale(1.1)}60%{transform:rotate(-5deg) scale(1.05)}80%{transform:rotate(3deg) scale(1.02)}100%{transform:rotate(0deg) scale(1)}}
 .fish-excited{animation:fishWiggle .5s ease-in-out;}
@@ -1058,7 +1058,7 @@ if(window.netlifyIdentity){
   var dragging=false,dragOX=0,dragOY=0;
   var xHist=[],shaking=false,shakeTimeout=null;
 
-  function init(){baseY=window.innerHeight*.78;ty=baseY;targetY=baseY;}
+  function init(){baseY=window.innerHeight*.42;ty=baseY;targetY=baseY;}
 
   function appear(){
     init();tx=-120;
