@@ -1053,6 +1053,7 @@ if(window.netlifyIdentity){
   if(!el) return;
   var sndEnter=mkAudio('sounds/TARDIS-enter.mp3',.8);
   var sndShake=mkAudio('sounds/doctor-shake.mp3',.8);
+  sndShake.loop=true;
   var sndDoctors=[];
   for(var i=1;i<=6;i++) sndDoctors.push(mkAudio('sounds/doctor'+i+'.mp3',.8));
   var docClickIdx=0;
@@ -1126,11 +1127,13 @@ if(window.netlifyIdentity){
     xHist=xHist.filter(function(h){return now-h.t<300;});
     checkShake();
   });
-  document.addEventListener('mouseup',function(){
+    document.addEventListener('mouseup',function(){
     if(!dragging) return;
     dragging=false;el.style.cursor='pointer';
     targetY=ty;baseY=ty;
-    stopShake();animate();
+    stopShake();
+    if(raf){cancelAnimationFrame(raf);raf=null;}
+    animate();
   });
 
   function checkShake(){
