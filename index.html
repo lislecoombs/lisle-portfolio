@@ -223,8 +223,6 @@
   .reveal.in{opacity:1;transform:translateY(0);}
   #egg-badge{position:fixed;bottom:22px;right:22px;font-family:'Caveat',cursive;font-size:.85rem;color:var(--sage);z-index:200;opacity:0;transition:opacity 1s;pointer-events:none;}
   #egg-badge.show{opacity:.7;}
-  .ghost-pixel{position:fixed;bottom:80px;right:22px;z-index:201;image-rendering:pixelated;width:32px;animation:ghostBob 3s ease-in-out infinite;opacity:.5;pointer-events:none;}
-  @keyframes ghostBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
   @media(max-width:900px){nav{padding:16px 24px;}section,#guestbook{padding:70px 24px;}.hero-layout{grid-template-columns:1fr;text-align:center;gap:40px;}.hero-left,.hero-right{text-align:center;}.float-title{justify-content:center!important;}.portrait-stack{margin:0 auto 32px;}.about-grid{grid-template-columns:1fr;}.gallery-grid{columns:2 160px;}footer{padding:28px 24px;}.form-row{grid-template-columns:1fr;}}
 </style>
 </head>
@@ -236,7 +234,6 @@
 </button>
 <canvas id="starfield"></canvas>
 <div id="egg-badge">(o_O) <span id="egg-n">0</span> secrets found</div>
-<img class="ghost-pixel" src="data:image/gif;base64,R0lGODlhLAAmAPD/AAAAAP///yH/C05FVFNDQVBFMi4wAwEAAAAh+QQJFAACACwAAAAALAAmAAACwZQFYMm8eqKc9L2WbN01heB94hdm3PmQwDiWEMqF7Cya8CbTs31Tub579SI/YEs4zClXtEYMiWCqjjonDlo0Vh0HF1GqNVpTIGGxEQ6iy181OF1e81zT2htub5frfPxRr4Jx56cCGIdB2GQ2mKg1x9gI9BjpN0kJZ3kZlqkptti5+QnqaTj6J5FlylOqCkVmmucDthaIaLfUMctwJMirm1sYdfp6GAzMJhxLLOeKKrqa/HhjCe3V1TyNHTWU/cQtUAAAIfkEBRQAAgAsAAAAACwAJgAAAr+UBWDJvHqinPS9lmzdNYXgfeIXZtz5kMA4lhDKhewsmvAm07N9U7m+e/UiP2BLOMwpV7TGMFVjqnTOZ9FIdcCu2CAvJo1yjZgypNjoes0m1zSqVqdBzGW8O1eV78Dqcs/XpDUWSCZEWJhFFJYod8jYiMWDGHm0WBk3CYkpeMkp+fjZh4SwKUrXYcr5dUDZyAqlF8Z2tJRaO2uGa+mT6zLxW8oL7FtHGmzbq7II5gnbasyME4p68vxUenNtRRpRAAA7" alt="" />
 <div id="konami-bg">
   <span class="konami-hint">click anywhere to close</span>
   <img id="konami-cat" src="images/surprise-cat.png" alt="surprise" />
