@@ -1053,7 +1053,6 @@ if(window.netlifyIdentity){
   if(!el) return;
   var sndEnter=mkAudio('sounds/TARDIS-enter.mp3',.8);
   var sndShake=mkAudio('sounds/doctor-shake.mp3',.8);
-  sndShake.loop=true;
   var sndDoctors=[];
   for(var i=1;i<=6;i++) sndDoctors.push(mkAudio('sounds/doctor'+i+'.mp3',.8));
   var docClickIdx=0;
@@ -1102,8 +1101,7 @@ if(window.netlifyIdentity){
   var justDropped=false;
   el.addEventListener('click',function(e){
     e.stopPropagation();
-    if(dragging||justDropped) return;
-    sndEnter.pause();sndDoctors.forEach(function(s){s.pause();s.currentTime=0;});
+    if(justDropped||shaking) return;
     if(docClickIdx===0){
       sndEnter.currentTime=0;sndEnter.play().catch(function(){});
     } else {
