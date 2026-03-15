@@ -1154,7 +1154,6 @@ if(window.netlifyIdentity){
       [sndEnter].concat(sndDoctors).forEach(function(s){
         s.pause();s.currentTime=0;s.volume=.8;
       });
-      sndShake.currentTime=0;
       sndShake.play().catch(function(){});
       checkShakeStop();
     }
