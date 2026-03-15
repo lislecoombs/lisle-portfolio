@@ -8,6 +8,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;1,400&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
+  #tardis{position:fixed;width:75px;image-rendering:pixelated;cursor:pointer;opacity:0;pointer-events:none;z-index:10;transition:opacity 1.5s;filter:drop-shadow(0 0 8px rgba(100,150,255,.3));}
+@keyframes tardisJiggle{0%{transform:rotate(0)}20%{transform:rotate(-5deg) translateX(-3px)}40%{transform:rotate(5deg) translateX(3px)}60%{transform:rotate(-3deg) translateX(-2px)}80%{transform:rotate(2deg) translateX(2px)}100%{transform:rotate(0)}}
   @keyframes fishWiggle{0%{transform:rotate(0deg) scale(1)}20%{transform:rotate(-8deg) scale(1.1)}40%{transform:rotate(8deg) scale(1.1)}60%{transform:rotate(-5deg) scale(1.05)}80%{transform:rotate(3deg) scale(1.02)}100%{transform:rotate(0deg) scale(1)}}
 .fish-excited{animation:fishWiggle .5s ease-in-out;}
   @keyframes secretReveal{0%{transform:scale(1) rotate(-2deg)}25%{transform:scale(1.25) rotate(3deg)}50%{transform:scale(1.2) rotate(-3deg)}75%{transform:scale(1.15) rotate(2deg)}100%{transform:scale(1) rotate(0deg)}}
@@ -1042,7 +1044,129 @@ if(window.netlifyIdentity){
     if(!user)window.netlifyIdentity.on("login",function(){document.location.href="/admin/";});
   });
 }
+  /* ═ TARDIS ═ */
+(function(){
+  var el=document.getElementById('tardis');
+  if(!el) return;
+  var sndEnter=mkAudio('sounds/TARDIS-enter.mp3',.8);
+  var sndShake=mkAudio('sounds/doctor-shake.mp3',.8);
+  var sndDoctors=[];
+  for(var i=1;i<=6;i++) sndDoctors.push(mkAudio('sounds/doctor'+i+'.mp3',.8));
+  var docClickIdx=0;
+  var tx=-120,ty=0,targetY=0,baseY=0,raf=null,jagCD=0;
+  var dragging=false,dragOX=0,dragOY=0;
+  var xHist=[],shaking=false,shakeTimeout=null;
+
+  function init(){baseY=window.innerHeight*.78;ty=baseY;targetY=baseY;}
+
+  function appear(){
+    init();tx=-120;
+    el.style.left=tx+'px';el.style.top=ty+'px';
+    el.style.opacity='1';el.style.pointerEvents='auto';
+    docClickIdx=0;animate();
+  }
+
+  function disappear(){
+    el.style.opacity='0';el.style.pointerEvents='none';
+    if(raf){cancelAnimationFrame(raf);raf=null;}
+    setTimeout(appear,15000);
+  }
+
+  function animate(){
+    if(dragging){raf=requestAnimationFrame(animate);return;}
+    jagCD--;
+    if(jagCD<=0){
+      jagCD=80+Math.floor(Math.random()*80);
+      targetY=baseY+(Math.random()-.5)*80;
+    }
+    ty+=(targetY-ty)*.015;
+    tx+=.35+Math.random()*.15;
+    el.style.left=tx+'px';el.style.top=ty+'px';
+    if(tx>window.innerWidth+120){disappear();return;}
+    raf=requestAnimationFrame(animate);
+  }
+
+  // Hover jiggle
+  el.addEventListener('mouseenter',function(){
+    if(dragging) return;
+    el.style.animation='none';void el.offsetWidth;
+    el.style.animation='tardisJiggle .5s ease-in-out';
+  });
+  el.addEventListener('animationend',function(){el.style.animation='';});
+
+  // Click (no water drop, plays enter then doctor cycle)
+  el.addEventListener('click',function(e){
+    e.stopPropagation();
+    if(dragging) return;
+    sndEnter.pause();sndDoctors.forEach(function(s){s.pause();s.currentTime=0;});
+    if(docClickIdx===0){
+      sndEnter.currentTime=0;sndEnter.play().catch(function(){});
+    } else {
+      var idx=(docClickIdx-1)%6;
+      sndDoctors[idx].currentTime=0;sndDoctors[idx].play().catch(function(){});
+    }
+    docClickIdx++;
+  });
+
+  // Drag
+  el.addEventListener('mousedown',function(e){
+    e.preventDefault();dragging=true;
+    dragOX=e.clientX-tx;dragOY=e.clientY-ty;
+    xHist=[];el.style.cursor='grabbing';el.style.animation='none';
+  });
+  document.addEventListener('mousemove',function(e){
+    if(!dragging) return;
+    tx=e.clientX-dragOX;ty=e.clientY-dragOY;
+    el.style.left=tx+'px';el.style.top=ty+'px';
+    var now=Date.now();
+    xHist.push({x:e.clientX,t:now});
+    xHist=xHist.filter(function(h){return now-h.t<300;});
+    checkShake();
+  });
+  document.addEventListener('mouseup',function(){
+    if(!dragging) return;
+    dragging=false;el.style.cursor='pointer';
+    targetY=ty;baseY=ty;
+    stopShake();animate();
+  });
+
+  function checkShake(){
+    if(xHist.length<5) return;
+    var changes=0;
+    for(var i=2;i<xHist.length;i++){
+      var d1=xHist[i-1].x-xHist[i-2].x,d2=xHist[i].x-xHist[i-1].x;
+      if(d1*d2<0) changes++;
+    }
+    if(changes>=3) startShake();
+  }
+
+  function startShake(){
+    clearTimeout(shakeTimeout);
+    if(!shaking){
+      shaking=true;
+      [sndEnter].concat(sndDoctors).forEach(function(s){
+        if(!s.paused){
+          var fade=setInterval(function(){
+            s.volume=Math.max(0,s.volume-.15);
+            if(s.volume<=0){clearInterval(fade);s.pause();s.volume=.8;}
+          },30);
+        }
+      });
+      sndShake.play().catch(function(){});
+    }
+    shakeTimeout=setTimeout(stopShake,350);
+  }
+
+  function stopShake(){
+    if(!shaking) return;
+    shaking=false;sndShake.pause();
+  }
+
+  window.addEventListener('resize',function(){baseY=window.innerHeight*.78;});
+  setTimeout(appear,10000);
+})();
 </script>
+  <img id="tardis" src="images/TARDIS.png" alt="TARDIS" />
 </body>
 </html>
 
