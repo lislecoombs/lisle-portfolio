@@ -84,15 +84,15 @@ collections:
             widget: "string"
             hint: "e.g. 'March 2026' or 'spring 2026' — update this when you change anything."
             required: false
-
-          - label: "Blog Photos 📸"
+            
+- label: "Blog Photos 📸"
             name: "blog_photos"
             widget: "list"
-            summary: "{{fields.caption}}"
-            hint: "Exactly 3 photos. Each can have 2 versions to cycle through on click."
+            summary: "{{fields.blog_caption}}"
+            hint: "0 to 3 photos. Each can have 2 versions to cycle through on click."
             required: false
             fields:
-           - label: "First Image"
+              - label: "First Image"
                 name: "image1"
                 widget: "image"
                 hint: "The default photo shown."
@@ -106,6 +106,8 @@ collections:
                 name: "blog_caption"
                 widget: "string"
                 required: false
+
+          # ── PAINTINGS ─────────────────────────────────
 
           # ── PAINTINGS ─────────────────────────────────
           - label: "Paintings 🎨"
