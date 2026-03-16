@@ -402,7 +402,8 @@
   <div class="inner">
     <div class="reveal" style="text-align:center;margin-bottom:48px;">
       <span class="section-tag">--&gt; words</span>
-      <h2 class="section-title" id="blog-title">recently in my life...</h2>
+      <h2 class="section-title" id="blog-title">recently:</h2>
+      <p id="blog-updated" style="font-family:'Caveat',cursive;font-size:.9rem;color:var(--mushroom);opacity:.6;margin-top:-20px;margin-bottom:0;"></p>
     </div>
     <div class="blog-layout">
       <div class="blog-photo-wrap reveal" id="blog-photo-0">
@@ -823,6 +824,7 @@ if(catCaption)document.getElementById('cat-caption-cms').textContent=catCaption;
     // Blog
 if(d.blog_text)document.getElementById('blog-text-cms').textContent=d.blog_text;
 if(d.blog_title)document.getElementById('blog-title').textContent=d.blog_title;
+if(d.blog_updated){var upEl=document.getElementById('blog-updated');if(upEl)upEl.textContent='last updated '+d.blog_updated;}
 var blogPhotos=d.blog_photos||[];
 for(var bi=0;bi<3;bi++){
   (function(i){
