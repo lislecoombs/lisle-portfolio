@@ -21,7 +21,7 @@
 .blog-stack-front img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .25s;}
 .blog-stack-wrap:hover .blog-stack-front{transform:scale(1.03);}
   .blog-layout.blog-photo2-below{grid-template-rows:auto auto;}
-.blog-layout.blog-photo2-below>#blog-photo-2{grid-column:2;justify-self:end;margin-top:-80px;margin-right:60px;}
+.blog-layout.blog-photo2-below>#blog-photo-2{grid-column:2;justify-self:end;margin-top:-200px;margin-right:60px;position:relative;z-index:1;}
 #blog-photo-0 .blog-stack-back{transform:rotate(4deg);}
 #blog-photo-0 .blog-stack-front{transform:rotate(-2deg);}
 #blog-photo-1 .blog-stack-back{transform:rotate(-5deg);}
@@ -722,7 +722,14 @@ window.onYouTubeIframeAPIReady=function(){
   ytPlayer=new YT.Player('yt-frame',{
     videoId:YT_ID,
     playerVars:{autoplay:0,start:Math.floor(Math.random()*YT_MAX),controls:0,rel:0,playsinline:1},
-    events:{onReady:function(e){musicReady=true;e.target.setVolume(35);}}
+    events:{
+      onReady:function(e){musicReady=true;e.target.setVolume(35);},
+      onStateChange:function(e){
+        if(e.data===YT.PlayerState.PLAYING&&!musicPlaying){
+          ytPlayer.pauseVideo();
+        }
+      }
+    }
   });
 };
 var musicBtn=document.getElementById('music-btn');
@@ -1302,11 +1309,33 @@ if(window.netlifyIdentity){
       checkShakeStop();
     }
   }
+  function fadeOutShake(cb){
+    var fadeInt=setInterval(function(){
+      sndShake.volume=Math.max(0,sndShake.volume-.08);
+      if(sndShake.volume<=0){
+        clearInterval(fadeInt);
+        sndShake.pause();
+        sndShake.volume=.8;
+        if(cb) cb();
+      }
+    },30);
+  }
+  function fadeOutShake(cb){
+    var fadeInt=setInterval(function(){
+      sndShake.volume=Math.max(0,sndShake.volume-.08);
+      if(sndShake.volume<=0){
+        clearInterval(fadeInt);
+        sndShake.pause();
+        sndShake.volume=.8;
+        if(cb) cb();
+      }
+    },30);
+  }
   function checkShakeStop(){
     if(!shaking) return;
     if(Date.now()-lastShakeTime>400){
       shaking=false;
-      sndShake.pause();
+      fadeOutShake();
       [sndEnter].concat(sndDoctors).forEach(function(s){
         s.pause();s.currentTime=0;s.volume=.8;
       });
@@ -1317,7 +1346,7 @@ if(window.netlifyIdentity){
   function stopShake(){
     if(!shaking) return;
     shaking=false;
-    sndShake.pause();
+    fadeOutShake();
     [sndEnter].concat(sndDoctors).forEach(function(s){
       s.pause();s.currentTime=0;s.volume=.8;
     });
