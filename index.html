@@ -797,14 +797,6 @@ function buildStack(container,photos){
     var cards=Array.from(container.querySelectorAll('.stack-photo'));
     if(cards.length>1)container.insertBefore(cards[cards.length-1],cards[0]);
   });
-  var fishEl=document.getElementById('fish-gif');
-if(fishEl) fishEl.addEventListener('click',function(){
-  play(SND.bubbles);
-  fishEl.classList.remove('fish-excited');
-  void fishEl.offsetWidth;
-  fishEl.classList.add('fish-excited');
-  fishEl.addEventListener('animationend',function(){fishEl.classList.remove('fish-excited');},{once:true});
-});
 }
 async function loadCMS(){
   var cats=['paintings','drawings','sculpture','photography'];
@@ -970,6 +962,19 @@ function attachLightbox(grid){
   });
 }
 loadCMS();
+
+/* ═ FISH ═ */
+(function(){
+  var fishEl=document.getElementById('fish-gif');
+  if(!fishEl) return;
+  fishEl.addEventListener('click',function(){
+    play(SND.bubbles);
+    fishEl.classList.remove('fish-excited');
+    void fishEl.offsetWidth;
+    fishEl.classList.add('fish-excited');
+    fishEl.addEventListener('animationend',function(){fishEl.classList.remove('fish-excited');},{once:true});
+  });
+})();
 
 /* ═ GALLERY TABS ═ */
 document.querySelectorAll('.gallery-tab').forEach(function(tab){
