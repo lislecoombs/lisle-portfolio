@@ -1,13 +1,7 @@
-# ─────────────────────────────────────────────────────
-# Decap CMS Configuration for Lisle Coombs Portfolio
-# This file controls what you can edit in your admin panel
-# ─────────────────────────────────────────────────────
-
 backend:
   name: git-gateway
-  branch: main   # ← Change this to 'master' if your repo uses that name
+  branch: main
 
-# Where uploaded images will be stored in your repo
 media_folder: "images"
 public_folder: "/images"
 
@@ -19,9 +13,8 @@ collections:
     label: "My Site 🌿"
     files:
 
-      # ── PROFILE PHOTOS ────────────────────────────────
       - name: "profile_photos"
-        label: "My Photo & Maggie 🌸"
+        label: "My Photo & Maggie"
         file: "data/gallery.json"
         fields:
 
@@ -35,7 +28,7 @@ collections:
             name: "portrait"
             widget: "list"
             summary: "{{fields.caption}}"
-            hint: "Add, remove, or reorder portrait photos. Drag ☰ to reorder."
+            hint: "Add, remove, or reorder portrait photos. Drag to reorder."
             required: false
             fields:
               - label: "Image"
@@ -45,14 +38,14 @@ collections:
               - label: "Caption"
                 name: "caption"
                 widget: "string"
-                hint: "Optional — a short label for this photo."
+                hint: "Optional label for this photo."
                 required: false
 
-          - label: "Maggie's Photos 🐾"
+          - label: "Maggie's Photos"
             name: "cat_photo"
             widget: "list"
             summary: "{{fields.caption}}"
-            hint: "Add, remove, or reorder Maggie's photos. Drag ☰ to reorder."
+            hint: "Add, remove, or reorder Maggie's photos. Drag to reorder."
             required: false
             fields:
               - label: "Image"
@@ -66,7 +59,6 @@ collections:
                 hint: "The little line under this photo."
                 required: false
 
-          # ── BLOG ──────────────────────────────────────
           - label: "Blog Title"
             name: "blog_title"
             widget: "string"
@@ -82,10 +74,10 @@ collections:
           - label: "Last Updated"
             name: "blog_updated"
             widget: "string"
-            hint: "e.g. 'March 2026' or 'spring 2026' — update this when you change anything."
+            hint: "e.g. 'March 2026' - update this when you change anything."
             required: false
-            
-- label: "Blog Photos 📸"
+
+          - label: "Blog Photos"
             name: "blog_photos"
             widget: "list"
             summary: "{{fields.blog_caption}}"
@@ -107,14 +99,11 @@ collections:
                 widget: "string"
                 required: false
 
-          # ── PAINTINGS ─────────────────────────────────
-
-          # ── PAINTINGS ─────────────────────────────────
-          - label: "Paintings 🎨"
+          - label: "Paintings"
             name: "paintings"
             widget: "list"
             summary: "{{fields.title}} ({{fields.year}})"
-            hint: "Add, remove, or reorder paintings. Drag the ☰ handle to reorder."
+            hint: "Add, remove, or reorder paintings. Drag to reorder."
             fields:
               - label: "Title"
                 name: "title"
@@ -128,25 +117,24 @@ collections:
               - label: "Medium"
                 name: "medium"
                 widget: "string"
-                hint: "e.g. 'Oil on canvas' or 'Watercolour on paper'"
+                hint: "e.g. 'Oil on canvas'"
                 required: false
               - label: "Dimensions"
                 name: "dimensions"
                 widget: "string"
-                hint: "e.g. '30 × 40 cm' or '12 × 16 in'"
+                hint: "e.g. '30 x 40 cm'"
                 required: false
               - label: "Description"
                 name: "description"
                 widget: "text"
-                hint: "Optional note about the work. Shows in the lightbox when clicked."
+                hint: "Optional note. Shows in the lightbox when clicked."
                 required: false
               - label: "Image"
                 name: "image"
                 widget: "image"
                 hint: "JPG or PNG, under 5MB recommended."
 
-          # ── DRAWINGS ──────────────────────────────────
-          - label: "Drawings ✏️"
+          - label: "Drawings"
             name: "drawings"
             widget: "list"
             summary: "{{fields.title}} ({{fields.year}})"
@@ -162,12 +150,12 @@ collections:
               - label: "Medium"
                 name: "medium"
                 widget: "string"
-                hint: "e.g. 'Graphite on paper' or 'Ink and watercolour'"
+                hint: "e.g. 'Graphite on paper'"
                 required: false
               - label: "Dimensions"
                 name: "dimensions"
                 widget: "string"
-                hint: "e.g. '21 × 29.7 cm (A4)'"
+                hint: "e.g. '21 x 29.7 cm'"
                 required: false
               - label: "Description"
                 name: "description"
@@ -177,8 +165,7 @@ collections:
                 name: "image"
                 widget: "image"
 
-          # ── SCULPTURE ─────────────────────────────────
-          - label: "Sculpture 🏺"
+          - label: "Sculpture"
             name: "sculpture"
             widget: "list"
             summary: "{{fields.title}} ({{fields.year}})"
@@ -194,12 +181,12 @@ collections:
               - label: "Medium"
                 name: "medium"
                 widget: "string"
-                hint: "e.g. 'Stoneware clay, wood-fired' or 'Cast plaster'"
+                hint: "e.g. 'Stoneware clay, wood-fired'"
                 required: false
               - label: "Dimensions"
                 name: "dimensions"
                 widget: "string"
-                hint: "e.g. '15 × 8 × 8 cm' (height × width × depth)"
+                hint: "e.g. '15 x 8 x 8 cm'"
                 required: false
               - label: "Description"
                 name: "description"
@@ -209,8 +196,7 @@ collections:
                 name: "image"
                 widget: "image"
 
-# ── PHOTOGRAPHY ───────────────────────────────
-          - label: "Photography 📷"
+          - label: "Photography"
             name: "photography"
             widget: "list"
             summary: "{{fields.title}} ({{fields.year}})"
@@ -226,12 +212,12 @@ collections:
               - label: "Medium"
                 name: "medium"
                 widget: "string"
-                hint: "e.g. 'Digital photograph' or '35mm film, C-print'"
+                hint: "e.g. 'Digital photograph' or '35mm film'"
                 required: false
               - label: "Dimensions"
                 name: "dimensions"
                 widget: "string"
-                hint: "e.g. '40 × 60 cm print'"
+                hint: "e.g. '40 x 60 cm print'"
                 required: false
               - label: "Description"
                 name: "description"
