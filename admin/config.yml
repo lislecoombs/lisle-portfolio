@@ -91,7 +91,7 @@ collections:
             hint: "Exactly 3 photos. Each can have 2 versions to cycle through on click."
             required: false
             fields:
-              - label: "First Image"
+             - label: "First Image"
                 name: "image1"
                 widget: "image"
                 hint: "The default photo shown."
@@ -99,7 +99,7 @@ collections:
                 name: "image2"
                 widget: "image"
                 hint: "Click the photo on the site to switch to this one."
-                required
+                allow_multiple: false
                 
           # ── PAINTINGS ─────────────────────────────────
           - label: "Paintings 🎨"
