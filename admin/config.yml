@@ -65,8 +65,7 @@ collections:
                 default: "studio assistant, chief nap inspector"
                 hint: "The little line under this photo."
                 required: false
-
-          # ── BLOG ──────────────────────────────────────
+# ── BLOG ──────────────────────────────────────
           - label: "Blog Title"
             name: "blog_title"
             widget: "string"
@@ -75,13 +74,14 @@ collections:
 
           - label: "Blog Writing"
             name: "blog_text"
-            - label: "Last Updated"
+            widget: "text"
+            hint: "Your writing. Line breaks will be preserved."
+            required: false
+
+          - label: "Last Updated"
             name: "blog_updated"
             widget: "string"
             hint: "e.g. 'March 2026' or 'spring 2026' — update this when you change anything."
-            required: false
-            widget: "text"
-            hint: "Your writing. Line breaks will be preserved."
             required: false
 
           - label: "Blog Photos 📸"
@@ -99,12 +99,8 @@ collections:
                 name: "image2"
                 widget: "image"
                 hint: "Click the photo on the site to switch to this one."
-                required: false
-              - label: "Caption"
-                name: "caption"
-                widget: "string"
-                required: false
-
+                required
+                
           # ── PAINTINGS ─────────────────────────────────
           - label: "Paintings 🎨"
             name: "paintings"
