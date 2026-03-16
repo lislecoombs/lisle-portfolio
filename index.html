@@ -9,18 +9,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;1,400&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   #blog .inner{max-width:1100px;margin:0 auto;}
-.blog-layout{display:grid;grid-template-columns:200px 1fr 200px;gap:32px;align-items:start;position:relative;}
-.blog-text-card{grid-column:2;grid-row:1/3;}
-.blog-photo-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;}
-.blog-photo-frame{border-radius:2px;overflow:hidden;border:2px solid rgba(122,158,126,.3);box-shadow:2px 4px 14px rgba(0,0,0,.4);transition:transform .4s cubic-bezier(.34,1.56,.64,1);background:linear-gradient(135deg,#1a2a1a,#2a3a20);}
-.blog-photo-frame img{width:100%;display:block;object-fit:cover;max-height:220px;}
-.blog-photo-wrap:hover .blog-photo-frame{transform:rotate(0deg) scale(1.03);}
-#blog-photo-0 .blog-photo-frame{transform:rotate(-2deg);}
-#blog-photo-1 .blog-photo-frame{transform:rotate(1.5deg);}
-#blog-photo-2 .blog-photo-frame{transform:rotate(-1deg);}
-.blog-photo-caption{font-family:'Caveat',cursive;font-size:.9rem;color:var(--mushroom);text-align:center;font-style:italic;}
+#blog{position:relative;}
+.blog-layout{display:grid;grid-template-columns:200px 1fr 200px;gap:32px;align-items:start;}
+.blog-col-left,.blog-col-right{display:flex;flex-direction:column;gap:32px;}
+.blog-text-card{grid-column:2;}
+.blog-stack-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;}
+.blog-stack{position:relative;width:160px;height:200px;}
+.blog-stack-back{position:absolute;inset:0;border-radius:2px;background:linear-gradient(135deg,#1a2a1a,#2a3a20);border:2px solid rgba(122,158,126,.25);transform:rotate(3deg);box-shadow:2px 2px 10px rgba(0,0,0,.35);}
+.blog-stack-front{position:absolute;inset:0;border-radius:2px;overflow:hidden;background:linear-gradient(135deg,#1a2a1a,#2a3a20);border:2px solid rgba(122,158,126,.35);transform:rotate(-1.5deg);box-shadow:2px 4px 14px rgba(0,0,0,.4);transition:transform .4s cubic-bezier(.34,1.56,.64,1);}
+.blog-stack-front img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .25s;}
+.blog-stack-wrap:hover .blog-stack-front{transform:rotate(0deg) scale(1.03);}
+.blog-photo-caption{font-family:'Caveat',cursive;font-size:1.15rem;color:var(--mushroom);text-align:center;font-style:italic;}
+.blog-click-hint{font-family:'Caveat',cursive;font-size:.8rem;color:var(--sage);opacity:.6;text-align:center;margin:0;}
 .blog-text{font-family:'Lora',serif;font-size:1rem;line-height:1.9;color:#c4b89a;white-space:pre-wrap;}
-@media(max-width:900px){.blog-layout{grid-template-columns:1fr;}.blog-text-card{grid-column:1;grid-row:auto;}.blog-photo-wrap{width:160px;margin:0 auto;}#blog-photo-2{grid-column:1;justify-self:center!important;}}
+@media(max-width:900px){.blog-layout{grid-template-columns:1fr;}.blog-text-card{grid-column:1;}.blog-col-left,.blog-col-right{flex-direction:row;flex-wrap:wrap;justify-content:center;}.blog-stack{width:130px;height:165px;}}
   #tardis{position:absolute;width:100px;cursor:pointer;opacity:0;pointer-events:none;z-index:10;transition:opacity 1.5s;mix-blend-mode:screen;filter:drop-shadow(0 0 8px rgba(100,150,255,.4));left:-9999px;top:-9999px;animation:tardisLean 4s ease-in-out infinite;}
 @keyframes tardisJiggle{0%{transform:rotate(0)}20%{transform:rotate(-5deg) translateX(-3px)}40%{transform:rotate(5deg) translateX(3px)}60%{transform:rotate(-3deg) translateX(-2px)}80%{transform:rotate(2deg) translateX(2px)}100%{transform:rotate(0)}}
 @keyframes tardisLean{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
@@ -287,6 +289,7 @@
   <ul class="nav-links">
     <li><a href="#about">about</a></li>
     <li><a href="#gallery">work</a></li>
+    <li><a href="#blog">writing</a></li>
     <li><a href="#guestbook">guestbook</a></li>
     <li><a href="#contact">socials</a></li>
   </ul>
@@ -397,39 +400,7 @@
     </div>
   </div>
 </section>
-  <div class="divider">— — —</div>
-<section id="blog">
-  <div class="inner">
-    <div class="reveal" style="text-align:center;margin-bottom:48px;">
-      <span class="section-tag">--&gt; words</span>
-      <h2 class="section-title" id="blog-title">recently:</h2>
-      <p id="blog-updated" style="font-family:'Caveat',cursive;font-size:.9rem;color:var(--mushroom);opacity:.6;margin-top:-20px;margin-bottom:0;"></p>
-    </div>
-    <div class="blog-layout">
-      <div class="blog-photo-wrap reveal" id="blog-photo-0">
-        <div class="blog-photo-frame">
-          <img class="blog-img" src="" alt="" />
-        </div>
-        <p class="blog-photo-caption" id="blog-cap-0"></p>
-      </div>
-      <div class="blog-text-card card reveal">
-        <div class="card-tape"></div>
-        <div id="blog-text-cms" class="blog-text">add writing via admin</div>
-      </div>
-      <div class="blog-photo-wrap reveal" id="blog-photo-1">
-        <div class="blog-photo-frame">
-          <img class="blog-img" src="" alt="" />
-        </div>
-        <p class="blog-photo-caption" id="blog-cap-1"></p>
-      </div>
-      <div class="blog-photo-wrap reveal" id="blog-photo-2" style="grid-column:2;justify-self:end;">
-        <div class="blog-photo-frame">
-          <img class="blog-img" src="" alt="" />
-        </div>
-        <p class="blog-photo-caption" id="blog-cap-2"></p>
-      </div>
-    </div>
-  </div>
+
 </section>
 <div class="divider">* * *</div>
 <section id="gallery">
@@ -451,6 +422,50 @@
     <div class="gallery-section" id="sec-drawings"><div class="gallery-grid" id="grid-drawings"></div></div>
     <div class="gallery-section" id="sec-sculpture"><div class="gallery-grid" id="grid-sculpture"></div></div>
     <div class="gallery-section" id="sec-photography"><div class="gallery-grid" id="grid-photography"></div></div>
+  </div>
+</section>
+<div class="divider">— — —</div>
+<section id="blog">
+  <div class="inner">
+    <div class="reveal" style="text-align:center;margin-bottom:48px;">
+      <span class="section-tag">--&gt; words</span>
+      <h2 class="section-title" id="blog-title">recently:</h2>
+      <p id="blog-updated" style="font-family:'Caveat',cursive;font-size:.9rem;color:var(--mushroom);opacity:.6;margin-top:-20px;margin-bottom:0;"></p>
+    </div>
+    <div class="blog-layout">
+      <div class="blog-col-left">
+        <div class="blog-stack-wrap reveal" id="blog-photo-0" style="display:none;">
+          <div class="blog-stack">
+            <div class="blog-stack-back"></div>
+            <div class="blog-stack-front"><img class="blog-img" src="" alt="" /></div>
+          </div>
+          <p class="blog-photo-caption" id="blog-cap-0"></p>
+          <p class="blog-click-hint" id="blog-hint-0" style="display:none;">click to see another ✦</p>
+        </div>
+        <div class="blog-stack-wrap reveal" id="blog-photo-2" style="display:none;margin-top:40px;">
+          <div class="blog-stack">
+            <div class="blog-stack-back"></div>
+            <div class="blog-stack-front"><img class="blog-img" src="" alt="" /></div>
+          </div>
+          <p class="blog-photo-caption" id="blog-cap-2"></p>
+          <p class="blog-click-hint" id="blog-hint-2" style="display:none;">click to see another ✦</p>
+        </div>
+      </div>
+      <div class="blog-text-card card reveal">
+        <div class="card-tape"></div>
+        <div id="blog-text-cms" class="blog-text">add writing via admin</div>
+      </div>
+      <div class="blog-col-right">
+        <div class="blog-stack-wrap reveal" id="blog-photo-1" style="display:none;">
+          <div class="blog-stack">
+            <div class="blog-stack-back"></div>
+            <div class="blog-stack-front"><img class="blog-img" src="" alt="" /></div>
+          </div>
+          <p class="blog-photo-caption" id="blog-cap-1"></p>
+          <p class="blog-click-hint" id="blog-hint-1" style="display:none;">click to see another ✦</p>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 <div class="divider">~ ~ ~</div>
@@ -830,21 +845,22 @@ for(var bi=0;bi<3;bi++){
   (function(i){
     var wrap=document.getElementById('blog-photo-'+i);
     var capEl=document.getElementById('blog-cap-'+i);
+    var hintEl=document.getElementById('blog-hint-'+i);
     var p=blogPhotos[i]||{};
     var imgs=[p.image1,p.image2].filter(Boolean);
     if(!wrap||!imgs.length) return;
+    wrap.style.display='flex';
     var imgEl=wrap.querySelector('.blog-img');
     var idx=0;
     imgEl.src=imgs[0];
     if(capEl&&p.blog_caption) capEl.textContent=p.blog_caption;
     if(imgs.length>1){
+      if(hintEl) hintEl.style.display='block';
       wrap.addEventListener('click',function(){
         idx=(idx+1)%imgs.length;
         imgEl.style.opacity='0';
-        setTimeout(function(){imgEl.src=imgs[idx];imgEl.style.opacity='1';},200);
+        setTimeout(function(){imgEl.src=imgs[idx];imgEl.style.opacity='1';},250);
       });
-      imgEl.style.transition='opacity .2s';
-      wrap.title='click to see another photo';
     }
   })(bi);
 }
