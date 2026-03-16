@@ -1139,13 +1139,13 @@ if(window.netlifyIdentity){
   });
 
   function checkShake(){
-    if(xHist.length<5) return;
+    if(xHist.length<3) return;
     var changes=0;
     for(var i=2;i<xHist.length;i++){
       var d1=xHist[i-1].x-xHist[i-2].x,d2=xHist[i].x-xHist[i-1].x;
       if(d1*d2<0) changes++;
     }
-    if(changes>=3) startShake();
+    if(changes>=2) startShake();
   }
   var lastShakeTime=0;
   function startShake(){
