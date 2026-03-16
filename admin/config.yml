@@ -19,18 +19,18 @@ collections:
     label: "My Site 🌿"
     files:
 
-            # ── PROFILE PHOTOS ────────────────────────────────
+      # ── PROFILE PHOTOS ────────────────────────────────
       - name: "profile_photos"
         label: "My Photo & Maggie 🌸"
         file: "data/gallery.json"
         fields:
- 
+
           - label: "About Me Text"
             name: "about_text"
             widget: "text"
             hint: "The paragraph in your About section. A few sentences is plenty."
             required: false
- 
+
           - label: "My Portrait Photos"
             name: "portrait"
             widget: "list"
@@ -47,7 +47,7 @@ collections:
                 widget: "string"
                 hint: "Optional — a short label for this photo."
                 required: false
- 
+
           - label: "Maggie's Photos 🐾"
             name: "cat_photo"
             widget: "list"
@@ -65,7 +65,8 @@ collections:
                 default: "studio assistant, chief nap inspector"
                 hint: "The little line under this photo."
                 required: false
-# ── BLOG ──────────────────────────────────────
+
+          # ── BLOG ──────────────────────────────────────
           - label: "Blog Title"
             name: "blog_title"
             widget: "string"
@@ -91,13 +92,6 @@ collections:
             hint: "Exactly 3 photos. Each can have 2 versions to cycle through on click."
             required: false
             fields:
-             - label: "Blog Photos 📸"
-            name: "blog_photos"
-            widget: "list"
-            summary: "{{fields.caption}}"
-            hint: "Exactly 3 photos. Each can have 2 versions to cycle through on click."
-            required: false
-            fields:
               - label: "First Image"
                 name: "image1"
                 widget: "image"
@@ -110,7 +104,7 @@ collections:
                 name: "caption"
                 widget: "string"
                 required: false
-                
+
           # ── PAINTINGS ─────────────────────────────────
           - label: "Paintings 🎨"
             name: "paintings"
@@ -240,5 +234,7 @@ collections:
                 widget: "text"
                 required: false
               - label: "Image"
+                name: "image"
+                widget: "image"
                 name: "image"
                 widget: "image"
