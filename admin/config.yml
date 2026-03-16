@@ -101,7 +101,7 @@ collections:
                 widget: "image"
                 hint: "Click the photo on the site to switch to this one."
               - label: "Caption"
-                name: "caption"
+                name: "blog_caption"
                 widget: "string"
                 required: false
 
