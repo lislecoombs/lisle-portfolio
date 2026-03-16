@@ -1,16 +1,4 @@
 {
-  "about_text": "",
-  "portrait": [
-    {
-      "image": "/images/screenshot-2026-03-13-at-11.22.27 am-medium.jpeg"
-    },
-    {
-      "image": "/images/IMG_0828.jpg"
-    },
-    {
-      "image": "/images/huh.jpeg"
-    }
-  ],
   "cat_photo": [
     {
       "caption": "",
@@ -21,7 +9,7 @@
       "image": "/images/IMG_0875.jpeg"
     }
   ],
-  "cat_caption": "this is my cat Maggie! ",
+  "blog_text": "For spring break, some of my friends and I are going to new orleans! so far I have been loving it here--its much more green than I expecting!",
   "paintings": [
     {
       "image": "/images/lower-half.jpg",
@@ -60,6 +48,18 @@
       "year": "2023"
     }
   ],
+  "blog_title": "Trip to NOLA!",
+  "portrait": [
+    {
+      "image": "/images/screenshot-2026-03-13-at-11.22.27 am-medium.jpeg"
+    },
+    {
+      "image": "/images/IMG_0828.jpg"
+    },
+    {
+      "image": "/images/huh.jpeg"
+    }
+  ],
   "sculpture": [
     {
       "image": "/images/IMG_2123 Medium.jpeg",
@@ -96,5 +96,24 @@
       "title": "Teething",
       "year": "2025"
     }
-  ]
+  ],
+  "cat_caption": "this is my cat Maggie! ",
+  "blog_updated": "3/16/26",
+  "blog_photos": [
+    {
+      "image1": "/images/img_2986.jpeg",
+      "blog_caption": "i love the crawling ferns!",
+      "image2": "/images/img_2986.jpeg"
+    },
+    {
+      "image1": "/images/img_2990.jpeg",
+      "blog_caption": "fancy old houses...",
+      "image2": "/images/img_2989.jpeg"
+    },
+    {
+      "image1": "/images/img_2988.jpeg",
+      "image2": "/images/img_2990.jpeg"
+    }
+  ],
+  "about_text": ""
 }
