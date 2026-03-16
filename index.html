@@ -1112,13 +1112,15 @@ if(window.netlifyIdentity){
   });
 
   // Drag
+  var didDrag=false;
   el.addEventListener('mousedown',function(e){
-    e.preventDefault();dragging=true;
+    e.preventDefault();dragging=true;didDrag=false;
     dragOX=e.clientX-tx;dragOY=e.clientY-ty;
     xHist=[];el.style.cursor='grabbing';el.style.animation='none';
   });
   document.addEventListener('mousemove',function(e){
     if(!dragging) return;
+    didDrag=true;
     tx=e.clientX-dragOX;ty=e.clientY-dragOY;
     el.style.left=tx+'px';el.style.top=ty+'px';
     var now=Date.now();
@@ -1130,8 +1132,7 @@ if(window.netlifyIdentity){
     if(!dragging) return;
     dragging=false;el.style.cursor='pointer';
     targetY=ty;baseY=ty;
-    justDropped=true;
-    setTimeout(function(){justDropped=false;},300);
+    if(didDrag){justDropped=true;setTimeout(function(){justDropped=false;},300);}
     stopShake();
     if(raf){cancelAnimationFrame(raf);raf=null;}
     animate();
