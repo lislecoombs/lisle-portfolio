@@ -1218,7 +1218,7 @@ if(window.netlifyIdentity){
   var dragging=false,dragOX=0,dragOY=0;
   var xHist=[],shaking=false,shakeTimeout=null;
 
-  function init(){baseY=window.innerHeight*.92;ty=baseY;targetY=baseY;}
+  function init(){baseY=window.innerHeight*.08;ty=baseY;targetY=baseY;}
 
   function appear(){
     init();tx=-120;
@@ -1259,13 +1259,10 @@ if(window.netlifyIdentity){
   var justDropped=false;
   el.addEventListener('click',function(e){
     e.stopPropagation();
-    if(justDropped||shaking) return;
-    if(docClickIdx===0){
-      sndEnter.currentTime=0;sndEnter.play().catch(function(){});
-    } else {
-      var idx=(docClickIdx-1)%6;
-      sndDoctors[idx].currentTime=0;sndDoctors[idx].play().catch(function(){});
-    }
+    if(justDropped||shaking||didDrag) return;
+    var snd=docClickIdx===0?sndEnter:sndDoctors[(docClickIdx-1)%6];
+    snd.currentTime=0;
+    snd.play().catch(function(err){console.warn('TARDIS audio failed:',err);});
     docClickIdx++;
   });
 
@@ -1290,7 +1287,7 @@ if(window.netlifyIdentity){
     if(!dragging) return;
     dragging=false;el.style.cursor='pointer';
     targetY=ty;baseY=ty;
-    if(didDrag){justDropped=true;setTimeout(function(){justDropped=false;},300);}
+    if(didDrag){justDropped=true;setTimeout(function(){justDropped=false;},600);}
     stopShake();
     if(raf){cancelAnimationFrame(raf);raf=null;}
     animate();
@@ -1328,17 +1325,7 @@ if(window.netlifyIdentity){
       }
     },30);
   }
-  function fadeOutShake(cb){
-    var fadeInt=setInterval(function(){
-      sndShake.volume=Math.max(0,sndShake.volume-.08);
-      if(sndShake.volume<=0){
-        clearInterval(fadeInt);
-        sndShake.pause();
-        sndShake.volume=.8;
-        if(cb) cb();
-      }
-    },30);
-  }
+
   function checkShakeStop(){
     if(!shaking) return;
     if(Date.now()-lastShakeTime>400){
@@ -1360,8 +1347,7 @@ if(window.netlifyIdentity){
     });
   }
   window.addEventListener('resize',function(){baseY=window.innerHeight*.78;});
-  setTimeout(appear,10000);
-})();
+  setTimeout(appear,5000);})();
 </script>
 </body>
 </html>
