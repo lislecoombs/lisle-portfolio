@@ -92,14 +92,16 @@ collections:
             hint: "Exactly 3 photos. Each can have 2 versions to cycle through on click."
             required: false
             fields:
-              - label: "First Image"
+           - label: "First Image"
                 name: "image1"
                 widget: "image"
                 hint: "The default photo shown."
+                required: false
               - label: "Second Image (optional)"
                 name: "image2"
                 widget: "image"
                 hint: "Click the photo on the site to switch to this one."
+                required: false
               - label: "Caption"
                 name: "blog_caption"
                 widget: "string"
