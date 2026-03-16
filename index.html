@@ -8,6 +8,19 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;1,400&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
+  #blog .inner{max-width:1100px;margin:0 auto;}
+.blog-layout{display:grid;grid-template-columns:200px 1fr 200px;gap:32px;align-items:start;position:relative;}
+.blog-text-card{grid-column:2;grid-row:1/3;}
+.blog-photo-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;}
+.blog-photo-frame{border-radius:2px;overflow:hidden;border:2px solid rgba(122,158,126,.3);box-shadow:2px 4px 14px rgba(0,0,0,.4);transition:transform .4s cubic-bezier(.34,1.56,.64,1);background:linear-gradient(135deg,#1a2a1a,#2a3a20);}
+.blog-photo-frame img{width:100%;display:block;object-fit:cover;max-height:220px;}
+.blog-photo-wrap:hover .blog-photo-frame{transform:rotate(0deg) scale(1.03);}
+#blog-photo-0 .blog-photo-frame{transform:rotate(-2deg);}
+#blog-photo-1 .blog-photo-frame{transform:rotate(1.5deg);}
+#blog-photo-2 .blog-photo-frame{transform:rotate(-1deg);}
+.blog-photo-caption{font-family:'Caveat',cursive;font-size:.9rem;color:var(--mushroom);text-align:center;font-style:italic;}
+.blog-text{font-family:'Lora',serif;font-size:1rem;line-height:1.9;color:#c4b89a;white-space:pre-wrap;}
+@media(max-width:900px){.blog-layout{grid-template-columns:1fr;}.blog-text-card{grid-column:1;grid-row:auto;}.blog-photo-wrap{width:160px;margin:0 auto;}#blog-photo-2{grid-column:1;justify-self:center!important;}}
   #tardis{position:absolute;width:100px;cursor:pointer;opacity:0;pointer-events:none;z-index:10;transition:opacity 1.5s;mix-blend-mode:screen;filter:drop-shadow(0 0 8px rgba(100,150,255,.4));left:-9999px;top:-9999px;animation:tardisLean 4s ease-in-out infinite;}
 @keyframes tardisJiggle{0%{transform:rotate(0)}20%{transform:rotate(-5deg) translateX(-3px)}40%{transform:rotate(5deg) translateX(3px)}60%{transform:rotate(-3deg) translateX(-2px)}80%{transform:rotate(2deg) translateX(2px)}100%{transform:rotate(0)}}
 @keyframes tardisLean{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
@@ -380,6 +393,39 @@
           <div class="cat-caption"><span>Maggie</span> (=^･ω･^=) <span id="cat-caption-cms">studio assistant</span></div>
           <img id="fish-gif" src="images/fish.gif" alt="" style="display:block;margin:16px auto 0;width:120px;image-rendering:pixelated;opacity:.85;" />
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+  <div class="divider">— — —</div>
+<section id="blog">
+  <div class="inner">
+    <div class="reveal" style="text-align:center;margin-bottom:48px;">
+      <span class="section-tag">--&gt; words</span>
+      <h2 class="section-title" id="blog-title">recently in my life...</h2>
+    </div>
+    <div class="blog-layout">
+      <div class="blog-photo-wrap reveal" id="blog-photo-0">
+        <div class="blog-photo-frame">
+          <img class="blog-img" src="" alt="" />
+        </div>
+        <p class="blog-photo-caption" id="blog-cap-0"></p>
+      </div>
+      <div class="blog-text-card card reveal">
+        <div class="card-tape"></div>
+        <div id="blog-text-cms" class="blog-text">add writing via admin</div>
+      </div>
+      <div class="blog-photo-wrap reveal" id="blog-photo-1">
+        <div class="blog-photo-frame">
+          <img class="blog-img" src="" alt="" />
+        </div>
+        <p class="blog-photo-caption" id="blog-cap-1"></p>
+      </div>
+      <div class="blog-photo-wrap reveal" id="blog-photo-2" style="grid-column:2;justify-self:end;">
+        <div class="blog-photo-frame">
+          <img class="blog-img" src="" alt="" />
+        </div>
+        <p class="blog-photo-caption" id="blog-cap-2"></p>
       </div>
     </div>
   </div>
@@ -774,6 +820,32 @@ var firstCatImg=catList&&catList[0]?catList[0].image:(typeof d.cat_photo==='stri
 if(d.about_text)document.getElementById('about-text-cms').textContent=d.about_text;
 var catCaption=catList&&catList[0]&&catList[0].caption?catList[0].caption:d.cat_caption;
 if(catCaption)document.getElementById('cat-caption-cms').textContent=catCaption;
+    // Blog
+if(d.blog_text)document.getElementById('blog-text-cms').textContent=d.blog_text;
+if(d.blog_title)document.getElementById('blog-title').textContent=d.blog_title;
+var blogPhotos=d.blog_photos||[];
+for(var bi=0;bi<3;bi++){
+  (function(i){
+    var wrap=document.getElementById('blog-photo-'+i);
+    var capEl=document.getElementById('blog-cap-'+i);
+    var p=blogPhotos[i]||{};
+    var imgs=[p.image1,p.image2].filter(Boolean);
+    if(!wrap||!imgs.length) return;
+    var imgEl=wrap.querySelector('.blog-img');
+    var idx=0;
+    imgEl.src=imgs[0];
+    if(capEl&&p.caption) capEl.textContent=p.caption;
+    if(imgs.length>1){
+      wrap.addEventListener('click',function(){
+        idx=(idx+1)%imgs.length;
+        imgEl.style.opacity='0';
+        setTimeout(function(){imgEl.src=imgs[idx];imgEl.style.opacity='1';},200);
+      });
+      imgEl.style.transition='opacity .2s';
+      wrap.title='click to see another photo';
+    }
+  })(bi);
+}
 cats.forEach(function(cat){
   var grid=document.getElementById('grid-'+cat);
   var items=d[cat]||[];
