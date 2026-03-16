@@ -836,7 +836,7 @@ for(var bi=0;bi<3;bi++){
     var imgEl=wrap.querySelector('.blog-img');
     var idx=0;
     imgEl.src=imgs[0];
-    if(capEl&&p.caption) capEl.textContent=p.caption;
+    if(capEl&&p.blog_caption) capEl.textContent=p.blog_caption;
     if(imgs.length>1){
       wrap.addEventListener('click',function(){
         idx=(idx+1)%imgs.length;
