@@ -62,7 +62,7 @@ collections:
               - label: "Caption"
                 name: "caption"
                 widget: "string"
-                default: "studio assistant, chief nap inspector"
+                default: "studio assistant"
                 hint: "The little line under this photo."
                 required: false
 
@@ -205,7 +205,7 @@ collections:
                 name: "image"
                 widget: "image"
 
-          # ── PHOTOGRAPHY ───────────────────────────────
+# ── PHOTOGRAPHY ───────────────────────────────
           - label: "Photography 📷"
             name: "photography"
             widget: "list"
@@ -233,8 +233,6 @@ collections:
                 name: "description"
                 widget: "text"
                 required: false
-              - label: "Image"
-                name: "image"
               - label: "Image"
                 name: "image"
                 widget: "image"
