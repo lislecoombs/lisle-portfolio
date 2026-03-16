@@ -66,6 +66,45 @@ collections:
                 hint: "The little line under this photo."
                 required: false
 
+          # ── BLOG ──────────────────────────────────────
+          - label: "Blog Title"
+            name: "blog_title"
+            widget: "string"
+            hint: "The heading for your writing section."
+            required: false
+
+          - label: "Blog Writing"
+            name: "blog_text"
+            - label: "Last Updated"
+            name: "blog_updated"
+            widget: "string"
+            hint: "e.g. 'March 2026' or 'spring 2026' — update this when you change anything."
+            required: false
+            widget: "text"
+            hint: "Your writing. Line breaks will be preserved."
+            required: false
+
+          - label: "Blog Photos 📸"
+            name: "blog_photos"
+            widget: "list"
+            summary: "{{fields.caption}}"
+            hint: "Exactly 3 photos. Each can have 2 versions to cycle through on click."
+            required: false
+            fields:
+              - label: "First Image"
+                name: "image1"
+                widget: "image"
+                hint: "The default photo shown."
+              - label: "Second Image (optional)"
+                name: "image2"
+                widget: "image"
+                hint: "Click the photo on the site to switch to this one."
+                required: false
+              - label: "Caption"
+                name: "caption"
+                widget: "string"
+                required: false
+
           # ── PAINTINGS ─────────────────────────────────
           - label: "Paintings 🎨"
             name: "paintings"
