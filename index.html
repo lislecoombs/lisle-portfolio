@@ -384,7 +384,10 @@
                 <li>The Last of Us</li>
                 <li>Fleabag</li>
                 <li>Arcane</li>
-                <li>What We Do In The Shadows</li>
+                <li id="fav-wwdits" class="fav-item fav-surfsup">
+                  <span class="fav-text">What We Do In The Shadows</span>
+                  <img class="fav-hover-img" src="images/bat.png" alt="What We Do In The Shadows" />
+                </li>
               </ul>
             </div>
             <div class="fav-card" style="--rot:2.5deg;z-index:4;">
@@ -552,6 +555,9 @@
 function mkAudio(src,vol){var a=new Audio(src);a.volume=vol||1;return a;}
 var SND={
   water: mkAudio('sounds/water.mp3', .25),
+  wwdits1: mkAudio('sounds/WWDITS1.mp3', .8),
+  wwdits2: mkAudio('sounds/WWDITS2.mp3', .8),
+  wwdits3: mkAudio('sounds/WWDITS3.mp3', .8),
   meow: mkAudio('sounds/meow.mp3', .7),
   kono: mkAudio('sounds/kono.mp3', .8),
   ora:   new Audio('sounds/ora.mp3'),
@@ -684,6 +690,7 @@ document.addEventListener('click',function(e){
   var skip = 
     e.target.closest('.gallery-tab') ||
     e.target.closest('#fav-surfsup') ||
+    e.target.closest('#fav-wwdits') ||
     e.target.closest('#cat-stack');
 
   if(!skip) play(SND.water);
@@ -1151,6 +1158,18 @@ document.getElementById('yr').textContent=new Date().getFullYear();
     });
   }
 
+// WWDITS
+  var wwditsEl=document.getElementById('fav-wwdits');
+  if(wwditsEl){
+    var wwditsSounds=[SND.wwdits1,SND.wwdits2,SND.wwdits3];
+    var wwditsIdx=0;
+    wwditsEl.addEventListener('click',function(){
+      wwditsSounds.forEach(function(s){s.pause();s.currentTime=0;});
+      wwditsSounds[wwditsIdx].play().catch(function(){});
+      wwditsIdx=(wwditsIdx+1)%3;
+    });
+  }
+  
   // Mob Psycho: set dimple img src
   var mobEl = document.getElementById('fav-mob');
   if(mobEl){
