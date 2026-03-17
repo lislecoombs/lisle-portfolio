@@ -8,6 +8,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;1,400&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
+  @keyframes dogJump{0%{transform:translateY(0)}30%{transform:translateY(-18px)}60%{transform:translateY(-8px)}80%{transform:translateY(-14px)}100%{transform:translateY(0)}}
+@keyframes dogSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.dog-jump{animation:dogJump .5s ease-out forwards!important;}
+.dog-spin{animation:dogSpin .7s cubic-bezier(.34,1.56,.64,1) forwards!important;}
   #blog .inner{max-width:1200px;margin:0 auto;}
 #blog{position:relative;}
 .blog-layout{display:grid;grid-template-columns:240px 1fr 200px;gap:0;align-items:start;position:relative;}
@@ -312,9 +316,8 @@
   <span class="floater" style="top:74%;right:6%;--sz:.8rem;--dur:6s;--delay:.5s;--op:.2">~.~</span>
   <span class="floater" style="top:40%;left:2%;--sz:.75rem;--dur:9s;--delay:3s;--op:.18">&#x2605;&#x25E6;&#x2605;</span>
   <span class="floater" style="top:55%;right:4%;--sz:.8rem;--dur:7.5s;--delay:1.5s;--op:.2">(&#9685;&#8255;&#9685;)</span>
-  <img class="floater-gif" src="undertale-deltarune.gif" alt="" style="top:80%;left:7%;width:44px;--dur:10s;--delay:1.2s;--op:.8;" />
+  <img id="hero-dog" class="floater-gif" src="undertale-deltarune.gif" alt="" style="top:80%;left:7%;width:44px;--dur:10s;--delay:1.2s;--op:.8;" />
   <img class="floater-gif" src="undertale-deltarune.gif" alt="" style="top:20%;right:10%;width:36px;--dur:8s;--delay:3s;--op:.6;" />
-  <img class="floater-gif" src="lovebunny.gif" style="top:76%;left:7%;--dur:8s;--delay:2s;--op:.55;width:60px;" alt="" />
   <div class="hero-layout">
     <div class="hero-left">
       <div class="hero-title" id="hero-title"></div>
@@ -554,6 +557,8 @@
 /* ═ SOUNDS ═ */
 function mkAudio(src,vol){var a=new Audio(src);a.volume=vol||1;return a;}
 var SND={
+  bark: mkAudio('sounds/bark.mp3', .8),
+  bark10: mkAudio('sounds/bark10.mp3', .8),
   water: mkAudio('sounds/water.mp3', .25),
   wwdits1: mkAudio('sounds/WWDITS1.mp3', .8),
   wwdits2: mkAudio('sounds/WWDITS2.mp3', .8),
@@ -692,6 +697,7 @@ document.addEventListener('click',function(e){
     e.target.closest('#fav-surfsup') ||
     e.target.closest('#fav-wwdits') ||
     e.target.closest('#cat-stack');
+    e.target.closest('#hero-dog');
 
   if(!skip) play(SND.water);
 
@@ -969,6 +975,29 @@ function attachLightbox(grid){
   });
 }
 loadCMS();
+
+/* ═ HERO DOG ═ */
+(function(){
+  var dog=document.getElementById('hero-dog');
+  if(!dog) return;
+  var dogClicks=0;
+  dog.addEventListener('click',function(e){
+    e.stopPropagation();
+    dogClicks++;
+    dog.classList.remove('dog-jump','dog-spin');
+    void dog.offsetWidth;
+    if(dogClicks%10===0){
+      dog.classList.add('dog-spin');
+      play(SND.bark10);
+    } else {
+      dog.classList.add('dog-jump');
+      play(SND.bark);
+    }
+    dog.addEventListener('animationend',function(){
+      dog.classList.remove('dog-jump','dog-spin');
+    },{once:true});
+  });
+})();
 
 /* ═ FISH ═ */
 (function(){
