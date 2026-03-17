@@ -8,7 +8,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;1,400&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-#hero-dog{pointer-events:auto;cursor:pointer;}
 @keyframes dogJump{0%{transform:translateY(0)}30%{transform:translateY(-18px)}60%{transform:translateY(-8px)}80%{transform:translateY(-14px)}100%{transform:translateY(0)}}
 @keyframes dogSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
 .dog-jump{animation:dogJump .5s ease-out forwards!important;}
@@ -317,8 +316,6 @@
   <span class="floater" style="top:74%;right:6%;--sz:.8rem;--dur:6s;--delay:.5s;--op:.2">~.~</span>
   <span class="floater" style="top:40%;left:2%;--sz:.75rem;--dur:9s;--delay:3s;--op:.18">&#x2605;&#x25E6;&#x2605;</span>
   <span class="floater" style="top:55%;right:4%;--sz:.8rem;--dur:7.5s;--delay:1.5s;--op:.2">(&#9685;&#8255;&#9685;)</span>
-  <img id="hero-dog" class="floater-gif" src="undertale-deltarune.gif" alt="" style="top:80%;left:7%;width:44px;--dur:10s;--delay:1.2s;--op:.8;" />
-  <img id="hero-dog" class="floater-gif" src="images/undertale-deltarune.gif" alt="" style="top:80%;left:7%;width:44px;--dur:10s;--delay:1.2s;--op:.8;" />
   <div class="hero-layout">
     <div class="hero-left">
       <div class="hero-title" id="hero-title"></div>
@@ -525,7 +522,7 @@
         <p style="font-family:'Caveat',cursive;font-size:.95rem;color:var(--mushroom);margin-top:8px;">your note has been received ( ദ്ദി ˙ᗜ˙ ) </p>
       </div>
       <div style="text-align:right;margin-top:12px;">
-        <img src="images/undertale-deltarune.gif" alt="" style="width:70px;image-rendering:pixelated;opacity:.65;animation:drift 5s ease-in-out infinite;pointer-events:none;" />
+       <img id="guestbook-dog" src="images/undertale-deltarune.gif" alt="" style="width:70px;image-rendering:pixelated;opacity:.65;animation:drift 5s ease-in-out infinite;cursor:pointer;" />
       </div>
     </div>
   </div>
@@ -693,12 +690,12 @@ drawStars();
 
 /* ═ WATER RIPPLE ═ */
 document.addEventListener('click',function(e){
-  var skip = 
+var skip = 
     e.target.closest('.gallery-tab') ||
     e.target.closest('#fav-surfsup') ||
     e.target.closest('#fav-wwdits') ||
-    e.target.closest('#cat-stack');
-    e.target.closest('#hero-dog');
+    e.target.closest('#cat-stack') ||
+    e.target.closest('#guestbook-dog');
 
   if(!skip) play(SND.water);
 
@@ -1174,6 +1171,38 @@ if(gForm){
 
 document.getElementById('yr').textContent=new Date().getFullYear();
 
+/* ═ GUESTBOOK DOG ═ */
+(function(){
+  var dog = document.getElementById('guestbook-dog');
+  if(!dog) return;
+  var dogClickCount = 0;
+
+  dog.addEventListener('click', function(e){
+    e.stopPropagation();
+    dogClickCount++;
+
+    // Remove any existing animation classes so re-triggering works
+    dog.classList.remove('dog-jump', 'dog-spin');
+    void dog.offsetWidth; // force reflow
+
+    if(dogClickCount % 10 === 0){
+      dog.classList.add('dog-spin');
+      SND.bark10.currentTime = 0;
+      SND.bark10.play().catch(function(){});
+      foundEgg('good dog!!');
+    } else {
+      dog.classList.add('dog-jump');
+      SND.bark.currentTime = 0;
+      SND.bark.play().catch(function(){});
+    }
+
+    dog.addEventListener('animationend', function handler(){
+      dog.classList.remove('dog-jump', 'dog-spin');
+      dog.removeEventListener('animationend', handler);
+    });
+  });
+})();
+  
 /* ═ FAVORITES EASTER EGGS ═ */
 (function(){
   // Surf's Up: set img src, cycle audio on click
