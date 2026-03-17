@@ -974,28 +974,6 @@ function attachLightbox(grid){
 }
 loadCMS();
 
-/* ═ HERO DOG ═ */
-(function(){
-  var dog=document.getElementById('hero-dog');
-  if(!dog) return;
-  var dogClicks=0;
-  dog.addEventListener('click',function(e){
-    e.stopPropagation();
-    dogClicks++;
-    dog.classList.remove('dog-jump','dog-spin');
-    void dog.offsetWidth;
-    if(dogClicks%10===0){
-      dog.classList.add('dog-spin');
-      play(SND.bark10);
-    } else {
-      dog.classList.add('dog-jump');
-      play(SND.bark);
-    }
-    dog.addEventListener('animationend',function(){
-      dog.classList.remove('dog-jump','dog-spin');
-    },{once:true});
-  });
-})();
 
 /* ═ FISH ═ */
 (function(){
@@ -1187,13 +1165,11 @@ document.getElementById('yr').textContent=new Date().getFullYear();
 
     if(dogClickCount % 10 === 0){
       dog.classList.add('dog-spin');
-      SND.bark10.currentTime = 0;
-      SND.bark10.play().catch(function(){});
+      play(SND.bark10);
       foundEgg('good dog!!');
     } else {
       dog.classList.add('dog-jump');
-      SND.bark.currentTime = 0;
-      SND.bark.play().catch(function(){});
+      play(SND.bark);
     }
 
     dog.addEventListener('animationend', function handler(){
