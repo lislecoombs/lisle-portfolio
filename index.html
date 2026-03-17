@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;1,400&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-  #hero-dog{pointer-events:auto;cursor:pointer;}
-  @keyframes dogJump{0%{transform:translateY(0)}30%{transform:translateY(-18px)}60%{transform:translateY(-8px)}80%{transform:translateY(-14px)}100%{transform:translateY(0)}}
+#hero-dog{pointer-events:auto;cursor:pointer;}
+@keyframes dogJump{0%{transform:translateY(0)}30%{transform:translateY(-18px)}60%{transform:translateY(-8px)}80%{transform:translateY(-14px)}100%{transform:translateY(0)}}
 @keyframes dogSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
 .dog-jump{animation:dogJump .5s ease-out forwards!important;}
 .dog-spin{animation:dogSpin .7s cubic-bezier(.34,1.56,.64,1) forwards!important;}
@@ -318,7 +318,7 @@
   <span class="floater" style="top:40%;left:2%;--sz:.75rem;--dur:9s;--delay:3s;--op:.18">&#x2605;&#x25E6;&#x2605;</span>
   <span class="floater" style="top:55%;right:4%;--sz:.8rem;--dur:7.5s;--delay:1.5s;--op:.2">(&#9685;&#8255;&#9685;)</span>
   <img id="hero-dog" class="floater-gif" src="undertale-deltarune.gif" alt="" style="top:80%;left:7%;width:44px;--dur:10s;--delay:1.2s;--op:.8;" />
-  <img class="floater-gif" src="undertale-deltarune.gif" alt="" style="top:20%;right:10%;width:36px;--dur:8s;--delay:3s;--op:.6;" />
+  <img id="hero-dog" class="floater-gif" src="images/undertale-deltarune.gif" alt="" style="top:80%;left:7%;width:44px;--dur:10s;--delay:1.2s;--op:.8;" />
   <div class="hero-layout">
     <div class="hero-left">
       <div class="hero-title" id="hero-title"></div>
