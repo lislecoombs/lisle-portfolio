@@ -1027,12 +1027,6 @@ function showKonami(){
 }
 
 /* ═ TRIPLE-CLICK → STAR PLATINUM ═ */
-var tripleTimer=null,tripleCount=0;
-document.addEventListener('click',function(e){
-  tripleCount++;clearTimeout(tripleTimer);
-  tripleTimer=setTimeout(function(){tripleCount=0;},500);
-  if(tripleCount>=10){tripleCount=0;showStarPlatinum();}
-});
 function showStarPlatinum(){
   var wasPlaying=musicPlaying;
   if(musicReady && musicPlaying){
@@ -1047,12 +1041,17 @@ function showStarPlatinum(){
   SND.ora.currentTime=0;
   SND.ora.play().catch(function(e){console.warn('ora audio failed:',e);});
   foundEgg('ORA ORA ORA!!');
+
+  var oraResumed=false;
   function resumeAfterOra(){
-    if(wasPlaying&&musicReady){ytPlayer.playVideo();musicPlaying=true;if(musicBtn)musicBtn.classList.remove('paused');if(musicLabel)musicLabel.textContent='music on';}
+    if(oraResumed) return;
+    oraResumed=true;
+    SND.ora.onended=null;
+    if(wasPlaying) resumeMusic();
   }
   ov.onclick=function(e){
     e.stopPropagation();
-    SND.ora.pause();SND.ora.currentTime=0;
+    SND.ora.pause(); SND.ora.currentTime=0;
     ov.classList.add('fade');
     ov.onclick=null;
     setTimeout(function(){ov.classList.remove('on');ov.classList.remove('fade');},800);
@@ -1090,7 +1089,7 @@ function showTBC(){
     document.getElementById('tbc-sepia').classList.remove('on');
     document.getElementById('tbc-overlay').classList.remove('on');
     window.removeEventListener('scroll',tbcScrollHandler);
-    if(wasPlaying&&musicReady){ytPlayer.playVideo();musicPlaying=true;if(musicBtn)musicBtn.classList.remove('paused');if(musicLabel)musicLabel.textContent='music on';}
+    if(wasPlaying) resumeMusic();
   };
 
   function tbcScrollHandler(){
