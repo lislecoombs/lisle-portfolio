@@ -1278,16 +1278,13 @@ if(window.netlifyIdentity){
   var tardisFirstAppear=true;
 
   function init(){baseY=window.innerHeight*.08;ty=baseY;targetY=baseY;}
-
-function appear(){
-  init();tx=-120;
-  el.style.left=tx+'px';el.style.top=ty+'px';
-  el.style.opacity='1';el.style.pointerEvents='auto';
-  docClickIdx=0;
-  if(tardisFirstAppear){
+if(tardisFirstAppear){
     tardisFirstAppear=false;
-    sndEnter.currentTime=0;
-    sndEnter.play().catch(function(err){console.warn('TARDIS audio failed:',err);});
+    var heroSection=document.getElementById('hero');
+    var heroBottom=heroSection?heroSection.getBoundingClientRect().bottom:window.innerHeight;
+    if(heroBottom>0){
+      sndEnter.currentTime=0;
+      sndEnter.play().catch(function(err){console.warn('TARDIS audio failed:',err);});
   }
   animate();
 }
