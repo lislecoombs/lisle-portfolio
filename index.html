@@ -578,6 +578,16 @@ var SND={
 };
 function play(snd){try{snd.currentTime=0;snd.play();}catch(e){}}
 
+function resumeMusic(){
+  if(!musicReady||musicPlaying) return;
+  setTimeout(function(){
+    ytPlayer.playVideo();
+    musicPlaying=true;
+    if(musicBtn) musicBtn.classList.remove('paused');
+    if(musicLabel) musicLabel.textContent='music on';
+  },200);
+}
+
 
 var CJ_IMG = 'images/cj.png';
 var DIMPLE_IMG = 'images/dimple.png';
@@ -1027,6 +1037,14 @@ function showKonami(){
 }
 
 /* ═ TRIPLE-CLICK → STAR PLATINUM ═ */
+var tripleTimer=null,tripleCount=0;
+document.addEventListener('click',function(e){
+  tripleCount++;clearTimeout(tripleTimer);
+  tripleTimer=setTimeout(function(){tripleCount=0;},500);
+  if(tripleCount>=10){tripleCount=0;showStarPlatinum();}
+});
+  
+/* ═ TRIPLE-CLICK → STAR PLATINUM ═ */
 function showStarPlatinum(){
   var wasPlaying=musicPlaying;
   if(musicReady && musicPlaying){
@@ -1212,11 +1230,12 @@ document.getElementById('yr').textContent=new Date().getFullYear();
   // JoJo: play Killer Queen on hover, redirect to 404 
  var jojoEl = document.getElementById('fav-jojo');
 if(jojoEl){
-  var kqPlaying = false;
-  jojoEl.addEventListener('mouseenter', function(){
+var kqPlaying = false;
+var kqWasPlaying = false;
+jojoEl.addEventListener('mouseenter', function(){
   if(!kqPlaying){
     kqPlaying = true;
-    var kqWasPlaying=musicPlaying;
+    kqWasPlaying=musicPlaying;
     jojoEl.classList.add('jojo-active');
     if(musicReady && musicPlaying){
       ytPlayer.pauseVideo();
