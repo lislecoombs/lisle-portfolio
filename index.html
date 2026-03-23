@@ -1265,6 +1265,7 @@ if(window.netlifyIdentity){
   /* ═ TARDIS ═ */
 (function(){
   var el=document.getElementById('tardis');
+  var dragging=false,dragOX=0,dragOY=0,dragStartX=0,dragStartY=0;
   if(!el) return;
   var sndEnter=mkAudio('sounds/TARDIS-enter.mp3',.8);
   var sndShake=mkAudio('sounds/doctor-shake.mp3',.8);
@@ -1333,20 +1334,23 @@ function appear(){
   // Drag
   var didDrag=false;
   el.addEventListener('mousedown',function(e){
-    e.preventDefault();dragging=true;didDrag=false;
-    dragOX=e.clientX-tx;dragOY=e.clientY-ty;
-    xHist=[];el.style.cursor='grabbing';el.style.animation='none';
-  });
-  document.addEventListener('mousemove',function(e){
-    if(!dragging) return;
-    didDrag=true;
-    tx=e.clientX-dragOX;ty=e.clientY-dragOY;
-    el.style.left=tx+'px';el.style.top=ty+'px';
-    var now=Date.now();
-    xHist.push({x:e.clientX,t:now});
-    xHist=xHist.filter(function(h){return now-h.t<300;});
-    checkShake();
-  });
+  e.preventDefault();dragging=true;didDrag=false;
+  dragOX=e.clientX-tx;dragOY=e.clientY-ty;
+  dragStartX=e.clientX;dragStartY=e.clientY;
+  xHist=[];el.style.cursor='grabbing';el.style.animation='none';
+});
+document.addEventListener('mousemove',function(e){
+  if(!dragging) return;
+  var dx=e.clientX-dragStartX,dy=e.clientY-dragStartY;
+  if(!didDrag&&Math.sqrt(dx*dx+dy*dy)<5) return;
+  didDrag=true;
+  tx=e.clientX-dragOX;ty=e.clientY-dragOY;
+  el.style.left=tx+'px';el.style.top=ty+'px';
+  var now=Date.now();
+  xHist.push({x:e.clientX,t:now});
+  xHist=xHist.filter(function(h){return now-h.t<300;});
+  checkShake();
+});
   document.addEventListener('mouseup',function(){
     if(!dragging) return;
     dragging=false;el.style.cursor='pointer';
