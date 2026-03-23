@@ -1274,15 +1274,22 @@ if(window.netlifyIdentity){
   var tx=-120,ty=0,targetY=0,baseY=0,raf=null,jagCD=0;
   var dragging=false,dragOX=0,dragOY=0;
   var xHist=[],shaking=false,shakeTimeout=null;
+  var tardisFirstAppear=true;
 
   function init(){baseY=window.innerHeight*.08;ty=baseY;targetY=baseY;}
 
-  function appear(){
-    init();tx=-120;
-    el.style.left=tx+'px';el.style.top=ty+'px';
-    el.style.opacity='1';el.style.pointerEvents='auto';
-    docClickIdx=0;animate();
+function appear(){
+  init();tx=-120;
+  el.style.left=tx+'px';el.style.top=ty+'px';
+  el.style.opacity='1';el.style.pointerEvents='auto';
+  docClickIdx=0;
+  if(tardisFirstAppear){
+    tardisFirstAppear=false;
+    sndEnter.currentTime=0;
+    sndEnter.play().catch(function(err){console.warn('TARDIS audio failed:',err);});
   }
+  animate();
+}
 
   function disappear(){
     el.style.opacity='0';el.style.pointerEvents='none';
