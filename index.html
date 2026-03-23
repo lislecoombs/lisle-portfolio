@@ -1324,7 +1324,7 @@ function appear(){
   el.addEventListener('click',function(e){
     e.stopPropagation();
     if(justDropped||shaking||didDrag) return;
-    var snd=docClickIdx===0?sndEnter:sndDoctors[(docClickIdx-1)%6];
+    var snd=sndDoctors[docClickIdx%6];
     snd.currentTime=0;
     snd.play().catch(function(err){console.warn('TARDIS audio failed:',err);});
     docClickIdx++;
