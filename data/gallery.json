@@ -70,6 +70,11 @@
       "image": "/images/Lisle_Coombs_(Carcinisation)1 Medium.jpeg",
       "title": "Carcinisation",
       "year": "2025"
+    },
+    {
+      "title": "Adam and Eve",
+      "year": "2025",
+      "image": "/images/\"Adam and Eve_Art.jpeg"
     }
   ],
   "photography": [
@@ -102,7 +107,7 @@
   "blog_photos": [
     {
       "image1": "/images/img_2986.jpeg",
-      "blog_caption": "i love the crawling ferns!",
+      "blog_caption": "",
       "image2": ""
     },
     {
