@@ -258,207 +258,62 @@
   #egg-badge{position:fixed;bottom:22px;right:22px;font-family:'Caveat',cursive;font-size:.85rem;color:var(--sage);z-index:200;opacity:0;transition:opacity 1s;pointer-events:none;}
   #egg-badge.show{opacity:.7;}
   @media(max-width:900px){nav{padding:16px 24px;}section,#guestbook{padding:70px 24px;}.hero-layout{grid-template-columns:1fr;text-align:center;gap:40px;}.hero-left,.hero-right{text-align:center;}.float-title{justify-content:center!important;}.portrait-stack{margin:0 auto 32px;}.about-grid{grid-template-columns:1fr;}.gallery-grid{columns:2 160px;}footer{padding:28px 24px;}.form-row{grid-template-columns:1fr;}}
-  /* ═══════════════════════════════════════════════════
-   SCRAPBOOK / GEOCITIES OVERRIDES
-   Paste this entire block at the bottom of your
-   existing <style> tag, just before </style>
-═══════════════════════════════════════════════════ */
+ /* ── SCRAPBOOK OVERRIDES ── */
 
-/* ── MARQUEE ── */
 @keyframes marqueeScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.about-marquee{overflow:hidden;border-top:2px dashed var(--sage);border-bottom:2px dashed var(--sage);background:rgba(7,12,5,.97);padding:9px 0;margin:0 -52px 52px;position:relative;}
-.about-marquee-inner{display:inline-block;white-space:nowrap;animation:marqueeScroll 45s linear infinite;font-family:'Caveat',cursive;font-size:1.05rem;color:var(--sage);letter-spacing:.8px;}
+.about-marquee{overflow:hidden;border-top:2px dashed var(--sage);border-bottom:2px dashed var(--sage);background:rgba(7,12,5,.97);padding:9px 0;margin:0 -52px 48px;}
+.about-marquee-inner{display:inline-block;white-space:nowrap;animation:marqueeScroll 45s linear infinite;font-family:'Caveat',cursive;font-size:1rem;color:var(--sage);letter-spacing:.8px;}
 @media(max-width:900px){.about-marquee{margin:0 -24px 36px;}}
 
-/* ── TAPE PIECES ── */
-.tape{position:absolute;height:14px;background:rgba(255,245,160,.38);border:1px solid rgba(240,215,60,.18);border-radius:1px;z-index:10;pointer-events:none;}
+.tape{position:absolute;height:14px;background:rgba(255,245,160,.4);border:1px solid rgba(240,215,60,.2);border-radius:1px;z-index:10;pointer-events:none;}
 .tape-tl{width:44px;top:-7px;left:18px;transform:rotate(-2.5deg);}
 .tape-tr{width:44px;top:-7px;right:18px;transform:rotate(2deg);}
 .tape-tc{width:54px;top:-7px;left:50%;transform:translateX(-50%) rotate(-1.5deg);}
 
-/* ── NOTEBOOK / RULED-PAPER CARD ── */
 .notebook-card{
-  background:#f0ebe0;
-  border:1px solid #c8b48a;
   position:relative;
   padding:32px 36px 30px;
-  position:relative;
-  box-shadow:5px 8px 30px rgba(0,0,0,.65),1px 1px 0 rgba(180,140,80,.2);
-  /* ruled lines */
-  background-image:
-    linear-gradient(rgba(180,120,55,.13) 1px, transparent 1px);
+  background-color:#f0ebe0;
+  border:1px solid #c8b48a;
+  box-shadow:4px 6px 28px rgba(0,0,0,.6);
+  background-image:linear-gradient(rgba(180,120,55,.12) 1px,transparent 1px);
   background-size:100% 30px;
   background-position:0 29px;
 }
+.notebook-card::before{content:'';position:absolute;top:0;bottom:0;left:44px;width:1px;background:rgba(200,80,80,.2);pointer-events:none;}
 .notebook-card .section-tag{color:var(--terra);}
 .notebook-card .section-title{color:#2a1808;font-size:clamp(1.6rem,3vw,2.4rem);margin-bottom:18px;}
 .notebook-card .section-title em{color:var(--terra);}
 .notebook-card .about-text p{color:#3a2210;line-height:2.05;margin-bottom:14px;font-size:1rem;}
 
-/* margin-top red line (like real notebook paper) */
-.notebook-card::before{
-  content:'';position:absolute;top:0;bottom:0;left:44px;
-  width:1px;background:rgba(200,80,80,.2);pointer-events:none;
-}
-
-/* ── VISITOR COUNTER ── */
-.visitor-counter{
-  display:inline-flex;align-items:center;gap:6px;
-  margin-top:20px;
-  font-family:'Courier New',monospace;font-size:.8rem;
-  color:var(--sage);
-  border:1px solid rgba(122,158,126,.38);
-  padding:5px 14px;
-  background:rgba(0,0,0,.35);
-  letter-spacing:.5px;
-}
-
-/* ── BLINK ── */
+.visitor-counter{display:inline-flex;align-items:center;gap:6px;margin-top:20px;font-family:'Courier New',monospace;font-size:.8rem;color:var(--sage);border:1px solid rgba(122,158,126,.4);padding:5px 14px;background:rgba(0,0,0,.35);letter-spacing:.5px;}
+.web-badge{display:inline-block;font-family:'Courier New',monospace;font-size:.7rem;color:rgba(122,158,126,.6);border:1px solid rgba(122,158,126,.3);padding:3px 10px;letter-spacing:1px;margin-top:10px;}
 @keyframes blinkAni{0%,100%{opacity:1}49%,51%{opacity:0}}
 .blink{animation:blinkAni 1.1s step-end infinite;}
 
-/* ── WEB BADGE ── */
-.web-badge{
-  display:inline-block;
-  font-family:'Courier New',monospace;font-size:.7rem;
-  color:rgba(122,158,126,.6);
-  border:1px solid rgba(122,158,126,.28);
-  padding:3px 10px;letter-spacing:1px;
-  margin-top:10px;
-}
+.geo-divider{text-align:center;font-family:'Caveat',cursive;font-size:1.05rem;color:var(--terra);letter-spacing:5px;padding:14px 0 26px;opacity:.75;}
 
-/* ── GEO DIVIDER ── */
-.geo-divider{
-  text-align:center;
-  font-family:'Caveat',cursive;
-  font-size:1.05rem;
-  color:var(--terra);
-  letter-spacing:5px;
-  padding:14px 0 26px;
-  opacity:.75;
-}
-
-/* ═══ ABOUT SECTION LAYOUT ═══ */
 #about .inner{max-width:1100px;margin:0 auto;}
 
-.about-scrap-grid{
-  display:grid;
-  grid-template-columns:1fr 270px;
-  gap:50px;
-  align-items:start;
-}
-.about-notebook-wrap{transform:rotate(.6deg);}
+.about-scrap-grid{display:grid;grid-template-columns:1fr 260px;gap:48px;align-items:start;width:100%;}
+.about-notebook-wrap{min-width:0;transform:rotate(.5deg);}
+.about-scrap-cat-col{display:flex;flex-direction:column;align-items:center;width:260px;max-width:260px;flex-shrink:0;}
 
-/* ── CAT POLAROID ── */
-.about-scrap-cat-col{
-  display:flex;flex-direction:column;align-items:center;
-}
-.cat-polaroid-wrap{
-  background:#fff;
-  padding:7px 7px 46px;
-  box-shadow:3px 6px 20px rgba(0,0,0,.55);
-  position:relative;
-  transform:rotate(-2deg);
-  width:100%;
-}
-/* hide the existing dashed pseudo-border on cat-stack */
+.cat-polaroid-wrap{background:#fff;padding:7px 7px 44px;box-shadow:3px 6px 20px rgba(0,0,0,.55);position:relative;transform:rotate(-2deg);width:100%;}
 .cat-polaroid-wrap .cat-stack::before{display:none!important;}
-/* cat caption inside polaroid */
-.cat-polaroid-wrap .cat-caption{
-  position:absolute;bottom:7px;left:0;right:0;
-  text-align:center;
-  font-family:'Caveat',cursive;font-size:.95rem;
-  color:#2a1808;margin:0;
-}
+.cat-polaroid-wrap .cat-caption{position:absolute;bottom:7px;left:0;right:0;text-align:center;font-family:'Caveat',cursive;font-size:.95rem;color:#2a1808;margin:0;}
 .cat-polaroid-wrap .cat-caption span{color:var(--terra);}
 
-/* ── FAVORITES SCATTER ── */
-.fav-board-scatter-wrap{margin-top:42px;max-width:1100px;margin-left:auto;margin-right:auto;}
+.fav-board-scatter-wrap{margin-top:42px;}
 .fav-board-scatter-wrap .fav-board{grid-template-columns:repeat(4,1fr);gap:22px;}
 .fav-board-scatter-wrap .fav-card:nth-child(1){--rot:-4deg;margin-top:0;}
 .fav-board-scatter-wrap .fav-card:nth-child(2){--rot:3deg;margin-top:-16px;}
 .fav-board-scatter-wrap .fav-card:nth-child(3){--rot:-2.5deg;margin-top:-10px;}
 .fav-board-scatter-wrap .fav-card:nth-child(4){--rot:4deg;margin-top:-12px;}
 
-@media(max-width:900px){
-  .about-scrap-grid{grid-template-columns:1fr;gap:36px;}
-  .about-notebook-wrap{transform:none;}
-  .cat-polaroid-wrap{transform:none;}
-  .fav-board-scatter-wrap .fav-board{grid-template-columns:1fr 1fr;}
-  .fav-board-scatter-wrap .fav-card:nth-child(2),
-  .fav-board-scatter-wrap .fav-card:nth-child(3),
-  .fav-board-scatter-wrap .fav-card:nth-child(4){margin-top:0;}
-}
+.diary-stamp{display:inline-block;font-family:'Courier New',monospace;font-size:.75rem;color:var(--terra);border:2px solid rgba(184,115,74,.45);padding:4px 12px;transform:rotate(-2.5deg);letter-spacing:2px;text-transform:uppercase;margin-top:8px;opacity:.85;}
 
-/* ═══ BLOG SECTION LAYOUT ═══ */
-.diary-stamp{
-  display:inline-block;
-  font-family:'Courier New',monospace;font-size:.75rem;
-  color:var(--terra);
-  border:2px solid rgba(184,115,74,.45);
-  padding:4px 12px;
-  transform:rotate(-2.5deg);
-  letter-spacing:2px;text-transform:uppercase;
-  margin-top:8px;opacity:.85;
-}
-
-/* blog text card → notebook paper */
-.blog-text-card.notebook-card{transform:rotate(.3deg);}
-.blog-text-card.notebook-card .blog-text{
-  color:#2a1808!important;
-  line-height:2.05;
-  white-space:pre-wrap;
-  font-family:'Caveat',cursive;
-  font-size:1.05rem;
-}
-/* override dark card-tape for lighter look */
-.blog-text-card.notebook-card .card-tape{
-  background:rgba(255,245,160,.4)!important;
-  border:1px solid rgba(240,215,60,.2)!important;
-}
-
-/* ── BLOG PHOTO POLAROID WRAPPERS ── */
-.blog-polaroid-wrapper{
-  background:#fff;
-  padding:6px 6px 40px;
-  box-shadow:3px 5px 16px rgba(0,0,0,.48);
-  position:relative;
-}
-.blog-polaroid-tape{
-  position:absolute;top:-9px;left:50%;
-  transform:translateX(-50%) rotate(-1.5deg);
-  width:50px;height:15px;
-  background:rgba(255,245,160,.45);
-  border:1px solid rgba(240,215,60,.22);
-  border-radius:1px;z-index:2;
-}
-/* override the dark gradient backgrounds on the stack faces */
-.blog-polaroid-wrapper .blog-stack-back{
-  background:#f5f0e8!important;
-  border-color:rgba(200,170,100,.2)!important;
-}
-.blog-polaroid-wrapper .blog-stack-front{
-  background:#fff!important;
-  border-color:rgba(200,170,100,.2)!important;
-}
-/* polaroid caption inherits dark from parent */
-.blog-polaroid-wrapper .blog-photo-caption{
-  font-family:'Caveat',cursive!important;
-  color:#2a1808!important;
-  position:absolute;
-  bottom:7px;left:0;right:0;
-  text-align:center;
-  font-size:.95rem;
-}
-.blog-polaroid-wrapper .blog-click-hint{
-  color:var(--terra)!important;
-  font-size:.78rem!important;
-  margin-top:4px;
-}
-
-@media(max-width:900px){
-  .blog-polaroid-wrapper .blog-stack{width:160px!important;height:200px!important;}
-}
+.blog-text-card
 </style>
 </head>
 <body>
@@ -545,15 +400,12 @@
 <section id="about">
   <div class="inner">
 
-    <!-- ── MARQUEE STRIP ── -->
     <div class="about-marquee">
       <span class="about-marquee-inner">✦ hi!! welcome to my little corner of the internet ✦ lisle coombs ✦ neuroscience + art ✦ based in talkeetna, alaska ✦ cat mom to maggie ✦ DJing @ KTNA &amp; KSPC ✦ rock climber ✦ lava lamp enjoyer ✦ horror movie fan ✦ currently: doing homework &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ✦ hi!! welcome to my little corner of the internet ✦ lisle coombs ✦ neuroscience + art ✦ based in talkeetna, alaska ✦ cat mom to maggie ✦ DJing @ KTNA &amp; KSPC ✦ rock climber ✦ lava lamp enjoyer ✦ horror movie fan ✦ currently: doing homework &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
     </div>
 
-    <!-- ── MAIN GRID: notebook card left / cat polaroid right ── -->
     <div class="about-scrap-grid reveal">
 
-      <!-- LEFT: Notebook paper card -->
       <div class="about-notebook-wrap">
         <div class="notebook-card">
           <div class="tape tape-tl"></div>
@@ -572,7 +424,6 @@
         </div>
       </div>
 
-      <!-- RIGHT: Cat polaroid + fish -->
       <div class="about-scrap-cat-col">
         <div class="cat-polaroid-wrap">
           <div class="tape tape-tc"></div>
@@ -584,18 +435,16 @@
           </div>
         </div>
         <img id="fish-gif" src="images/fish.gif" alt=""
-          style="display:block;margin:22px auto 0;width:120px;image-rendering:pixelated;opacity:.85;" />
+          style="display:block;margin:18px auto 0;width:90px;image-rendering:pixelated;opacity:.85;" />
       </div>
 
-    </div><!-- /about-scrap-grid -->
+    </div>
 
-    <!-- ── FAVORITES SCATTERED BOARD ── -->
     <div class="geo-divider reveal">✦ &nbsp;✧&nbsp; things i love &nbsp;✧&nbsp; ✦</div>
 
     <div class="fav-board-scatter-wrap reveal">
       <div class="fav-board">
 
-        <!-- MOVIES -->
         <div class="fav-card" style="--rot:-4deg;z-index:1;">
           <div class="fav-tape"></div>
           <p class="fav-heading">(*) <a href="https://letterboxd.com/lethepdf/" target="_blank" class="fav-link" style="color:var(--terra);text-decoration:none;">movies ↗</a></p>
@@ -610,7 +459,6 @@
           </ul>
         </div>
 
-        <!-- BOOKS -->
         <div class="fav-card" style="--rot:3deg;z-index:2;">
           <div class="fav-tape"></div>
           <p class="fav-heading">(*) books</p>
@@ -622,7 +470,6 @@
           </ul>
         </div>
 
-        <!-- SHOWS -->
         <div class="fav-card" style="--rot:-2.5deg;z-index:3;">
           <div class="fav-tape"></div>
           <p class="fav-heading">(*) shows</p>
@@ -644,7 +491,6 @@
           </ul>
         </div>
 
-        <!-- OTHER THINGS -->
         <div class="fav-card" style="--rot:4deg;z-index:4;">
           <div class="fav-tape"></div>
           <p class="fav-heading">(*) other things i love</p>
@@ -658,10 +504,10 @@
           </ul>
         </div>
 
-      </div><!-- /fav-board -->
-    </div><!-- /fav-board-scatter-wrap -->
+      </div>
+    </div>
 
-  </div><!-- /inner -->
+  </div>
 </section>
 
 <div class="divider">* * *</div>
@@ -697,7 +543,6 @@
 <section id="blog">
   <div class="inner">
 
-    <!-- ── DIARY HEADER ── -->
     <div class="reveal" style="text-align:center;margin-bottom:52px;">
       <span class="section-tag">--&gt; blog</span>
       <h2 class="section-title" id="blog-title">recently:</h2>
@@ -706,13 +551,10 @@
       </div>
     </div>
 
-    <!-- ── THREE-COLUMN COLLAGE ── -->
     <div class="blog-layout">
 
-      <!-- LEFT COLUMN: photos 0 & 2 -->
       <div class="blog-col-left">
 
-        <!-- Photo 0 -->
         <div class="blog-stack-wrap reveal" id="blog-photo-0" style="display:none;">
           <div class="blog-polaroid-wrapper">
             <div class="blog-polaroid-tape"></div>
@@ -725,7 +567,6 @@
           <p class="blog-click-hint" id="blog-hint-0" style="display:none;text-align:center;margin-top:6px;">click to see another ✦</p>
         </div>
 
-        <!-- Photo 2 -->
         <div class="blog-stack-wrap reveal" id="blog-photo-2" style="display:none;margin-top:40px;">
           <div class="blog-polaroid-wrapper">
             <div class="blog-polaroid-tape"></div>
@@ -738,18 +579,15 @@
           <p class="blog-click-hint" id="blog-hint-2" style="display:none;text-align:center;margin-top:6px;">click to see another ✦</p>
         </div>
 
-      </div><!-- /blog-col-left -->
+      </div>
 
-      <!-- CENTER: Notebook paper text card -->
       <div class="blog-text-card notebook-card reveal">
         <div class="card-tape"></div>
         <div id="blog-text-cms" class="blog-text">add writing via admin</div>
       </div>
 
-      <!-- RIGHT COLUMN: photo 1 -->
       <div class="blog-col-right">
 
-        <!-- Photo 1 -->
         <div class="blog-stack-wrap reveal" id="blog-photo-1" style="display:none;">
           <div class="blog-polaroid-wrapper">
             <div class="blog-polaroid-tape"></div>
@@ -762,11 +600,11 @@
           <p class="blog-click-hint" id="blog-hint-1" style="display:none;text-align:center;margin-top:6px;">click to see another ✦</p>
         </div>
 
-      </div><!-- /blog-col-right -->
+      </div>
 
-    </div><!-- /blog-layout -->
+    </div>
 
-  </div><!-- /inner -->
+  </div>
 </section>
 <div class="divider">~ ~ ~</div>
 <section id="guestbook">
