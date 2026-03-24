@@ -183,7 +183,7 @@
   .gallery-item-inner{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.09);border-radius:2px;overflow:hidden;position:relative;}
   .gallery-item-inner::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--terra);transform:scaleX(0);transition:transform .3s;z-index:5;}
   .gallery-item:hover .gallery-item-inner::before{transform:scaleX(1);}
-  .gallery-img{width:100%;display:block;object-fit:cover;}
+  .gallery-img{width:100%;display:block;object-fit:cover;max-height:380px;}
   .gallery-caption{padding:10px 12px;font-family:'Caveat',cursive;font-size:.9rem;color:var(--mushroom);border-top:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;align-items:center;}
   .gallery-caption .yr{color:var(--sage);font-size:.8rem;}
   .gallery-empty{text-align:center;padding:60px 40px;font-family:'Caveat',cursive;font-size:1.1rem;color:rgba(255,255,255,.2);border:1px dashed rgba(255,255,255,.1);border-radius:3px;}
@@ -571,17 +571,6 @@
           <p class="blog-click-hint" id="blog-hint-0" style="display:none;text-align:center;margin-top:6px;">click to see another ✦</p>
         </div>
 
-        <div class="blog-stack-wrap reveal" id="blog-photo-2" style="display:none;margin-top:40px;">
-          <div class="blog-polaroid-wrapper">
-            <div class="blog-polaroid-tape"></div>
-            <div class="blog-stack">
-              <div class="blog-stack-back"></div>
-              <div class="blog-stack-front"><img class="blog-img" src="" alt="" /></div>
-            </div>
-            <p class="blog-photo-caption" id="blog-cap-2"></p>
-          </div>
-          <p class="blog-click-hint" id="blog-hint-2" style="display:none;text-align:center;margin-top:6px;">click to see another ✦</p>
-        </div>
 
       </div>
 
@@ -603,7 +592,17 @@
           </div>
           <p class="blog-click-hint" id="blog-hint-1" style="display:none;text-align:center;margin-top:6px;">click to see another ✦</p>
         </div>
-
+<div class="blog-stack-wrap reveal" id="blog-photo-2" style="display:none;margin-top:40px;">
+  <div class="blog-polaroid-wrapper">
+    <div class="blog-polaroid-tape"></div>
+    <div class="blog-stack">
+      <div class="blog-stack-back"></div>
+      <div class="blog-stack-front"><img class="blog-img" src="" alt="" /></div>
+    </div>
+    <p class="blog-photo-caption" id="blog-cap-2"></p>
+  </div>
+  <p class="blog-click-hint" id="blog-hint-2" style="display:none;text-align:center;margin-top:6px;">click to see another ✦</p>
+</div>
       </div>
 
     </div>
