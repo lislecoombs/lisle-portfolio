@@ -280,6 +280,7 @@
 .notebook-card{
   background:#f0ebe0;
   border:1px solid #c8b48a;
+  position:relative;
   padding:32px 36px 30px;
   position:relative;
   box-shadow:5px 8px 30px rgba(0,0,0,.65),1px 1px 0 rgba(180,140,80,.2);
@@ -663,7 +664,6 @@
   </div><!-- /inner -->
 </section>
 
-</section>
 <div class="divider">* * *</div>
 <section id="gallery">
   <div class="inner">
@@ -1155,7 +1155,7 @@ if(catCaption)document.getElementById('cat-caption-cms').textContent=catCaption;
     // Blog
 if(d.blog_text)document.getElementById('blog-text-cms').textContent=d.blog_text;
 if(d.blog_title)document.getElementById('blog-title').textContent=d.blog_title;
-if(d.blog_updated){var upEl=document.getElementById('blog-updated');if(upEl)upEl.textContent='last updated '+d.blog_updated;}
+if(d.blog_updated){var upEl=document.getElementById('blog-updated');if(upEl)upEl.textContent=d.blog_updated;
 var blogPhotos=d.blog_photos||[];
 for(var bi=0;bi<3;bi++){
   (function(i){
