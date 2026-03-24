@@ -260,11 +260,6 @@
   @media(max-width:900px){nav{padding:16px 24px;}section,#guestbook{padding:70px 24px;}.hero-layout{grid-template-columns:1fr;text-align:center;gap:40px;}.hero-left,.hero-right{text-align:center;}.float-title{justify-content:center!important;}.portrait-stack{margin:0 auto 32px;}.about-grid{grid-template-columns:1fr;}.gallery-grid{columns:2 160px;}footer{padding:28px 24px;}.form-row{grid-template-columns:1fr;}}
  /* ── SCRAPBOOK OVERRIDES ── */
 
-@keyframes marqueeScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.about-marquee{overflow:hidden;border-top:2px dashed var(--sage);border-bottom:2px dashed var(--sage);background:rgba(7,12,5,.97);padding:9px 0;margin:0 -52px 48px;}
-.about-marquee-inner{display:inline-block;white-space:nowrap;animation:marqueeScroll 45s linear infinite;font-family:'Caveat',cursive;font-size:1rem;color:var(--sage);letter-spacing:.8px;}
-@media(max-width:900px){.about-marquee{margin:0 -24px 36px;}}
-
 .tape{position:absolute;height:14px;background:rgba(255,245,160,.4);border:1px solid rgba(240,215,60,.2);border-radius:1px;z-index:10;pointer-events:none;}
 .tape-tl{width:44px;top:-7px;left:18px;transform:rotate(-2.5deg);}
 .tape-tr{width:44px;top:-7px;right:18px;transform:rotate(2deg);}
@@ -299,10 +294,25 @@
 .about-notebook-wrap{min-width:0;transform:rotate(.5deg);}
 .about-scrap-cat-col{display:flex;flex-direction:column;align-items:center;width:260px;max-width:260px;flex-shrink:0;}
 
-.cat-polaroid-wrap{background:#fff;padding:7px 7px 44px;box-shadow:3px 6px 20px rgba(0,0,0,.55);position:relative;transform:rotate(-2deg);width:100%;}
+.cat-polaroid-wrap{
+  background:transparent;
+  padding:0;
+  box-shadow:none;
+  position:relative;
+  transform:rotate(-2deg);
+  width:100%;
+}
 .cat-polaroid-wrap .cat-stack::before{display:none!important;}
 .cat-polaroid-wrap .cat-caption{position:absolute;bottom:7px;left:0;right:0;text-align:center;font-family:'Caveat',cursive;font-size:.95rem;color:#2a1808;margin:0;}
 .cat-polaroid-wrap .cat-caption span{color:var(--terra);}
+.cat-polaroid-wrap .cat-caption{
+  position:relative;
+  bottom:auto;
+  text-align:center;
+  font-family:'Caveat',cursive;font-size:.95rem;
+  color:var(--mushroom);margin-top:10px;
+}
+.cat-polaroid-wrap .cat-caption span{color:var(--rose);}
 
 .fav-board-scatter-wrap{margin-top:42px;}
 .fav-board-scatter-wrap .fav-board{grid-template-columns:repeat(4,1fr);gap:22px;}
@@ -400,45 +410,39 @@
 <section id="about">
   <div class="inner">
 
-    <div class="about-marquee">
-      <span class="about-marquee-inner">✦ hi!! welcome to my little corner of the internet ✦ lisle coombs ✦ neuroscience + art ✦ based in talkeetna, alaska ✦ cat mom to maggie ✦ DJing @ KTNA &amp; KSPC ✦ rock climber ✦ lava lamp enjoyer ✦ horror movie fan ✦ currently: doing homework &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ✦ hi!! welcome to my little corner of the internet ✦ lisle coombs ✦ neuroscience + art ✦ based in talkeetna, alaska ✦ cat mom to maggie ✦ DJing @ KTNA &amp; KSPC ✦ rock climber ✦ lava lamp enjoyer ✦ horror movie fan ✦ currently: doing homework &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-    </div>
 
     <div class="about-scrap-grid reveal">
 
-      <div class="about-notebook-wrap">
-        <div class="notebook-card">
-          <div class="tape tape-tl"></div>
-          <div class="tape tape-tr"></div>
-          <span class="section-tag">--&gt; a bit about me</span>
-          <h2 class="section-title">Hi!! I'm <em>Lisle</em></h2>
-          <div class="about-text">
-            <p id="about-text-cms">Thanks for visiting my site! My name is pronounced like lyle lyle crocodile ;) I'm a student at Scripps College in California studying neuroscience and art.</p>
-          </div>
-          <div style="margin-top:22px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;">
-            <div class="visitor-counter">
-              <span class="blink">★</span>&thinsp;visitor&nbsp;#<span style="color:var(--wheat);font-weight:600;">04721</span>&thinsp;<span class="blink">★</span>
-            </div>
-            <div class="web-badge">✧ BEST VIEWED ON DESKTOP ✧</div>
-          </div>
-        </div>
+  <div class="about-notebook-wrap">
+    <div class="notebook-card">
+      <div class="tape tape-tl"></div>
+      <div class="tape tape-tr"></div>
+      <span class="section-tag">--&gt; a bit about me</span>
+      <h2 class="section-title">Hi!! I'm <em>Lisle</em></h2>
+      <div class="about-text">
+        <p id="about-text-cms">Thanks for visiting my site! My name is pronounced like lyle lyle crocodile ;) I'm a student at Scripps College in California studying neuroscience and art.</p>
       </div>
-
-      <div class="about-scrap-cat-col">
-        <div class="cat-polaroid-wrap">
-          <div class="tape tape-tc"></div>
-          <div class="cat-stack" id="cat-stack">
-            <div class="cat-stack-inner" id="cat-stack-inner"></div>
-          </div>
-          <div class="cat-caption">
-            <span>Maggie</span> (=^･ω･^=) <span id="cat-caption-cms">studio assistant</span>
-          </div>
-        </div>
-        <img id="fish-gif" src="images/fish.gif" alt=""
-          style="display:block;margin:18px auto 0;width:90px;image-rendering:pixelated;opacity:.85;" />
+      <div style="margin-top:22px;">
+        <img src="https://hits.sh/lislecoombs.github.io.svg?style=plastic&color=7a9e7e&labelColor=0e1409&label=visitors" alt="visitor count" style="height:22px;opacity:.85;" />
       </div>
-
     </div>
+  </div>
+
+  <div class="about-scrap-cat-col">
+    <div class="cat-polaroid-wrap">
+      <div class="tape tape-tc"></div>
+      <div class="cat-stack" id="cat-stack">
+        <div class="cat-stack-inner" id="cat-stack-inner"></div>
+      </div>
+    </div>
+    <div class="cat-caption" style="text-align:center;margin-top:12px;font-family:'Caveat',cursive;font-size:1rem;color:var(--mushroom);">
+      <span style="color:var(--rose);">Maggie</span> (=^･ω･^=) <span id="cat-caption-cms">studio assistant</span>
+    </div>
+    <img id="fish-gif" src="images/fish.gif" alt=""
+      style="display:block;margin:18px auto 0;width:90px;image-rendering:pixelated;opacity:.85;" />
+  </div>
+
+</div>
 
     <div class="geo-divider reveal">✦ &nbsp;✧&nbsp; things i love &nbsp;✧&nbsp; ✦</div>
 
