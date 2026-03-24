@@ -206,7 +206,7 @@
   .contact-links{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;}
   .contact-link{font-family:'Caveat',cursive;font-size:1.2rem;color:var(--wheat);text-decoration:none;padding:11px 26px;border:1px solid rgba(212,184,150,.2);border-radius:2px;transition:all .3s;cursor:url('/cursors/pointer.png') 8 0, pointer;}
   .contact-link:hover{color:var(--cream);border-color:var(--rose);transform:translateY(-2px);box-shadow:0 6px 20px rgba(201,132,122,.15);}
-  footer{padding:36px 52px 180px;text-align:center;border-top:1px solid rgba(255,255,255,.05);font-family:'Caveat',cursive;font-size:1rem;color:rgba(255,255,255,.2);line-height:1.8;cursor:url('/cursors/pointer.png') 8 0, pointer;}
+  footer{padding:36px 52px 300px;text-align:center;border-top:1px solid rgba(255,255,255,.05);font-family:'Caveat',cursive;font-size:1rem;color:rgba(255,255,255,.2);line-height:1.8;cursor:url('/cursors/pointer.png') 8 0, pointer;}
   /* LIGHTBOX */
   #lightbox{position:fixed;inset:0;z-index:500;background:rgba(7,12,5,.97);display:none;align-items:center;justify-content:center;gap:40px;backdrop-filter:blur(8px);padding:60px 40px 40px;cursor:url('/cursors/cursor.png') 2 2, auto;}
   #lightbox.active{display:flex;}
@@ -252,7 +252,9 @@
   .reveal.in{opacity:1;transform:translateY(0);}
   #egg-badge{position:fixed;bottom:22px;right:22px;font-family:'Caveat',cursive;font-size:.85rem;color:var(--sage);z-index:200;opacity:0;transition:opacity 1s;pointer-events:none;}
   #egg-badge.show{opacity:.7;}
-  @media(max-width:900px){nav{padding:16px 24px;}section,#guestbook{padding:70px 24px;}.hero-layout{grid-template-columns:1fr;text-align:center;gap:40px;}.hero-left,.hero-right{text-align:center;}.float-title{justify-content:center!important;}.portrait-stack{margin:0 auto 32px;}.about-grid{grid-template-columns:1fr;}.gallery-grid{columns:2 160px;}footer{padding:28px 24px;}.form-row{grid-template-columns:1fr;}}
+  @media(max-width:900px)
+    nav{padding:16px 24px;flex-wrap:wrap;gap:12px;}
+    section,#guestbook{padding:70px 24px;}.hero-layout{grid-template-columns:1fr;text-align:center;gap:40px;}.hero-left,.hero-right{text-align:center;}.float-title{justify-content:center!important;}.portrait-stack{margin:0 auto 32px;}.about-grid{grid-template-columns:1fr;}.gallery-grid{columns:2 160px;}footer{padding:28px 24px;}.form-row{grid-template-columns:1fr;}}
  /* ── SCRAPBOOK OVERRIDES ── */
 
 .tape{position:absolute;height:14px;background:rgba(255,245,160,.4);border:1px solid rgba(240,215,60,.2);border-radius:1px;z-index:10;pointer-events:none;}
@@ -318,7 +320,7 @@
 
 .diary-stamp{display:inline-block;font-family:'Courier New',monospace;font-size:.75rem;color:var(--terra);border:2px solid rgba(184,115,74,.45);padding:4px 12px;transform:rotate(-2.5deg);letter-spacing:2px;text-transform:uppercase;margin-top:8px;opacity:.85;}
 
-#blog-text-cms{
+.notebook-card #blog-text-cms{
   color:#3a2210!important;
   font-family:'Caveat',cursive!important;
   font-size:1.05rem!important;
@@ -686,11 +688,11 @@ var SND={
   wwdits3: mkAudio('sounds/WWDITS3.mp3', .8),
   meow: mkAudio('sounds/meow.mp3', .7),
   kono: mkAudio('sounds/kono.mp3', .8),
-  ora:   new Audio('sounds/ora.mp3'),
+  ora:   mkAudio('sounds/ora.mp3', 0.8),
   camera: mkAudio('sounds/camera.mp3'),
   squish: mkAudio('sounds/squish.mp3'),
   pencil: mkAudio('sounds/pencil.mp3'),
-  round: new Audio('sounds/jojos_roundabout.mp3'),
+  round: mkAudio('sounds/jojos_roundabout.mp3', 0.7),
   cj1:   new Audio('sounds/cj1.mp3'),
   cj2:   new Audio('sounds/cj2.mp3'),
   cj3:   new Audio('sounds/cj3.mp3'),
@@ -953,7 +955,6 @@ document.getElementById('cat-stack').addEventListener('click',function(){
   catClickCount++;
   play(snd);
 });
-var firstCatImg=catList&&catList[0]?catList[0].image:(typeof d.cat_photo==='string'?d.cat_photo:null);
 if(d.about_text)document.getElementById('about-text-cms').textContent=d.about_text;
 var catCaption=catList&&catList[0]&&catList[0].caption?catList[0].caption:d.cat_caption;
 if(catCaption)document.getElementById('cat-caption-cms').textContent=catCaption;
@@ -1004,36 +1005,6 @@ for(var bi=0;bi<3;bi++){
   })(bi);
 }
     // Adjust layout based on photo count and text length
-setTimeout(function(){
-  var layout=document.querySelector('.blog-layout');
-  var textCard=document.querySelector('.blog-text-card');
-  var photo0=document.getElementById('blog-photo-0');
-  var photo1=document.getElementById('blog-photo-1');
-  var photo2=document.getElementById('blog-photo-2');
-  if(!layout||!textCard) return;
-  var visCount=[photo0,photo1,photo2].filter(function(p){return p&&p.style.display!=='none';}).length;
-  if(visCount===3&&photo2&&photo2.style.display!=='none'){
-    var textH=textCard.offsetHeight;
-    var p0H=photo0?photo0.offsetHeight:0;
-    var p2H=photo2.offsetHeight;
-    if(textH<p0H+48+p2H){
-      // Use absolute positioning anchored to bottom of text card
-      var layoutRect=layout.getBoundingClientRect();
-      var textRect=textCard.getBoundingClientRect();
-      var topPos=textRect.bottom-layoutRect.top-40;
-      var rightPos=layoutRect.right-textRect.right+60;
-      photo2.parentNode.removeChild(photo2);
-      layout.style.position='relative';
-      photo2.style.position='absolute';
-      photo2.style.top=topPos+'px';
-      photo2.style.right=rightPos+'px';
-      photo2.style.zIndex='1';
-      layout.appendChild(photo2);
-      // Add padding to layout so it doesn't clip the photo
-      layout.style.paddingBottom=(topPos+p2H-textH+10)+'px';
-    }
-  }
-},500);
 cats.forEach(function(cat){
   var grid=document.getElementById('grid-'+cat);
   var items=d[cat]||[];
@@ -1122,16 +1093,20 @@ document.addEventListener('keydown',function(e){
 });
 function showKonami(){
   document.getElementById('konami-bg').classList.add('on');
+    document.getElementById('konami-cat').onerror = function(){
+    this.style.display='none';
+    document.getElementById('konami-fallback').style.display='block';
+  };
   spawnConfetti();foundEgg('cat found!');
   document.getElementById('konami-bg').addEventListener('click',function(){document.getElementById('konami-bg').classList.remove('on');},{once:true});
 }
 
 /* ═ TRIPLE-CLICK → STAR PLATINUM ═ */
 var tripleTimer=null,tripleCount=0;
-document.addEventListener('click',function(e){
+document.getElementById('logo-btn').addEventListener('click',function(e){
   tripleCount++;clearTimeout(tripleTimer);
   tripleTimer=setTimeout(function(){tripleCount=0;},500);
-  if(tripleCount>=10){tripleCount=0;showStarPlatinum();}
+  if(tripleCount>=5){tripleCount=0;showStarPlatinum();}
 });
   
 /* ═ TRIPLE-CLICK → STAR PLATINUM ═ */
@@ -1217,9 +1192,9 @@ function showTBC(){
     }
   }
 
-  setTimeout(function(){
-    window.addEventListener('scroll',tbcScrollHandler,{passive:true});
-  },1000);
+
+window.addEventListener('scroll',tbcScrollHandler,{passive:true});
+  
 }
   
 
@@ -1528,7 +1503,7 @@ if(window.netlifyIdentity){
     });
   }
 
-  window.addEventListener('resize',function(){baseY=window.innerHeight*.78;});
+  window.addEventListener('resize',function(){baseY=window.innerHeight*.08;});
   setTimeout(appear,5000);
 })();
 </script>
