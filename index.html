@@ -323,11 +323,37 @@
   font-family:'Caveat',cursive!important;
   font-size:1.05rem!important;
 }
+/* ── CUSTOM TOOLTIPS ── */
+[data-tip]{position:relative;}
+[data-tip]::after{
+  content:attr(data-tip);
+  position:absolute;
+  bottom:calc(100% + 10px);
+  left:50%;
+  transform:translateX(-50%) translateY(5px);
+  background:rgba(14,20,9,.93);
+  border:1px solid rgba(122,158,126,.28);
+  color:var(--mushroom);
+  font-family:'Caveat',cursive;
+  font-size:.88rem;
+  padding:5px 13px;
+  border-radius:2px;
+  white-space:nowrap;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .2s ease,transform .2s ease;
+  z-index:99;
+  letter-spacing:.3px;
+}
+[data-tip]:hover::after{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
 </style>
 </head>
 <body>
 <div id="yt-frame" style="position:fixed;bottom:-9999px;left:-9999px;width:1px;height:1px;pointer-events:none;"></div>
-<button id="music-btn" class="paused" title="toggle music">
+<button id="music-btn" class="paused" data-tip="click to play music ♪" title="toggle music">
   <img id="music-record" src="images/record-player.gif" alt="" />
   <span id="music-dot"></span>
   <span id="music-label" style="display:none;"></span>
@@ -386,7 +412,7 @@
       <div class="hero-title" id="hero-title"></div>
       <p class="hero-sub">paintings &middot; drawings<br>sculpture &middot; photography</p>
     </div>
-    <div class="portrait-stack" id="portrait-stack">
+    <div class="portrait-stack" id="portrait-stack" data-tip="click to shuffle">
     </div>
     <div class="hero-right">
       <div class="typewriter-wrap"><span class="typewriter" id="tw"></span></div>
@@ -429,7 +455,7 @@
   <div class="about-scrap-cat-col">
     <div class="cat-polaroid-wrap">
       <div class="tape tape-tc"></div>
-      <div class="cat-stack" id="cat-stack">
+      <div class="cat-stack" id="cat-stack" data-tip="pet maggie">
         <div class="cat-stack-inner" id="cat-stack-inner"></div>
       </div>
     </div>
@@ -437,7 +463,8 @@
       <span style="color:var(--rose);">Maggie</span> (=^･ω･^=) <span id="cat-caption-cms">studio assistant</span>
     </div>
     <img id="fish-gif" src="images/fish.gif" alt=""
-      style="display:block;margin:18px auto 0;width:90px;image-rendering:pixelated;opacity:.85;" />
+  data-tip="bloop ◟(˘³˘)◞"
+  style="display:block;margin:18px auto 0;width:90px;image-rendering:pixelated;opacity:.85;" />
   </div>
 
 </div>
@@ -647,7 +674,7 @@
         <p style="font-family:'Caveat',cursive;font-size:.95rem;color:var(--mushroom);margin-top:8px;">your note has been received ( ദ്ദി ˙ᗜ˙ ) </p>
       </div>
       <div style="text-align:right;margin-top:12px;">
-       <img id="guestbook-dog" src="images/undertale-deltarune.gif" alt="" style="width:70px;image-rendering:pixelated;opacity:.65;animation:drift 5s ease-in-out infinite;cursor:pointer;" />
+       <img id="guestbook-dog" src="images/undertale-deltarune.gif" alt="" data-tip="click me!" style="width:70px;image-rendering:pixelated;opacity:.65;animation:drift 5s ease-in-out infinite;cursor:pointer;" />
       </div>
     </div>
   </div>
@@ -1395,15 +1422,16 @@ if(window.netlifyIdentity){
     el.style.left=tx+'px';el.style.top=ty+'px';
     el.style.opacity='1';el.style.pointerEvents='auto';
     docClickIdx=0;
-    if(tardisFirstAppear){
-      tardisFirstAppear=false;
-      var heroSection=document.getElementById('hero');
-      var heroBottom=heroSection?heroSection.getBoundingClientRect().bottom:window.innerHeight;
-      if(heroBottom>0){
-        sndEnter.currentTime=0;
-        sndEnter.play().catch(function(err){console.warn('TARDIS audio failed:',err);});
-      }
-    }
+if(tardisFirstAppear){
+  tardisFirstAppear=false;
+  var heroSection=document.getElementById('hero');
+  var heroRect=heroSection?heroSection.getBoundingClientRect():null;
+  var heroVisible=heroRect&&heroRect.top<window.innerHeight&&heroRect.bottom>0;
+  if(heroVisible){
+    sndEnter.currentTime=0;
+    sndEnter.play().catch(function(err){console.warn('TARDIS audio failed:',err);});
+  }
+}
     animate();
   }
 
