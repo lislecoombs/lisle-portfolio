@@ -668,6 +668,8 @@
     </div>
   </div>
 </section>
+<div id="tbc-spacer" style="height:300px;pointer-events:none;"></div>
+<div id="tbc-sentinel" style="height:1px;pointer-events:none;"></div>
 <footer id="site-footer">
   <img src="images/cat.gif" alt="" style="display:block;margin:0 auto 18px;width:120px;image-rendering:pixelated;opacity:.85;" />
   <p>Lisle Coombs &mdash; <span id="yr"></span> </p>
@@ -1176,7 +1178,7 @@ function showStarPlatinum(){
 var tbcShown=false;
 new IntersectionObserver(function(entries){
   if(entries[0].isIntersecting&&!tbcShown){tbcShown=true;showTBC();}
-},{threshold:.5}).observe(document.getElementById('site-footer'));
+},{threshold:1.0}).observe(document.getElementById('tbc-sentinel'));
 
 function showTBC(){
   var wasPlaying=musicPlaying;
