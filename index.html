@@ -953,7 +953,6 @@ document.getElementById('cat-stack').addEventListener('click',function(){
   catClickCount++;
   play(snd);
 });
-var firstCatImg=catList&&catList[0]?catList[0].image:(typeof d.cat_photo==='string'?d.cat_photo:null);
 if(d.about_text)document.getElementById('about-text-cms').textContent=d.about_text;
 var catCaption=catList&&catList[0]&&catList[0].caption?catList[0].caption:d.cat_caption;
 if(catCaption)document.getElementById('cat-caption-cms').textContent=catCaption;
@@ -1128,10 +1127,10 @@ function showKonami(){
 
 /* ═ TRIPLE-CLICK → STAR PLATINUM ═ */
 var tripleTimer=null,tripleCount=0;
-document.addEventListener('click',function(e){
+document.getElementById('logo-btn').addEventListener('click',function(e){
   tripleCount++;clearTimeout(tripleTimer);
   tripleTimer=setTimeout(function(){tripleCount=0;},500);
-  if(tripleCount>=10){tripleCount=0;showStarPlatinum();}
+  if(tripleCount>=5){tripleCount=0;showStarPlatinum();}
 });
   
 /* ═ TRIPLE-CLICK → STAR PLATINUM ═ */
@@ -1528,7 +1527,7 @@ if(window.netlifyIdentity){
     });
   }
 
-  window.addEventListener('resize',function(){baseY=window.innerHeight*.78;});
+  window.addEventListener('resize',function(){baseY=window.innerHeight*.08;});
   setTimeout(appear,5000);
 })();
 </script>
