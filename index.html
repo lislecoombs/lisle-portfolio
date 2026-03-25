@@ -183,7 +183,7 @@
   .gallery-item-inner{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.09);border-radius:2px;overflow:hidden;position:relative;}
   .gallery-item-inner::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--terra);transform:scaleX(0);transition:transform .3s;z-index:5;}
   .gallery-item:hover .gallery-item-inner::before{transform:scaleX(1);}
-  .gallery-img{width:100%;display:block;object-fit:cover;max-height:380px;}
+  .gallery-img{width:100%;display:block;object-fit:cover;}
   .gallery-caption{padding:10px 12px;font-family:'Caveat',cursive;font-size:.9rem;color:var(--mushroom);border-top:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;align-items:center;}
   .gallery-caption .yr{color:var(--sage);font-size:.8rem;}
   .gallery-empty{text-align:center;padding:60px 40px;font-family:'Caveat',cursive;font-size:1.1rem;color:rgba(255,255,255,.2);border:1px dashed rgba(255,255,255,.1);border-radius:3px;}
@@ -206,7 +206,7 @@
   .contact-links{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;}
   .contact-link{font-family:'Caveat',cursive;font-size:1.2rem;color:var(--wheat);text-decoration:none;padding:11px 26px;border:1px solid rgba(212,184,150,.2);border-radius:2px;transition:all .3s;cursor:url('/cursors/pointer.png') 8 0, pointer;}
   .contact-link:hover{color:var(--cream);border-color:var(--rose);transform:translateY(-2px);box-shadow:0 6px 20px rgba(201,132,122,.15);}
-  footer{padding:36px 52px 300px;text-align:center;border-top:1px solid rgba(255,255,255,.05);font-family:'Caveat',cursive;font-size:1rem;color:rgba(255,255,255,.2);line-height:1.8;cursor:url('/cursors/pointer.png') 8 0, pointer;}
+  footer{padding:36px 52px 180px;text-align:center;border-top:1px solid rgba(255,255,255,.05);font-family:'Caveat',cursive;font-size:1rem;color:rgba(255,255,255,.2);line-height:1.8;cursor:url('/cursors/pointer.png') 8 0, pointer;}
   /* LIGHTBOX */
   #lightbox{position:fixed;inset:0;z-index:500;background:rgba(7,12,5,.97);display:none;align-items:center;justify-content:center;gap:40px;backdrop-filter:blur(8px);padding:60px 40px 40px;cursor:url('/cursors/cursor.png') 2 2, auto;}
   #lightbox.active{display:flex;}
@@ -253,8 +253,8 @@
   #egg-badge{position:fixed;bottom:22px;right:22px;font-family:'Caveat',cursive;font-size:.85rem;color:var(--sage);z-index:200;opacity:0;transition:opacity 1s;pointer-events:none;}
   #egg-badge.show{opacity:.7;}
   @media(max-width:900px)
-    nav{padding:16px 24px;flex-wrap:wrap;gap:12px;}
-    section,#guestbook{padding:70px 24px;}.hero-layout{grid-template-columns:1fr;text-align:center;gap:40px;}.hero-left,.hero-right{text-align:center;}.float-title{justify-content:center!important;}.portrait-stack{margin:0 auto 32px;}.about-grid{grid-template-columns:1fr;}.gallery-grid{columns:2 160px;}footer{padding:28px 24px;}.form-row{grid-template-columns:1fr;}}
+     nav{padding:16px 24px;flex-wrap:wrap;gap:12px;}
+     section,#guestbook{padding:70px 24px;}.hero-layout{grid-template-columns:1fr;text-align:center;gap:40px;}.hero-left,.hero-right{text-align:center;}.float-title{justify-content:center!important;}.portrait-stack{margin:0 auto 32px;}.about-grid{grid-template-columns:1fr;}.gallery-grid{columns:2 160px;}footer{padding:28px 24px;}.form-row{grid-template-columns:1fr;}}
  /* ── SCRAPBOOK OVERRIDES ── */
 
 .tape{position:absolute;height:14px;background:rgba(255,245,160,.4);border:1px solid rgba(240,215,60,.2);border-radius:1px;z-index:10;pointer-events:none;}
@@ -571,6 +571,17 @@
           <p class="blog-click-hint" id="blog-hint-0" style="display:none;text-align:center;margin-top:6px;">click to see another ✦</p>
         </div>
 
+        <div class="blog-stack-wrap reveal" id="blog-photo-2" style="display:none;margin-top:40px;">
+          <div class="blog-polaroid-wrapper">
+            <div class="blog-polaroid-tape"></div>
+            <div class="blog-stack">
+              <div class="blog-stack-back"></div>
+              <div class="blog-stack-front"><img class="blog-img" src="" alt="" /></div>
+            </div>
+            <p class="blog-photo-caption" id="blog-cap-2"></p>
+          </div>
+          <p class="blog-click-hint" id="blog-hint-2" style="display:none;text-align:center;margin-top:6px;">click to see another ✦</p>
+        </div>
 
       </div>
 
@@ -592,17 +603,7 @@
           </div>
           <p class="blog-click-hint" id="blog-hint-1" style="display:none;text-align:center;margin-top:6px;">click to see another ✦</p>
         </div>
-<div class="blog-stack-wrap reveal" id="blog-photo-2" style="display:none;margin-top:40px;">
-  <div class="blog-polaroid-wrapper">
-    <div class="blog-polaroid-tape"></div>
-    <div class="blog-stack">
-      <div class="blog-stack-back"></div>
-      <div class="blog-stack-front"><img class="blog-img" src="" alt="" /></div>
-    </div>
-    <p class="blog-photo-caption" id="blog-cap-2"></p>
-  </div>
-  <p class="blog-click-hint" id="blog-hint-2" style="display:none;text-align:center;margin-top:6px;">click to see another ✦</p>
-</div>
+
       </div>
 
     </div>
@@ -954,6 +955,7 @@ document.getElementById('cat-stack').addEventListener('click',function(){
   catClickCount++;
   play(snd);
 });
+var firstCatImg=catList&&catList[0]?catList[0].image:(typeof d.cat_photo==='string'?d.cat_photo:null);
 if(d.about_text)document.getElementById('about-text-cms').textContent=d.about_text;
 var catCaption=catList&&catList[0]&&catList[0].caption?catList[0].caption:d.cat_caption;
 if(catCaption)document.getElementById('cat-caption-cms').textContent=catCaption;
@@ -1004,6 +1006,36 @@ for(var bi=0;bi<3;bi++){
   })(bi);
 }
     // Adjust layout based on photo count and text length
+setTimeout(function(){
+  var layout=document.querySelector('.blog-layout');
+  var textCard=document.querySelector('.blog-text-card');
+  var photo0=document.getElementById('blog-photo-0');
+  var photo1=document.getElementById('blog-photo-1');
+  var photo2=document.getElementById('blog-photo-2');
+  if(!layout||!textCard) return;
+  var visCount=[photo0,photo1,photo2].filter(function(p){return p&&p.style.display!=='none';}).length;
+  if(visCount===3&&photo2&&photo2.style.display!=='none'){
+    var textH=textCard.offsetHeight;
+    var p0H=photo0?photo0.offsetHeight:0;
+    var p2H=photo2.offsetHeight;
+    if(textH<p0H+48+p2H){
+      // Use absolute positioning anchored to bottom of text card
+      var layoutRect=layout.getBoundingClientRect();
+      var textRect=textCard.getBoundingClientRect();
+      var topPos=textRect.bottom-layoutRect.top-40;
+      var rightPos=layoutRect.right-textRect.right+60;
+      photo2.parentNode.removeChild(photo2);
+      layout.style.position='relative';
+      photo2.style.position='absolute';
+      photo2.style.top=topPos+'px';
+      photo2.style.right=rightPos+'px';
+      photo2.style.zIndex='1';
+      layout.appendChild(photo2);
+      // Add padding to layout so it doesn't clip the photo
+      layout.style.paddingBottom=(topPos+p2H-textH+10)+'px';
+    }
+  }
+},500);
 cats.forEach(function(cat){
   var grid=document.getElementById('grid-'+cat);
   var items=d[cat]||[];
@@ -1092,7 +1124,7 @@ document.addEventListener('keydown',function(e){
 });
 function showKonami(){
   document.getElementById('konami-bg').classList.add('on');
-    document.getElementById('konami-cat').onerror = function(){
+  document.getElementById('konami-cat').onerror = function(){
     this.style.display='none';
     document.getElementById('konami-fallback').style.display='block';
   };
@@ -1102,10 +1134,10 @@ function showKonami(){
 
 /* ═ TRIPLE-CLICK → STAR PLATINUM ═ */
 var tripleTimer=null,tripleCount=0;
-document.getElementById('logo-btn').addEventListener('click',function(e){
+document.addEventListener('click',function(e){
   tripleCount++;clearTimeout(tripleTimer);
   tripleTimer=setTimeout(function(){tripleCount=0;},500);
-  if(tripleCount>=5){tripleCount=0;showStarPlatinum();}
+  if(tripleCount>=10){tripleCount=0;showStarPlatinum();}
 });
   
 /* ═ TRIPLE-CLICK → STAR PLATINUM ═ */
@@ -1191,9 +1223,9 @@ function showTBC(){
     }
   }
 
-
-window.addEventListener('scroll',tbcScrollHandler,{passive:true});
-  
+  setTimeout(function(){
+    window.addEventListener('scroll',tbcScrollHandler,{passive:true});
+  },1000);
 }
   
 
