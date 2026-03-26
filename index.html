@@ -1379,7 +1379,31 @@ jojoEl.addEventListener('mouseenter', function(){
   });
 }
 })();
-  
+/* ═ CLICK / MOVE CURSORS ═ */
+(function(){
+  var isDown = false;
+  var hasMoved = false;
+
+  document.addEventListener('mousedown', function(){
+    isDown = true;
+    hasMoved = false;
+    document.body.style.cursor = "url('/cursors/click.png') 8 5, auto";
+  });
+
+  document.addEventListener('mousemove', function(){
+    if(!isDown) return;
+    if(!hasMoved){
+      hasMoved = true;
+      document.body.style.cursor = "url('/cursors/move.png') 12 8, grabbing";
+    }
+  });
+
+  document.addEventListener('mouseup', function(){
+    isDown = false;
+    hasMoved = false;
+    document.body.style.cursor = '';
+  });
+})();
 /* ═ NOTICE BANNER ═ */
 (function(){
   var notice=document.getElementById('site-notice');
