@@ -329,13 +329,13 @@
   bottom:calc(100% + 10px);
   left:50%;
   transform:translateX(-50%) translateY(5px);
-  background:rgba(14,20,9,.93);
-  border:1px solid rgba(122,158,126,.28);
+  background:none;
+  border:none;
   color:var(--mushroom);
   font-family:'Caveat',cursive;
   font-size:.88rem;
-  padding:5px 13px;
-  border-radius:2px;
+  padding:0;
+  border-radius:0;
   white-space:nowrap;
   pointer-events:none;
   opacity:0;
@@ -1206,7 +1206,7 @@ new IntersectionObserver(function(entries){
 },{threshold:1.0}).observe(document.getElementById('tbc-sentinel'));
 
 function showTBC(){
-  var wasPlaying=musicPlaying;
+  var musicWasPlaying=musicPlaying;
   if(musicReady && musicPlaying){
     ytPlayer.pauseVideo();
     musicPlaying=false;
@@ -1218,28 +1218,50 @@ function showTBC(){
   SND.round.currentTime=0;
   SND.round.play().catch(function(e){console.warn('TBC audio failed:',e);});
   foundEgg('To Be Continued...');
+  var tbcActive=true;
 
   SND.round.onended=function(){
+    if(!tbcActive) return;
     document.getElementById('tbc-sepia').classList.remove('on');
     document.getElementById('tbc-overlay').classList.remove('on');
-    window.removeEventListener('scroll',tbcScrollHandler);
-    if(wasPlaying) resumeMusic();
+    tbcActive=false;
+    if(musicWasPlaying&&musicReady){
+      ytPlayer.playVideo();
+      musicPlaying=true;
+      if(musicBtn) musicBtn.classList.remove('paused');
+      if(musicLabel) musicLabel.textContent='music on';
+    }
   };
 
   function tbcScrollHandler(){
     var footer=document.getElementById('site-footer');
     var rect=footer.getBoundingClientRect();
     var atBottom=rect.top<window.innerHeight;
-    if(atBottom){
+    if(atBottom&&!tbcActive){
+      tbcActive=true;
+      musicWasPlaying=musicPlaying;
+      if(musicReady&&musicPlaying){
+        ytPlayer.pauseVideo();
+        musicPlaying=false;
+        if(musicBtn) musicBtn.classList.add('paused');
+        if(musicLabel) musicLabel.textContent='play music';
+      }
       document.getElementById('tbc-sepia').classList.add('on');
       document.getElementById('tbc-overlay').classList.add('on');
+      SND.round.currentTime=0;
       SND.round.play().catch(function(){});
-      if(musicReady&&musicPlaying){ytPlayer.pauseVideo();musicPlaying=false;if(musicBtn)musicBtn.classList.add('paused');if(musicLabel)musicLabel.textContent='play music';}
-    } else {
+    } else if(!atBottom&&tbcActive){
+      tbcActive=false;
+      SND.round.pause();
+      SND.round.currentTime=0;
       document.getElementById('tbc-sepia').classList.remove('on');
       document.getElementById('tbc-overlay').classList.remove('on');
-      SND.round.pause();
-      if(wasPlaying&&musicReady){ytPlayer.playVideo();musicPlaying=true;if(musicBtn)musicBtn.classList.remove('paused');if(musicLabel)musicLabel.textContent='music on';}
+      if(musicWasPlaying&&musicReady){
+        ytPlayer.playVideo();
+        musicPlaying=true;
+        if(musicBtn) musicBtn.classList.remove('paused');
+        if(musicLabel) musicLabel.textContent='music on';
+      }
     }
   }
 
