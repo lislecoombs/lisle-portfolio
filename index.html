@@ -1580,7 +1580,8 @@ jojoEl.addEventListener('mouseenter', function(){
     isDown = true;
     hasMoved = false;
     var computed = window.getComputedStyle(e.target).cursor;
-    if(computed.indexOf('pointer.png') !== -1){
+    var fallback = computed.split(',').pop().trim();
+    if(fallback === 'pointer'){
       document.body.style.cursor = "url('/cursors/pointer-click.png') 18 10, pointer";
     } else {
       document.body.style.cursor = "url('/cursors/click.png') 8 10, auto";
