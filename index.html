@@ -479,7 +479,7 @@
   <span class="konami-hint">click anywhere to close</span>
   <img id="konami-cat" src="images/surprise-cat.png" alt="surprise" />
   <div id="konami-fallback" style="display:none;font-family:'Caveat',cursive;font-size:3rem;color:var(--wheat)">&#x304B;&#x3093;&#x306A;&#x304C;&#x308F;&#x3044;&#x3044;...</div>
-  <p class="konami-caption">you found her (=^&#xFB;&#x315C;^=)</p>
+  <p class="konami-caption">you found her!</p>
 </div>
 <div id="jojo-overlay">
  <img id="star-platinum" src="images/star-platinum.png" alt="Star Platinum" />
@@ -1026,7 +1026,9 @@ var YT_ID='1wOAhRAqb40',YT_MAX=2520;
 var ytPlayer=null,musicPlaying=false,musicReady=false;
 var ytScript=document.createElement('script');ytScript.src='https://www.youtube.com/iframe_api';document.head.appendChild(ytScript);
 window.onYouTubeIframeAPIReady=function(){
-  ytPlayer=new YT.Player('yt-frame',{
+ytPlayer=new YT.Player('yt-frame',{
+    width:1,
+    height:1,
     videoId:YT_ID,
     playerVars:{autoplay:0,start:Math.floor(Math.random()*YT_MAX),controls:0,rel:0,playsinline:1},
     events:{
@@ -1613,7 +1615,7 @@ jojoEl.addEventListener('mouseenter', function(){
 (function(){
   var el=document.getElementById('tardis');
   if(!el) return;
-  var sndEnter=mkAudio('sounds/TARDIS-enter.mp3',.8);
+  var sndEnter=mkAudio('sounds/TARDIS-enter.mp3',.7);
   var sndShake=mkAudio('sounds/doctor-shake.mp3',.8);
   var sndDoctors=[];
   for(var i=1;i<=6;i++) sndDoctors.push(mkAudio('sounds/doctor'+i+'.mp3',.8));
