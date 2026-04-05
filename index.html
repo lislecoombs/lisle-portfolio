@@ -461,7 +461,10 @@
   cursor:url('/cursors/default.png') 8 10,auto;
 }
 .spotify-scrap:hover iframe{opacity:1;}
-
+html.cursor-click *,html.cursor-click{cursor:url('/cursors/click.png') 8 10,auto!important;}
+html.cursor-pointer-click *,html.cursor-pointer-click{cursor:url('/cursors/pointer-click.png') 18 10,pointer!important;}
+html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbing!important;}
+  
 </style>
 </head>
 <body>
@@ -1575,6 +1578,7 @@ jojoEl.addEventListener('mouseenter', function(){
 (function(){
   var isDown = false;
   var hasMoved = false;
+  var root = document.documentElement;
 
   document.addEventListener('mousedown', function(e){
     isDown = true;
@@ -1582,9 +1586,9 @@ jojoEl.addEventListener('mouseenter', function(){
     var computed = window.getComputedStyle(e.target).cursor;
     var fallback = computed.split(',').pop().trim();
     if(fallback === 'pointer'){
-      document.body.style.cursor = "url('/cursors/pointer-click.png') 18 10, pointer";
+      root.classList.add('cursor-pointer-click');
     } else {
-      document.body.style.cursor = "url('/cursors/click.png') 8 10, auto";
+      root.classList.add('cursor-click');
     }
   });
 
@@ -1592,16 +1596,18 @@ jojoEl.addEventListener('mouseenter', function(){
     if(!isDown) return;
     if(!hasMoved){
       hasMoved = true;
-      document.body.style.cursor = "url('/cursors/move.png') 26 36, grabbing";
+      root.classList.remove('cursor-click','cursor-pointer-click');
+      root.classList.add('cursor-move');
     }
   });
 
   document.addEventListener('mouseup', function(){
     isDown = false;
     hasMoved = false;
-    document.body.style.cursor = '';
+    root.classList.remove('cursor-click','cursor-pointer-click','cursor-move');
   });
 })();
+  
 /* ═ NOTICE BANNER ═ */
 (function(){
   var notice=document.getElementById('site-notice');
