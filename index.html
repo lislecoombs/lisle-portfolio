@@ -1019,12 +1019,12 @@ drawStars();
 
 
 
-/* /* ═ YOUTUBE ═ */
+/* ═ YOUTUBE ═ */
 var YT_ID='1wOAhRAqb40',YT_MAX=2520;
 var ytPlayer=null,musicPlaying=false,musicReady=false;
 var ytScript=document.createElement('script');ytScript.src='https://www.youtube.com/iframe_api';document.head.appendChild(ytScript);
 window.onYouTubeIframeAPIReady=function(){
-ytPlayer=new YT.Player('yt-frame',{
+  ytPlayer=new YT.Player('yt-frame',{
     width:1,
     height:1,
     videoId:YT_ID,
@@ -1045,7 +1045,7 @@ musicBtn.addEventListener('click',function(){
   if(!musicReady){musicLabel.textContent='loading...';return;}
   if(musicPlaying){ytPlayer.pauseVideo();musicPlaying=false;musicBtn.classList.add('paused');musicLabel.textContent='play music';}
   else{ytPlayer.playVideo();musicPlaying=true;musicBtn.classList.remove('paused');musicLabel.textContent='music on';}
-});*/
+});
 
 /* ═ TYPEWRITER ═ */
 var phrases=['horror movie fan','amateur rock climber','explore to find the hidden easter eggs!','cat lover','( ˘ ³˘(◡‿◡˶)'];
