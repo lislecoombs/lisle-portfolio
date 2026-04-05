@@ -54,12 +54,16 @@
   body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");opacity:.6;}
   #wrap{position:relative;z-index:2;}
   /* MUSIC - no box */
+  #music-btn,
+#music-btn *{cursor:url('/cursors/pointer.png') 24 4,pointer!important;}
   #music-btn{position:fixed;bottom:24px;left:24px;z-index:300;background:none;border:none;font-family:'Caveat',cursive;font-size:1rem;color:var(--sage);cursor:url('/cursors/pointer.png') 16 0, pointer;transition:color .3s;display:flex;align-items:center;gap:8px;}
   #music-btn:hover{color:var(--cream);}
   #music-record{width:60px;height:auto;image-rendering:pixelated;}
   #music-dot{width:7px;height:7px;border-radius:50%;background:var(--sage);animation:musicPulse 1.5s ease-in-out infinite;}
   #music-btn.paused #music-dot{animation:none;background:var(--mushroom);opacity:.5;}
   @keyframes musicPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+  #yt-frame,
+#yt-frame iframe{pointer-events:none!important;}
   /* NAV */
   nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 52px;background:linear-gradient(to bottom,rgba(7,12,5,.97) 0%,transparent 100%);transition:top .3s;}
   .nav-logo{text-decoration:none;display:block;cursor:url('/cursors/pointer.png') 16 0, pointer;}
