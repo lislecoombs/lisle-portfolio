@@ -147,12 +147,12 @@
   .fav-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:2px;}
   .fav-list li{font-size:.95rem;color:var(--mushroom);line-height:1.5;padding-left:1em;text-indent:-1em;}
   .fav-list li em{color:var(--wheat);font-style:italic;}
-  .fav-item{position:relative;cursor:default;display:inline-flex;align-items:center;gap:6px;}
+  .fav-item{position:relative;cursor:url('/cursors/default.png') 16 10,auto;display:inline-flex;align-items:center;gap:6px;}
   .fav-item .fav-text{transition:opacity .15s;}
   .fav-item .fav-hover-img{position:absolute;left:0;top:50%;transform:translateY(-50%);height:44px;width:auto;object-fit:contain;opacity:0;pointer-events:none;transition:opacity .15s;image-rendering:auto;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5));}
   .fav-item:hover .fav-text{opacity:0;}
   .fav-item:hover .fav-hover-img{opacity:1;pointer-events:auto;}
-  ..fav-surfsup{cursor:url('/cursors/pointer.png') 24 4,pointer;}{cursor:pointer;}
+  .fav-surfsup{cursor:url('/cursors/pointer.png') 24 4,pointer;}
   .fav-jojo{cursor:url('/cursors/pointer.png') 24 4,pointer;transition:color .2s,text-shadow .2s;}
   .fav-jojo.jojo-active{color:#b47aff;text-shadow:0 0 8px rgba(180,0,255,.5);}
   @media(max-width:900px){.fav-board{grid-template-columns:1fr;gap:20px;}.fav-card{transform:none!important;width:auto;}}
@@ -349,6 +349,7 @@
 }
 
 /* ── GOODREADS WIDGET SCRAPBOOK RESTYLE ── */
+.fav-card-books a{cursor:url('/cursors/pointer.png') 24 4,pointer!important;}
 .fav-card-books .gr_custom_container_1775360114{
   background:transparent!important;
   border:none!important;
@@ -455,6 +456,7 @@
 .spotify-scrap iframe{
   border-radius:8px!important;
   opacity:.9;transition:opacity .2s;
+  cursor:url('/cursors/default.png') 16 10,auto;
 }
 .spotify-scrap:hover iframe{opacity:1;}
 
