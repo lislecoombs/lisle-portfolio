@@ -1576,10 +1576,15 @@ jojoEl.addEventListener('mouseenter', function(){
   var isDown = false;
   var hasMoved = false;
 
-  document.addEventListener('mousedown', function(){
+  document.addEventListener('mousedown', function(e){
     isDown = true;
     hasMoved = false;
-    document.body.style.cursor = "url('/cursors/click.png') 8 10, auto";
+    var computed = window.getComputedStyle(e.target).cursor;
+    if(computed.indexOf('pointer.png') !== -1){
+      document.body.style.cursor = "url('/cursors/pointer-click.png') 18 10, pointer";
+    } else {
+      document.body.style.cursor = "url('/cursors/click.png') 8 10, auto";
+    }
   });
 
   document.addEventListener('mousemove', function(){
