@@ -110,8 +110,8 @@
   .floater{position:absolute;pointer-events:none;user-select:none;animation:drift var(--dur,6s) ease-in-out infinite;animation-delay:var(--delay,0s);opacity:var(--op,.25);font-family:'Caveat',cursive;font-size:var(--sz,1rem);color:var(--sage);}
   .floater-gif{position:absolute;pointer-events:none;user-select:none;animation:drift var(--dur,7s) ease-in-out infinite;animation-delay:var(--delay,0s);opacity:var(--op,.7);image-rendering:pixelated;}
   @keyframes drift{0%,100%{transform:translateY(0) rotate(0deg)}33%{transform:translateY(-12px) rotate(4deg)}66%{transform:translateY(6px) rotate(-3deg)}}
-  .scroll-hint{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);font-family:'Caveat',cursive;font-size:.95rem;color:var(--sage);opacity:.6;animation:bob 2.5s ease-in-out infinite;}
-  @keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+  .scroll-hint{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);font-family:'Caveat',cursive;font-size:1.3rem;color:var(--sage);opacity:.85;animation:bob 2s ease-in-out infinite;text-shadow:0 0 12px rgba(122,158,126,.3);}
+  @keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(10px)}}
   .divider{text-align:center;padding:16px;font-size:.95rem;letter-spacing:14px;color:var(--sage);opacity:.3;font-family:'Caveat',cursive;}
   section{padding:90px 52px;}
   .section-tag{font-family:'Caveat',cursive;font-size:.95rem;color:var(--terra);letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:10px;}
@@ -537,7 +537,7 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
       </p>
     </div>
   </div>
-  <p class="scroll-hint">scroll down v</p>
+  <p class="scroll-hint">scroll down ↓</p>
 </section>
 <div class="divider">. . .</div>
   <!-- ═══════════════════════════════════════════════════
@@ -866,14 +866,13 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
     </div>
   </div>
 </section>
-<div id="tbc-spacer" style="height:300px;pointer-events:none;"></div>
-<div id="tbc-sentinel" style="height:1px;pointer-events:none;"></div>
 <footer id="site-footer">
   <img src="images/cat.gif" alt="" style="display:block;margin:0 auto 18px;width:120px;image-rendering:pixelated;opacity:.85;" />
   <p>Lisle Coombs &mdash; <span id="yr"></span> </p>
   <p style="margin-top:8px;font-size:.9rem;opacity:.9;">disclaimer: I&#39;m learning to code but for now I made this with Claude AI (｡ᵕ ◞ _◟) )</p>
   <p style="margin-top:4px;font-size:.75rem;opacity:.35;"> >psst &mdash; try the konami code </p>
 </footer>
+<div id="tbc-sentinel" style="height:1px;pointer-events:none;"></div>
 </div>
 <script>
 /* ═ SOUNDS ═ */
