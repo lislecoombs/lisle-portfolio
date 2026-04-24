@@ -872,7 +872,6 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
   <p style="margin-top:8px;font-size:.9rem;opacity:.9;">disclaimer: I&#39;m learning to code but for now I made this with Claude AI (｡ᵕ ◞ _◟) )</p>
   <p style="margin-top:4px;font-size:.75rem;opacity:.35;"> >psst &mdash; try the konami code </p>
 </footer>
-<div id="tbc-sentinel" style="height:1px;pointer-events:none;"></div>
 </div>
 <script>
 /* ═ SOUNDS ═ */
@@ -1374,14 +1373,13 @@ function showStarPlatinum(){
 
 
 /* ═ FOOTER → TO BE CONTINUED ═ */
-var tbcShown=false;
-new IntersectionObserver(function(entries){
-  if(entries[0].isIntersecting&&!tbcShown){tbcShown=true;showTBC();}
-},{threshold:1.0}).observe(document.getElementById('tbc-sentinel'));
+var tbcActive=false,tbcMusicWasPlaying=false;
 
-function showTBC(){
-  var musicWasPlaying=musicPlaying;
-  if(musicReady && musicPlaying){
+function tbcShow(){
+  if(tbcActive) return;
+  tbcActive=true;
+  tbcMusicWasPlaying=musicPlaying;
+  if(musicReady&&musicPlaying){
     ytPlayer.pauseVideo();
     musicPlaying=false;
     if(musicBtn) musicBtn.classList.add('paused');
@@ -1392,57 +1390,33 @@ function showTBC(){
   SND.round.currentTime=0;
   SND.round.play().catch(function(e){console.warn('TBC audio failed:',e);});
   foundEgg('To Be Continued...');
-  var tbcActive=true;
-
   SND.round.onended=function(){
-    if(!tbcActive) return;
     document.getElementById('tbc-sepia').classList.remove('on');
     document.getElementById('tbc-overlay').classList.remove('on');
-    tbcActive=false;
-    if(musicWasPlaying&&musicReady){
-      ytPlayer.playVideo();
-      musicPlaying=true;
-      if(musicBtn) musicBtn.classList.remove('paused');
-      if(musicLabel) musicLabel.textContent='music on';
-    }
   };
-
-  function tbcScrollHandler(){
-    var footer=document.getElementById('site-footer');
-    var rect=footer.getBoundingClientRect();
-    var atBottom=rect.top<window.innerHeight;
-    if(atBottom&&!tbcActive){
-      tbcActive=true;
-      musicWasPlaying=musicPlaying;
-      if(musicReady&&musicPlaying){
-        ytPlayer.pauseVideo();
-        musicPlaying=false;
-        if(musicBtn) musicBtn.classList.add('paused');
-        if(musicLabel) musicLabel.textContent='play music';
-      }
-      document.getElementById('tbc-sepia').classList.add('on');
-      document.getElementById('tbc-overlay').classList.add('on');
-      SND.round.currentTime=0;
-      SND.round.play().catch(function(){});
-    } else if(!atBottom&&tbcActive){
-      tbcActive=false;
-      SND.round.pause();
-      SND.round.currentTime=0;
-      document.getElementById('tbc-sepia').classList.remove('on');
-      document.getElementById('tbc-overlay').classList.remove('on');
-      if(musicWasPlaying&&musicReady){
-        ytPlayer.playVideo();
-        musicPlaying=true;
-        if(musicBtn) musicBtn.classList.remove('paused');
-        if(musicLabel) musicLabel.textContent='music on';
-      }
-    }
-  }
-
-  setTimeout(function(){
-    window.addEventListener('scroll',tbcScrollHandler,{passive:true});
-  },1000);
 }
+
+function tbcHide(){
+  if(!tbcActive) return;
+  tbcActive=false;
+  document.getElementById('tbc-sepia').classList.remove('on');
+  document.getElementById('tbc-overlay').classList.remove('on');
+  SND.round.pause();
+  SND.round.currentTime=0;
+  SND.round.onended=null;
+  if(tbcMusicWasPlaying&&musicReady){
+    ytPlayer.playVideo();
+    musicPlaying=true;
+    if(musicBtn) musicBtn.classList.remove('paused');
+    if(musicLabel) musicLabel.textContent='music on';
+  }
+}
+
+window.addEventListener('scroll',function(){
+  var atBottom=(window.scrollY+window.innerHeight)>=(document.body.scrollHeight-5);
+  if(atBottom&&!tbcActive) tbcShow();
+  else if(!atBottom&&tbcActive) tbcHide();
+},{passive:true});
   
 
 /* ═ CONFETTI ═ */
