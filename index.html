@@ -308,10 +308,10 @@
 #letterboxd-embed-wrapper-tc a{color:#c9a97a!important;text-decoration:none;}
 #letterboxd-embed-wrapper-tc img{max-width:100%;border-radius:2px;}
 /* iPod */
-.ipod-wrap{position:relative;width:280px;max-width:100%;}
-.ipod-screen{position:absolute;left:12.5%;top:9%;right:12.5%;bottom:49%;overflow:hidden;background:#fff;border-radius:4px;z-index:1;}
+.ipod-wrap{position:relative;width:360px;max-width:100%;}
+.ipod-screen{position:absolute;left:78px;top:39px;width:204px;height:144px;overflow:hidden;border-radius:4px;z-index:1;transform:translateZ(0);}
 .ipod-img{width:100%;display:block;pointer-events:none;position:relative;z-index:2;mix-blend-mode:multiply;}
-.ipod-screen iframe{width:100%;height:100%;border:none;display:block;}
+.ipod-screen iframe{width:100%;height:152px;border:none;display:block;}
 @media(max-width:700px){.devices-row{flex-direction:column;align-items:center;}.tv-wrap,.ipod-wrap{max-width:100%;}}
 
 #envelope-wrap{position:absolute;bottom:40px;left:-15px;z-index:20;cursor:url('/cursors/pointer.png') 18 10,pointer;animation:envShakeLoop 9s ease-in-out infinite;transform-origin:bottom center;}
@@ -742,7 +742,6 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
 
       <!-- iPod / Spotify -->
       <div class="device-unit">
-        <span class="device-label" style="transform:rotate(1.5deg);">(*^_^*) &nbsp;music</span>
         <div class="ipod-wrap">
           <div class="ipod-screen">
             <iframe src="https://open.spotify.com/embed/playlist/17S2D8xCQEVviPivD2UKEX?utm_source=generator"
@@ -756,7 +755,6 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
 
       <!-- TV / Letterboxd -->
       <div class="device-unit">
-        <span class="device-label" style="transform:rotate(-1.5deg);">(~_~) &nbsp;recently watched</span>
         <div class="tv-wrap">
           <div class="tv-screen">
             <div class="tv-scanlines"></div>
