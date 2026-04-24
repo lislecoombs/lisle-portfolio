@@ -294,24 +294,26 @@
 
 .diary-stamp{display:inline-block;font-family:'Courier New',monospace;font-size:.75rem;color:var(--terra);border:2px solid rgba(184,115,74,.45);padding:4px 12px;transform:rotate(-2.5deg);letter-spacing:2px;text-transform:uppercase;margin-top:8px;opacity:.85;}
 
-#envelope-wrap{position:absolute;top:-10px;left:-8px;z-index:20;cursor:url('/cursors/pointer.png') 18 10,pointer;animation:envShakeLoop 9s ease-in-out infinite;transform-origin:bottom center;}
-#envelope-img{width:150px;filter:drop-shadow(3px 6px 14px rgba(0,0,0,.55));display:block;transition:filter .3s;}
-#envelope-wrap:hover #envelope-img{filter:drop-shadow(3px 6px 20px rgba(0,0,0,.75)) brightness(1.05);}
+#envelope-wrap{position:absolute;bottom:10px;left:-10px;z-index:20;cursor:url('/cursors/pointer.png') 18 10,pointer;animation:envShakeLoop 9s ease-in-out infinite;transform-origin:bottom center;}
+#envelope-img{width:150px;filter:drop-shadow(3px 6px 14px rgba(0,0,0,.55));display:block;transition:filter .3s,opacity .2s;}
+#envelope-wrap:hover #envelope-img{filter:drop-shadow(3px 6px 22px rgba(0,0,0,.8)) brightness(1.08);}
 /* ── LETTER OVERLAY ── */
-#letter-overlay{position:fixed;inset:0;z-index:450;display:none;align-items:center;justify-content:center;background:rgba(7,12,5,.93);backdrop-filter:blur(8px);padding:60px 24px 40px;}
-#letter-overlay.open{display:flex;}
-#letter-inner{max-width:700px;width:100%;max-height:85vh;overflow-y:auto;display:flex;flex-direction:column;gap:28px;animation:letterSlideUp .55s cubic-bezier(.34,1.56,.64,1) both;}
-@keyframes letterSlideUp{from{transform:translateY(70px);opacity:0}to{transform:translateY(0);opacity:1}}
+#letter-overlay{position:fixed;inset:0;z-index:450;display:none;align-items:center;justify-content:center;background:rgba(7,12,5,0);backdrop-filter:blur(0px);padding:60px 24px 40px;transition:background .7s ease,backdrop-filter .7s ease;}
+#letter-overlay.open{display:flex;background:rgba(7,12,5,.93);backdrop-filter:blur(8px);}
+#letter-inner{max-width:700px;width:100%;max-height:85vh;overflow-y:auto;display:flex;flex-direction:column;gap:28px;}
+#letter-inner.animating{animation:letterUnfold 1s cubic-bezier(.22,1,.36,1) .35s both;}
+@keyframes letterUnfold{from{transform:translateY(90px) scaleY(.15);opacity:0;transform-origin:top center}to{transform:translateY(0) scaleY(1);opacity:1;transform-origin:top center}}
 #letter-paper{background-color:#f0ebe0;border:1px solid #c8b48a;box-shadow:4px 6px 28px rgba(0,0,0,.6);background-image:linear-gradient(rgba(180,120,55,.12) 1px,transparent 1px);background-size:100% 30px;background-position:0 29px;padding:36px 44px 36px 60px;position:relative;}
 #letter-paper::before{content:'';position:absolute;top:0;bottom:0;left:50px;width:1px;background:rgba(200,80,80,.2);pointer-events:none;}
 #letter-title-el{font-family:'Playfair Display',serif;font-style:italic;font-size:1.8rem;color:#2a1808;margin-bottom:6px;}
 #letter-date-el{font-family:'Caveat',cursive;font-size:.9rem;color:var(--terra);margin-bottom:18px;display:block;}
 #letter-body-el{font-family:'Caveat',cursive;font-size:1.15rem;line-height:2;color:#3a2210;white-space:pre-wrap;}
 #letter-photos{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;padding:8px 0;}
-.letter-polaroid{background:#fff;padding:10px 10px 40px;box-shadow:3px 5px 18px rgba(0,0,0,.5);transform:rotate(var(--rot,2deg));width:170px;flex-shrink:0;transition:transform .3s ease,box-shadow .3s;cursor:url('/cursors/pointer.png') 18 10,pointer;}
+.letter-polaroid{background:#fff;padding:10px 10px 40px;box-shadow:3px 5px 18px rgba(0,0,0,.5);width:170px;flex-shrink:0;transition:transform .35s ease,box-shadow .35s;cursor:url('/cursors/pointer.png') 18 10,pointer;transform:rotate(var(--rot,2deg)) translateY(-20px) scale(.7);opacity:0;animation:polaroidLand .6s cubic-bezier(.34,1.56,.64,1) var(--pdel,1.2s) forwards;}
 .letter-polaroid:hover{transform:rotate(0deg) scale(1.06)!important;box-shadow:6px 10px 28px rgba(0,0,0,.65);z-index:10;}
 .letter-polaroid img{width:100%;aspect-ratio:1;object-fit:cover;display:block;}
 .letter-polaroid p{font-family:'Caveat',cursive;font-size:.88rem;color:#3a2210;text-align:center;margin-top:8px;line-height:1.3;}
+@keyframes polaroidLand{from{transform:rotate(var(--rot,2deg)) translateY(-30px) scale(.7);opacity:0}to{transform:rotate(var(--rot,2deg)) translateY(0) scale(1);opacity:1}}
 #letter-close{position:absolute;top:20px;right:28px;font-family:'Caveat',cursive;font-size:2rem;color:var(--mushroom);background:none;border:none;cursor:url('/cursors/pointer.png') 18 10,pointer;transition:color .3s,transform .3s;z-index:10;}
 #letter-close:hover{color:var(--cream);transform:rotate(90deg);}
 @media(max-width:900px){#letter-inner{max-height:90vh;}#letter-paper{padding:28px 24px 28px 40px;}#letter-paper::before{left:34px;}}
@@ -539,9 +541,7 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
 ═══════════════════════════════════════════════════ -->
 
 <section id="about">
-  <div class="inner">
-
-
+  <div class="inner" style="position:relative;">
     <div class="about-scrap-grid reveal">
 
   <div class="about-notebook-wrap">
@@ -574,8 +574,9 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
   style="display:block;margin:18px auto 0;width:90px;image-rendering:pixelated;opacity:.85;cursor:url('/cursors/pointer.png') 18 10,pointer;" />
   </div>
 
-</div>
-
+    <div id="envelope-wrap" data-tip="psst... open me ✉">
+      <img id="envelope-img" src="images/envelope-closed.png" alt="open envelope" />
+    </div>
   </div>
 </section>
 
@@ -603,10 +604,7 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
 </section>
 <div class="divider">— — —</div>
 <section id="favorites">
-  <div class="inner" style="position:relative;">
-    <div id="envelope-wrap" data-tip="psst... open me ✉">
-      <img id="envelope-img" src="images/envelope-closed.png" alt="open envelope" />
-    </div>
+  <div class="inner">
     <div class="geo-divider reveal">✦ &nbsp;✧&nbsp; Things I Love &nbsp;✧&nbsp; ✦</div>
     <div class="fav-board-scatter-wrap reveal">
       <div class="fav-board">
@@ -1099,6 +1097,7 @@ var polIdx=0;
     var div=document.createElement('div');
     div.className='letter-polaroid';
     div.style.setProperty('--rot',polRots[polIdx%polRots.length]+'deg');
+    div.style.setProperty('--pdel',(1.2+polIdx*0.18)+'s');
     polIdx++;
     var img=document.createElement('img');img.src=src;img.alt='';img.loading='lazy';
     var cap=document.createElement('p');cap.textContent=p.blog_caption||'';
@@ -1321,17 +1320,28 @@ function openLetter(){
   if(envOpen) return;
   envOpen=true;
   envImg.src='images/envelope-open.png';
+  var inner=document.getElementById('letter-inner');
+  inner.classList.remove('animating');
   letterOverlay.style.display='flex';
-  requestAnimationFrame(function(){letterOverlay.classList.add('open');});
+  requestAnimationFrame(function(){
+    letterOverlay.classList.add('open');
+    requestAnimationFrame(function(){ inner.classList.add('animating'); });
+  });
   foundEgg('secret letter! ✉');
 }
 function closeLetter(){
   if(!envOpen) return;
   envOpen=false;
   letterOverlay.classList.remove('open');
-  setTimeout(function(){letterOverlay.style.display='none';},300);
+  setTimeout(function(){letterOverlay.style.display='none';},700);
   envImg.src='images/envelope-closed.png';
 }
+envWrap.addEventListener('mouseover',function(){
+  if(!envOpen) envImg.src='images/envelope-open.png';
+});
+envWrap.addEventListener('mouseout',function(){
+  if(!envOpen) envImg.src='images/envelope-closed.png';
+});
 envWrap.addEventListener('click',function(e){
   e.stopPropagation();
   if(envOpen) closeLetter(); else openLetter();
