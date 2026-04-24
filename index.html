@@ -303,24 +303,25 @@
 #letter-inner{max-width:860px;width:100%;max-height:88vh;overflow-y:auto;display:block;transform:translateY(140px) rotate(-2deg);opacity:0;transition:transform .9s cubic-bezier(.22,1,.36,1) .08s,opacity .55s ease .05s;}
 #letter-overlay.open #letter-inner{transform:translateY(0) rotate(0deg);opacity:1;}
 #letter-scene{position:relative;padding:20px 105px 240px;}
-#letter-photos{position:absolute;inset:0;pointer-events:none;}
+#letter-photos{position:absolute;inset:0;pointer-events:none;z-index:5;overflow:visible;}
 #letter-paper{position:relative;z-index:5;background-color:#f0ebe0;border:1px solid #c8b48a;box-shadow:4px 6px 28px rgba(0,0,0,.6);background-image:linear-gradient(rgba(180,120,55,.12) 1px,transparent 1px);background-size:100% 30px;background-position:0 29px;padding:36px 44px 36px 60px;}
 #letter-paper::before{content:'';position:absolute;top:0;bottom:0;left:50px;width:1px;background:rgba(200,80,80,.2);pointer-events:none;}
 #letter-title-el{font-family:'Playfair Display',serif;font-style:italic;font-size:1.8rem;color:#2a1808;margin-bottom:6px;}
 #letter-date-el{font-family:'Caveat',cursive;font-size:.9rem;color:var(--terra);margin-bottom:18px;display:block;}
 #letter-body-el{font-family:'Lora',serif;font-size:.95rem;line-height:1.9;color:#3a2210;white-space:pre-wrap;}
-.letter-polaroid{position:absolute;pointer-events:all;background:#fff;padding:10px 10px 42px;box-shadow:3px 5px 18px rgba(0,0,0,.5);width:148px;cursor:url('/cursors/pointer.png') 18 10,pointer;opacity:0;z-index:3;}
+.letter-polaroid{position:absolute;pointer-events:all;background:#fff;padding:10px 10px 42px;box-shadow:3px 5px 18px rgba(0,0,0,.5);width:148px;cursor:url('/cursors/pointer.png') 18 10,pointer;opacity:0;z-index:1;}
 .letter-polaroid:hover{z-index:20;filter:brightness(1.06);}
-.pol-img-wrap{position:relative;width:100%;aspect-ratio:1;}
-.pol-front,.pol-back{position:absolute;inset:0;overflow:hidden;transition:transform .4s cubic-bezier(.34,1.56,.64,1);}
-.pol-front{z-index:2;}
-.pol-back{z-index:1;transform:rotate(-5deg) translate(-5px,-3px);}
-.pol-front img,.pol-back img{width:100%;height:100%;object-fit:cover;display:block;}
+.letter-polaroid.pol-stack{height:206px;background:transparent;box-shadow:none;padding:0;}
+.pol-card{position:absolute;inset:0;background:#fff;padding:10px 10px 42px;box-shadow:3px 5px 18px rgba(0,0,0,.5);transition:transform .4s cubic-bezier(.34,1.56,.64,1),z-index 0s;}
+.pol-front-card{z-index:2;}
+.pol-back-card{z-index:1;transform:rotate(-8deg) translate(-8px,-5px);}
+.pol-img-area{width:100%;aspect-ratio:1;overflow:hidden;}
+.pol-img-area img{width:100%;height:100%;object-fit:cover;display:block;}
 .pol-cap{font-family:'Caveat',cursive;font-size:.85rem;color:#3a2210;text-align:center;margin-top:8px;line-height:1.3;}
-.pol-hint{font-family:'Caveat',cursive;font-size:.72rem;color:rgba(58,34,16,.45);text-align:center;margin-top:2px;}
+.pol-hint{font-family:'Caveat',cursive;font-size:.72rem;color:rgba(58,34,16,.45);text-align:center;position:absolute;bottom:10px;left:0;right:0;}
 #letter-close{position:absolute;top:20px;right:28px;font-family:'Caveat',cursive;font-size:2rem;color:var(--mushroom);background:none;border:none;cursor:url('/cursors/pointer.png') 18 10,pointer;transition:color .3s,transform .3s;z-index:460;}
 #letter-close:hover{color:var(--cream);transform:rotate(90deg);}
-@media(max-width:860px){#letter-scene{padding:16px 16px 200px;}.letter-polaroid{width:120px;}}
+@media(max-width:860px){#letter-scene{padding:16px 16px 200px;}.letter-polaroid{width:120px;}.letter-polaroid.pol-stack{height:168px;}.pol-card{padding:8px 8px 34px;}}
 /* ── CUSTOM TOOLTIPS ── */
 [data-tip]{position:relative;}
 [data-tip]::after{
@@ -731,7 +732,6 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
   <button id="letter-close">×</button>
   <div id="letter-inner">
     <div id="letter-scene">
-      <div id="letter-photos"></div>
       <div id="letter-paper">
         <div class="tape tape-tl"></div>
         <div class="tape tape-tr"></div>
@@ -741,6 +741,7 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
       </div>
     </div>
   </div>
+  <div id="letter-photos"></div>
 </div>
 <section id="guestbook">
   <div class="inner">
@@ -1111,34 +1112,48 @@ var polIdx=0;
   var ft=scatterTop[polIdx%scatterTop.length];
   polIdx++;
   var div=document.createElement('div');
-  div.className='letter-polaroid';
   div.dataset.fl=fl; div.dataset.ft=ft; div.dataset.fr=rot;
-  div.style.left='calc(50% - 77px)'; div.style.top='80px';
+  div.style.left='0px'; div.style.top='0px';
   div.style.transform='rotate(0deg) scale(0.45)'; div.style.opacity='0';
-  // Image stack (back + front)
-  var wrap=document.createElement('div'); wrap.className='pol-img-wrap';
-  var frontEl=document.createElement('div'); frontEl.className='pol-front';
-  var frontImg=document.createElement('img'); frontImg.src=imgs[0]; frontImg.alt=''; frontImg.loading='lazy';
-  frontEl.appendChild(frontImg); wrap.appendChild(frontEl);
-  var backEl=null,backImg=null;
   if(imgs.length>1){
-    backEl=document.createElement('div'); backEl.className='pol-back';
-    backImg=document.createElement('img'); backImg.src=imgs[1]; backImg.alt=''; backImg.loading='lazy';
-    backEl.appendChild(backImg); wrap.insertBefore(backEl,frontEl);
-  }
-  var cap=document.createElement('p'); cap.className='pol-cap'; cap.textContent=p.blog_caption||'';
-  div.appendChild(wrap); div.appendChild(cap);
-  if(imgs.length>1){
+    div.className='letter-polaroid pol-stack';
+    var backCard=document.createElement('div'); backCard.className='pol-card pol-back-card';
+    var backImgArea=document.createElement('div'); backImgArea.className='pol-img-area';
+    var backImg=document.createElement('img'); backImg.src=imgs[1]; backImg.alt=''; backImg.loading='lazy';
+    backImgArea.appendChild(backImg); backCard.appendChild(backImgArea);
+    backCard.appendChild(document.createElement('p')).className='pol-cap';
+    var frontCard=document.createElement('div'); frontCard.className='pol-card pol-front-card';
+    var frontImgArea=document.createElement('div'); frontImgArea.className='pol-img-area';
+    var frontImg=document.createElement('img'); frontImg.src=imgs[0]; frontImg.alt=''; frontImg.loading='lazy';
+    frontImgArea.appendChild(frontImg); frontCard.appendChild(frontImgArea);
+    var frontCap=document.createElement('p'); frontCap.className='pol-cap'; frontCap.textContent=p.blog_caption||'';
+    frontCard.appendChild(frontCap);
     var hint=document.createElement('p'); hint.className='pol-hint'; hint.textContent='click ✦';
-    div.appendChild(hint);
-    var flipped=false;
+    frontCard.appendChild(hint);
+    div.appendChild(backCard); div.appendChild(frontCard);
+    var isSwapped=false;
     div.addEventListener('click',function(e){
       e.stopPropagation();
-      flipped=!flipped;
-      var tmp=frontImg.src; frontImg.src=backImg.src; backImg.src=tmp;
-      frontEl.style.transform=flipped?'rotate(4deg) translate(6px,3px)':'rotate(0deg)';
-      backEl.style.transform=flipped?'rotate(0deg)':'rotate(-5deg) translate(-5px,-3px)';
+      isSwapped=!isSwapped;
+      if(isSwapped){
+        frontCard.style.zIndex='1';
+        frontCard.style.transform='rotate(-8deg) translate(-8px,-5px)';
+        backCard.style.zIndex='2';
+        backCard.style.transform='';
+      } else {
+        frontCard.style.zIndex='';
+        frontCard.style.transform='';
+        backCard.style.zIndex='';
+        backCard.style.transform='rotate(-8deg) translate(-8px,-5px)';
+      }
     });
+  } else {
+    div.className='letter-polaroid';
+    var imgArea=document.createElement('div'); imgArea.className='pol-img-area';
+    var img=document.createElement('img'); img.src=imgs[0]; img.alt=''; img.loading='lazy';
+    imgArea.appendChild(img); div.appendChild(imgArea);
+    var cap=document.createElement('p'); cap.className='pol-cap'; cap.textContent=p.blog_caption||'';
+    div.appendChild(cap);
   }
   letterPhotosEl.appendChild(div);
 });
@@ -1354,18 +1369,23 @@ var envImg=document.getElementById('envelope-img');
 var letterOverlay=document.getElementById('letter-overlay');
 
 function scatterPhotos(){
+  var inner=document.getElementById('letter-inner');
+  var rect=inner.getBoundingClientRect();
+  // inner starts translateY(140px) below final; subtract to get settled position
+  var oLeft=rect.left;
+  var oTop=rect.top-140;
   var pols=document.querySelectorAll('#letter-photos .letter-polaroid');
   pols.forEach(function(pol,i){
     pol.style.transition='none';
-    pol.style.left='calc(50% - 74px)';
-    pol.style.top='120px';
+    pol.style.left=(oLeft+rect.width/2-74)+'px';
+    pol.style.top=(oTop+80)+'px';
     pol.style.transform='rotate(0deg) scale(0.4)';
     pol.style.opacity='0';
     pol.offsetHeight;
     var delay=(0.7+i*0.2)+'s';
     pol.style.transition='left .95s cubic-bezier(.22,1,.36,1) '+delay+',top .95s cubic-bezier(.22,1,.36,1) '+delay+',transform .95s cubic-bezier(.34,1.56,.64,1) '+delay+',opacity .4s ease '+delay;
-    pol.style.left=pol.dataset.fl;
-    pol.style.top=pol.dataset.ft;
+    pol.style.left=(oLeft+parseFloat(pol.dataset.fl))+'px';
+    pol.style.top=(oTop+parseFloat(pol.dataset.ft))+'px';
     pol.style.transform='rotate('+pol.dataset.fr+'deg)';
     pol.style.opacity='1';
   });
