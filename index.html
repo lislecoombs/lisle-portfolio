@@ -300,26 +300,27 @@
 /* ── LETTER OVERLAY ── */
 #letter-overlay{position:fixed;inset:0;z-index:450;display:flex;align-items:center;justify-content:center;background:rgba(7,12,5,.92);padding:60px 24px 40px;opacity:0;pointer-events:none;transition:opacity .4s ease;}
 #letter-overlay.open{opacity:1;pointer-events:all;}
-#letter-inner{max-width:700px;width:100%;max-height:85vh;overflow-y:auto;display:flex;flex-direction:column;transform:translateY(140px) rotate(-2deg);opacity:0;transition:transform .9s cubic-bezier(.22,1,.36,1) .08s,opacity .55s ease .05s;}
+#letter-inner{max-width:860px;width:100%;max-height:88vh;overflow-y:auto;display:block;transform:translateY(140px) rotate(-2deg);opacity:0;transition:transform .9s cubic-bezier(.22,1,.36,1) .08s,opacity .55s ease .05s;}
 #letter-overlay.open #letter-inner{transform:translateY(0) rotate(0deg);opacity:1;}
-#letter-paper{background-color:#f0ebe0;border:1px solid #c8b48a;box-shadow:4px 6px 28px rgba(0,0,0,.6);background-image:linear-gradient(rgba(180,120,55,.12) 1px,transparent 1px);background-size:100% 30px;background-position:0 29px;padding:36px 44px 36px 60px;position:relative;}
+#letter-scene{position:relative;padding:20px 105px 240px;}
+#letter-photos{position:absolute;inset:0;pointer-events:none;}
+#letter-paper{position:relative;z-index:5;background-color:#f0ebe0;border:1px solid #c8b48a;box-shadow:4px 6px 28px rgba(0,0,0,.6);background-image:linear-gradient(rgba(180,120,55,.12) 1px,transparent 1px);background-size:100% 30px;background-position:0 29px;padding:36px 44px 36px 60px;}
 #letter-paper::before{content:'';position:absolute;top:0;bottom:0;left:50px;width:1px;background:rgba(200,80,80,.2);pointer-events:none;}
 #letter-title-el{font-family:'Playfair Display',serif;font-style:italic;font-size:1.8rem;color:#2a1808;margin-bottom:6px;}
 #letter-date-el{font-family:'Caveat',cursive;font-size:.9rem;color:var(--terra);margin-bottom:18px;display:block;}
 #letter-body-el{font-family:'Lora',serif;font-size:.95rem;line-height:1.9;color:#3a2210;white-space:pre-wrap;}
-#letter-photos{position:relative;width:100%;height:290px;margin-top:28px;}
-.letter-polaroid{position:absolute;background:#fff;padding:10px 10px 42px;box-shadow:3px 5px 18px rgba(0,0,0,.5);width:155px;cursor:url('/cursors/pointer.png') 18 10,pointer;opacity:0;}
+.letter-polaroid{position:absolute;pointer-events:all;background:#fff;padding:10px 10px 42px;box-shadow:3px 5px 18px rgba(0,0,0,.5);width:148px;cursor:url('/cursors/pointer.png') 18 10,pointer;opacity:0;z-index:3;}
 .letter-polaroid:hover{z-index:20;filter:brightness(1.06);}
 .pol-img-wrap{position:relative;width:100%;aspect-ratio:1;}
 .pol-front,.pol-back{position:absolute;inset:0;overflow:hidden;transition:transform .4s cubic-bezier(.34,1.56,.64,1);}
 .pol-front{z-index:2;}
 .pol-back{z-index:1;transform:rotate(-5deg) translate(-5px,-3px);}
 .pol-front img,.pol-back img{width:100%;height:100%;object-fit:cover;display:block;}
-.pol-cap{font-family:'Caveat',cursive;font-size:.88rem;color:#3a2210;text-align:center;margin-top:8px;line-height:1.3;}
+.pol-cap{font-family:'Caveat',cursive;font-size:.85rem;color:#3a2210;text-align:center;margin-top:8px;line-height:1.3;}
 .pol-hint{font-family:'Caveat',cursive;font-size:.72rem;color:rgba(58,34,16,.45);text-align:center;margin-top:2px;}
-#letter-close{position:absolute;top:20px;right:28px;font-family:'Caveat',cursive;font-size:2rem;color:var(--mushroom);background:none;border:none;cursor:url('/cursors/pointer.png') 18 10,pointer;transition:color .3s,transform .3s;z-index:10;}
+#letter-close{position:absolute;top:20px;right:28px;font-family:'Caveat',cursive;font-size:2rem;color:var(--mushroom);background:none;border:none;cursor:url('/cursors/pointer.png') 18 10,pointer;transition:color .3s,transform .3s;z-index:460;}
 #letter-close:hover{color:var(--cream);transform:rotate(90deg);}
-@media(max-width:900px){#letter-inner{max-height:90vh;}#letter-paper{padding:28px 24px 28px 40px;}#letter-paper::before{left:34px;}#letter-photos{height:auto;display:flex;flex-wrap:wrap;justify-content:center;gap:12px;}.letter-polaroid{position:relative;left:auto!important;top:auto!important;transform:rotate(var(--rot,2deg));opacity:1;animation:none;}}
+@media(max-width:860px){#letter-scene{padding:16px 16px 200px;}.letter-polaroid{width:120px;}}
 /* ── CUSTOM TOOLTIPS ── */
 [data-tip]{position:relative;}
 [data-tip]::after{
@@ -729,14 +730,16 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
 <div id="letter-overlay">
   <button id="letter-close">×</button>
   <div id="letter-inner">
-    <div id="letter-paper">
-      <div class="tape tape-tl"></div>
-      <div class="tape tape-tr"></div>
-      <h2 id="letter-title-el"></h2>
-      <span id="letter-date-el"></span>
-      <div id="letter-body-el"></div>
+    <div id="letter-scene">
+      <div id="letter-photos"></div>
+      <div id="letter-paper">
+        <div class="tape tape-tl"></div>
+        <div class="tape tape-tr"></div>
+        <h2 id="letter-title-el"></h2>
+        <span id="letter-date-el"></span>
+        <div id="letter-body-el"></div>
+      </div>
     </div>
-    <div id="letter-photos"></div>
   </div>
 </div>
 <section id="guestbook">
@@ -1093,9 +1096,12 @@ var letterPhotosEl=document.getElementById('letter-photos');
 if(d.blog_title) document.getElementById('letter-title-el').textContent=d.blog_title;
 if(d.blog_updated) document.getElementById('letter-date-el').textContent='✉  '+d.blog_updated;
 if(d.blog_text) document.getElementById('letter-body-el').textContent=d.blog_text;
-var polRots=[-8,5,-3,7,-5,4];
-var scatterLeft=['3%','23%','44%','62%','78%','13%'];
-var scatterTop=['30px','5px','55px','15px','38px','130px'];
+var polRots=[-9,6,-4,8,-6,5];
+// Positions around the letter paper:
+// scene is ~860px wide, paper is 650px centered with 105px padding each side
+// left-side slots: 0-80px; right-side slots: ~720px+; bottom slots: below paper
+var scatterLeft=['4px','718px','8px','710px','160px','530px'];
+var scatterTop=['25px','10px','210px','190px','360px','340px'];
 var polIdx=0;
 (d.blog_photos||[]).forEach(function(p){
   var imgs=[p.image1,p.image2].filter(Boolean);
@@ -1351,13 +1357,13 @@ function scatterPhotos(){
   var pols=document.querySelectorAll('#letter-photos .letter-polaroid');
   pols.forEach(function(pol,i){
     pol.style.transition='none';
-    pol.style.left='calc(50% - 77px)';
-    pol.style.top='80px';
-    pol.style.transform='rotate(0deg) scale(0.45)';
+    pol.style.left='calc(50% - 74px)';
+    pol.style.top='120px';
+    pol.style.transform='rotate(0deg) scale(0.4)';
     pol.style.opacity='0';
-    pol.offsetHeight; // force reflow
-    var delay=(0.75+i*0.22)+'s';
-    pol.style.transition='left .9s cubic-bezier(.22,1,.36,1) '+delay+',top .9s cubic-bezier(.22,1,.36,1) '+delay+',transform .9s cubic-bezier(.34,1.56,.64,1) '+delay+',opacity .4s ease '+delay;
+    pol.offsetHeight;
+    var delay=(0.7+i*0.2)+'s';
+    pol.style.transition='left .95s cubic-bezier(.22,1,.36,1) '+delay+',top .95s cubic-bezier(.22,1,.36,1) '+delay+',transform .95s cubic-bezier(.34,1.56,.64,1) '+delay+',opacity .4s ease '+delay;
     pol.style.left=pol.dataset.fl;
     pol.style.top=pol.dataset.ft;
     pol.style.transform='rotate('+pol.dataset.fr+'deg)';
