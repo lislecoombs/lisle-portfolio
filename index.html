@@ -286,17 +286,18 @@
 .cat-polaroid-wrap .cat-caption span{color:var(--rose);}
 
 .fav-board-scatter-wrap{margin-top:42px;}
-.fav-board-scatter-wrap .fav-board{grid-template-columns:repeat(4,1fr);gap:22px;}
-.fav-board-scatter-wrap .fav-card:nth-child(1){--rot:-4deg;margin-top:0;}
-.fav-board-scatter-wrap .fav-card:nth-child(2){--rot:3deg;margin-top:-16px;}
-.fav-board-scatter-wrap .fav-card:nth-child(3){--rot:-2.5deg;margin-top:-10px;}
-.fav-board-scatter-wrap .fav-card:nth-child(4){--rot:4deg;margin-top:-12px;}
+.fav-board-scatter-wrap .fav-board{grid-template-columns:repeat(3,1fr);gap:22px;}
+.fav-board-scatter-wrap .fav-card:nth-child(1){--rot:-5deg;margin-top:0;}
+.fav-board-scatter-wrap .fav-card:nth-child(2){--rot:2.5deg;margin-top:-20px;}
+.fav-board-scatter-wrap .fav-card:nth-child(3){--rot:-1.5deg;margin-top:10px;}
 
 .diary-stamp{display:inline-block;font-family:'Courier New',monospace;font-size:.75rem;color:var(--terra);border:2px solid rgba(184,115,74,.45);padding:4px 12px;transform:rotate(-2.5deg);letter-spacing:2px;text-transform:uppercase;margin-top:8px;opacity:.85;}
 
-/* ── retro TV / letterboxd widget ── */
-.tv-section{margin-top:58px;display:flex;flex-direction:column;align-items:center;gap:10px;}
-.tv-label{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--mushroom);letter-spacing:2px;text-transform:uppercase;opacity:.85;transform:rotate(-1.5deg);display:inline-block;}
+/* ── retro devices row ── */
+.devices-row{margin-top:58px;display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:center;gap:40px;}
+.device-unit{display:flex;flex-direction:column;align-items:center;gap:10px;}
+.device-label{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--mushroom);letter-spacing:2px;text-transform:uppercase;opacity:.85;display:inline-block;}
+/* TV */
 .tv-wrap{position:relative;width:420px;max-width:100%;}
 .tv-screen{position:absolute;left:9.8%;top:6.5%;right:28.2%;bottom:27.5%;overflow:hidden;background:#0b0b0b;border-radius:4px;z-index:1;}
 .tv-scanlines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.2) 3px,rgba(0,0,0,.2) 4px);pointer-events:none;z-index:3;}
@@ -306,7 +307,12 @@
 #letterboxd-embed-wrapper-tc::-webkit-scrollbar-thumb{background:rgba(180,140,80,.3);}
 #letterboxd-embed-wrapper-tc a{color:#c9a97a!important;text-decoration:none;}
 #letterboxd-embed-wrapper-tc img{max-width:100%;border-radius:2px;}
-@media(max-width:500px){.tv-wrap{width:100%;}}
+/* iPod */
+.ipod-wrap{position:relative;width:280px;max-width:100%;}
+.ipod-screen{position:absolute;left:12.5%;top:9%;right:12.5%;bottom:49%;overflow:hidden;background:#fff;border-radius:4px;z-index:1;}
+.ipod-img{width:100%;display:block;pointer-events:none;position:relative;z-index:2;mix-blend-mode:multiply;}
+.ipod-screen iframe{width:100%;height:100%;border:none;display:block;}
+@media(max-width:700px){.devices-row{flex-direction:column;align-items:center;}.tv-wrap,.ipod-wrap{max-width:100%;}}
 
 #envelope-wrap{position:absolute;bottom:40px;left:-15px;z-index:20;cursor:url('/cursors/pointer.png') 18 10,pointer;animation:envShakeLoop 9s ease-in-out infinite;transform-origin:bottom center;}
 #envelope-img{width:210px;filter:drop-shadow(3px 6px 14px rgba(0,0,0,.55));display:block;transition:filter .3s;}
@@ -628,21 +634,33 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
     <div class="fav-board-scatter-wrap reveal">
       <div class="fav-board">
 
-        <div class="fav-card" style="--rot:-4deg;z-index:1;">
+        <div class="fav-card" style="--rot:-5deg;z-index:1;">
           <div class="fav-tape"></div>
-          <p class="fav-heading"> <a href="https://letterboxd.com/lethepdf/" target="_blank" class="fav-link" style="color:var(--terra);text-decoration:none;">movies ↗</a></p>
+          <p class="fav-heading"><a href="https://letterboxd.com/lethepdf/" target="_blank" class="fav-link" style="color:var(--terra);text-decoration:none;">movies + shows ↗</a></p>
           <ul class="fav-list">
+            <li>Chainsaw Man</li>
+            <li>Doctor Who</li>
+            <li id="fav-jojo" class="fav-item fav-jojo">JoJo's Bizarre Adventure</li>
+            <li id="fav-mob" class="fav-item fav-mob">
+              <span class="fav-text">Mob Psycho 100</span>
+              <img class="fav-hover-img" src="" alt="Dimple" />
+            </li>
+            <li>The Last of Us</li>
+            <li id="fav-wwdits" class="fav-item fav-surfsup">
+              <span class="fav-text">What We Do In The Shadows</span>
+              <img class="fav-hover-img" src="images/bat.png" alt="What We Do In The Shadows" />
+            </li>
             <li id="fav-surfsup" class="fav-item fav-surfsup">
               <span class="fav-text">Surf's Up</span>
               <img class="fav-hover-img" src="" alt="Chicken Joe" />
             </li>
             <li>Arrival</li>
-            <li>Interstellar</li>
+            <li>Project: Hail Mary</li>
             <li>Perfect Blue</li>
           </ul>
         </div>
 
-        <div class="fav-card fav-card-books" style="--rot:3deg;z-index:2;">
+        <div class="fav-card fav-card-books" style="--rot:2.5deg;z-index:2;">
           <div class="fav-tape"></div>
           <p class="fav-heading"><a href="https://www.goodreads.com/review/list/105653626-lisle?shelf=currently-reading" target="_blank" class="fav-link" style="color:var(--terra);text-decoration:none;">currently reading ↗</a></p>
           <div id="gr_custom_widget_1775360114">
@@ -703,28 +721,7 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
           <script src="https://www.goodreads.com/review/custom_widget/105653626.Lisle's%20bookshelf:%20currently-reading?cover_position=left&cover_size=small&num_books=5&order=a&shelf=currently-reading&show_author=1&show_cover=1&show_rating=1&show_review=1&show_tags=1&show_title=1&sort=date_added&widget_bg_color=FFFFFF&widget_bg_transparent=&widget_border_width=1&widget_id=1775360114&widget_text_color=000000&widget_title_size=medium&widget_width=thin" type="text/javascript" charset="utf-8"></script>
         </div>
 
-        <div class="fav-card" style="--rot:-2.5deg;z-index:3;">
-          <div class="fav-tape"></div>
-          <p class="fav-heading">shows</p>
-          <ul class="fav-list">
-            <li>Chainsaw Man</li>
-            <li>Doctor Who</li>
-            <li id="fav-jojo" class="fav-item fav-jojo">JoJo's Bizarre Adventure</li>
-            <li id="fav-mob" class="fav-item fav-mob">
-              <span class="fav-text">Mob Psycho 100</span>
-              <img class="fav-hover-img" src="" alt="Dimple" />
-            </li>
-            <li>The Last of Us</li>
-            <li>Fleabag</li>
-            <li>Arcane</li>
-            <li id="fav-wwdits" class="fav-item fav-surfsup">
-              <span class="fav-text">What We Do In The Shadows</span>
-              <img class="fav-hover-img" src="images/bat.png" alt="What We Do In The Shadows" />
-            </li>
-          </ul>
-        </div>
-
-        <div class="fav-card" style="--rot:4deg;z-index:4;">
+        <div class="fav-card" style="--rot:-1.5deg;z-index:3;">
           <div class="fav-tape"></div>
           <p class="fav-heading"> other things </p>
           <ul class="fav-list" style="gap:4px;">
@@ -740,21 +737,40 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
       </div>
     </div>
 
-    <!-- Recently Watched TV -->
-    <div class="tv-section reveal">
-      <span class="tv-label">(~_~) &nbsp;recently watched</span>
-      <div class="tv-wrap">
-        <div class="tv-screen">
-          <div class="tv-scanlines"></div>
-          <div id="letterboxd-embed-wrapper-tc">Loading...</div>
+    <!-- Devices row: iPod + TV -->
+    <div class="devices-row reveal">
+
+      <!-- iPod / Spotify -->
+      <div class="device-unit">
+        <span class="device-label" style="transform:rotate(1.5deg);">(*^_^*) &nbsp;music</span>
+        <div class="ipod-wrap">
+          <div class="ipod-screen">
+            <iframe src="https://open.spotify.com/embed/playlist/17S2D8xCQEVviPivD2UKEX?utm_source=generator"
+              frameborder="0"
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy"></iframe>
+          </div>
+          <img src="images/ipod.png" alt="iPod" class="ipod-img" />
         </div>
-        <img src="images/tv.png" alt="retro TV" class="tv-img" />
-        <script>
-          fetch('https://lb-embed-content.bokonon.dev?username=lethepdf')
-            .then(r => r.text())
-            .then(data => { document.getElementById('letterboxd-embed-wrapper-tc').innerHTML = data; });
-        </script>
       </div>
+
+      <!-- TV / Letterboxd -->
+      <div class="device-unit">
+        <span class="device-label" style="transform:rotate(-1.5deg);">(~_~) &nbsp;recently watched</span>
+        <div class="tv-wrap">
+          <div class="tv-screen">
+            <div class="tv-scanlines"></div>
+            <div id="letterboxd-embed-wrapper-tc">Loading...</div>
+          </div>
+          <img src="images/tv.png" alt="retro TV" class="tv-img" />
+          <script>
+            fetch('https://lb-embed-content.bokonon.dev?username=lethepdf')
+              .then(r => r.text())
+              .then(data => { document.getElementById('letterboxd-embed-wrapper-tc').innerHTML = data; });
+          </script>
+        </div>
+      </div>
+
     </div>
 
   </div>
