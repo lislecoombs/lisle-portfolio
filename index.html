@@ -12,32 +12,8 @@
 @keyframes dogSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
 .dog-jump{animation:dogJump .5s ease-out forwards!important;}
 .dog-spin{animation:dogSpin .7s cubic-bezier(.34,1.56,.64,1) forwards!important;}
-  #blog .inner{max-width:1200px;margin:0 auto;}
-#blog{position:relative;}
-.blog-layout{display:grid;grid-template-columns:300px 1fr 280px;gap:0;align-items:start;position:relative;}
-.blog-col-left,.blog-col-right{display:flex;flex-direction:column;gap:40px;}
-.blog-text-card{grid-column:2;position:relative;z-index:2;}
-.blog-stack-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;cursor:url('/cursors/pointer.png') 18 10,pointer;position:relative;z-index:3;}.blog-stack{position:relative;width:270px;height:340px;}
-.blog-stack-back{position:absolute;inset:0;border-radius:2px;overflow:hidden;background:linear-gradient(135deg,#1a2a1a,#2a3a20);border:2px solid rgba(122,158,126,.25);box-shadow:2px 2px 10px rgba(0,0,0,.35);}
-.blog-stack-back img{width:100%;height:100%;object-fit:cover;display:block;}
-.blog-stack-front{position:absolute;inset:0;border-radius:2px;overflow:hidden;background:linear-gradient(135deg,#1a2a1a,#2a3a20);border:2px solid rgba(122,158,126,.4);box-shadow:3px 5px 18px rgba(0,0,0,.5);transition:transform .4s cubic-bezier(.34,1.56,.64,1);}
-.blog-stack-front img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .25s;}
-.blog-stack-wrap:hover .blog-stack-front{transform:scale(1.03);}
-#blog-photo-0 .blog-stack-back{transform:rotate(4deg);}
-#blog-photo-0 .blog-stack-front{transform:rotate(-2deg);}
-#blog-photo-1 .blog-stack-back{transform:rotate(-5deg);}
-#blog-photo-1 .blog-stack-front{transform:rotate(3deg);}
-#blog-photo-2 .blog-stack-back{transform:rotate(3deg);}
-#blog-photo-2 .blog-stack-front{transform:rotate(-3.5deg);}
-.blog-stack-front img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .25s;}
-.blog-stack-wrap:hover .blog-stack-front{transform:rotate(0deg) scale(1.04);}
-#blog-photo-0{margin-right:-40px;}
-#blog-photo-2{margin-right:-30px;margin-top:50px;}
-#blog-photo-1{margin-left:-30px;margin-top:30px;}
-.blog-photo-caption{font-family:'Caveat',cursive;font-size:1.15rem;color:var(--mushroom);text-align:center;font-style:italic;}
-.blog-click-hint{font-family:'Caveat',cursive;font-size:.8rem;color:var(--sage);opacity:.6;text-align:center;margin:0;}
-.blog-text{font-family:'Lora',serif;font-size:1rem;line-height:1.9;color:#c4b89a;white-space:pre-wrap;}
-@media(max-width:900px){.blog-layout{grid-template-columns:1fr;}.blog-text-card{grid-column:1;}.blog-col-left,.blog-col-right{flex-direction:row;flex-wrap:wrap;justify-content:center;}#blog-photo-0,#blog-photo-1,#blog-photo-2{margin:0;}.blog-stack{width:200px;height:250px;}}
+  /* ── ENVELOPE STICKER ── */
+@keyframes envShakeLoop{0%,82%,100%{transform:rotate(-7deg)}84%{transform:rotate(-13deg)}86%{transform:rotate(-1deg)}88%{transform:rotate(-12deg)}90%{transform:rotate(-3deg)}92%{transform:rotate(-10deg)}94%{transform:rotate(-7deg)}96%{transform:rotate(-9deg)}98%{transform:rotate(-7deg)}}
   #tardis{position:absolute;width:100px;cursor:url('/cursors/pointer.png') 18 10,pointer;opacity:0;pointer-events:none;z-index:10;transition:opacity 1.5s;mix-blend-mode:screen;filter:drop-shadow(0 0 8px rgba(100,150,255,.4));left:-9999px;top:-9999px;animation:tardisLean 4s ease-in-out infinite;}
 @keyframes tardisJiggle{0%{transform:rotate(0)}20%{transform:rotate(-5deg) translateX(-3px)}40%{transform:rotate(5deg) translateX(3px)}60%{transform:rotate(-3deg) translateX(-2px)}80%{transform:rotate(2deg) translateX(2px)}100%{transform:rotate(0)}}
 @keyframes tardisLean{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
@@ -318,11 +294,27 @@
 
 .diary-stamp{display:inline-block;font-family:'Courier New',monospace;font-size:.75rem;color:var(--terra);border:2px solid rgba(184,115,74,.45);padding:4px 12px;transform:rotate(-2.5deg);letter-spacing:2px;text-transform:uppercase;margin-top:8px;opacity:.85;}
 
-#blog-text-cms{
-  color:#3a2210!important;
-  font-family:'Caveat',cursive!important;
-  font-size:1.05rem!important;
-}
+#envelope-wrap{position:absolute;top:-10px;left:-8px;z-index:20;cursor:url('/cursors/pointer.png') 18 10,pointer;animation:envShakeLoop 9s ease-in-out infinite;transform-origin:bottom center;}
+#envelope-img{width:150px;filter:drop-shadow(3px 6px 14px rgba(0,0,0,.55));display:block;transition:filter .3s;}
+#envelope-wrap:hover #envelope-img{filter:drop-shadow(3px 6px 20px rgba(0,0,0,.75)) brightness(1.05);}
+/* ── LETTER OVERLAY ── */
+#letter-overlay{position:fixed;inset:0;z-index:450;display:none;align-items:center;justify-content:center;background:rgba(7,12,5,.93);backdrop-filter:blur(8px);padding:60px 24px 40px;}
+#letter-overlay.open{display:flex;}
+#letter-inner{max-width:700px;width:100%;max-height:85vh;overflow-y:auto;display:flex;flex-direction:column;gap:28px;animation:letterSlideUp .55s cubic-bezier(.34,1.56,.64,1) both;}
+@keyframes letterSlideUp{from{transform:translateY(70px);opacity:0}to{transform:translateY(0);opacity:1}}
+#letter-paper{background-color:#f0ebe0;border:1px solid #c8b48a;box-shadow:4px 6px 28px rgba(0,0,0,.6);background-image:linear-gradient(rgba(180,120,55,.12) 1px,transparent 1px);background-size:100% 30px;background-position:0 29px;padding:36px 44px 36px 60px;position:relative;}
+#letter-paper::before{content:'';position:absolute;top:0;bottom:0;left:50px;width:1px;background:rgba(200,80,80,.2);pointer-events:none;}
+#letter-title-el{font-family:'Playfair Display',serif;font-style:italic;font-size:1.8rem;color:#2a1808;margin-bottom:6px;}
+#letter-date-el{font-family:'Caveat',cursive;font-size:.9rem;color:var(--terra);margin-bottom:18px;display:block;}
+#letter-body-el{font-family:'Caveat',cursive;font-size:1.15rem;line-height:2;color:#3a2210;white-space:pre-wrap;}
+#letter-photos{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;padding:8px 0;}
+.letter-polaroid{background:#fff;padding:10px 10px 40px;box-shadow:3px 5px 18px rgba(0,0,0,.5);transform:rotate(var(--rot,2deg));width:170px;flex-shrink:0;transition:transform .3s ease,box-shadow .3s;cursor:url('/cursors/pointer.png') 18 10,pointer;}
+.letter-polaroid:hover{transform:rotate(0deg) scale(1.06)!important;box-shadow:6px 10px 28px rgba(0,0,0,.65);z-index:10;}
+.letter-polaroid img{width:100%;aspect-ratio:1;object-fit:cover;display:block;}
+.letter-polaroid p{font-family:'Caveat',cursive;font-size:.88rem;color:#3a2210;text-align:center;margin-top:8px;line-height:1.3;}
+#letter-close{position:absolute;top:20px;right:28px;font-family:'Caveat',cursive;font-size:2rem;color:var(--mushroom);background:none;border:none;cursor:url('/cursors/pointer.png') 18 10,pointer;transition:color .3s,transform .3s;z-index:10;}
+#letter-close:hover{color:var(--cream);transform:rotate(90deg);}
+@media(max-width:900px){#letter-inner{max-height:90vh;}#letter-paper{padding:28px 24px 28px 40px;}#letter-paper::before{left:34px;}}
 /* ── CUSTOM TOOLTIPS ── */
 [data-tip]{position:relative;}
 [data-tip]::after{
@@ -511,7 +503,6 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
   <ul class="nav-links">
     <li><a href="#about">about</a></li>
     <li><a href="#gallery">portfolio</a></li>
-    <li><a href="#blog">blog</a></li>
     <li><a href="#guestbook">guestbook</a></li>
     <li><a href="#contact">socials</a></li>
   </ul>
@@ -612,7 +603,10 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
 </section>
 <div class="divider">— — —</div>
 <section id="favorites">
-  <div class="inner">
+  <div class="inner" style="position:relative;">
+    <div id="envelope-wrap" data-tip="psst... open me ✉">
+      <img id="envelope-img" src="images/envelope-closed.png" alt="open envelope" />
+    </div>
     <div class="geo-divider reveal">✦ &nbsp;✧&nbsp; Things I Love &nbsp;✧&nbsp; ✦</div>
     <div class="fav-board-scatter-wrap reveal">
       <div class="fav-board">
@@ -730,78 +724,20 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
     </div>
   </div>
 </section>
-<div class="divider">~ ~ ~</div>
-<section id="blog">
-  <div class="inner">
-
-<div class="reveal" style="text-align:center;margin-bottom:52px;position:relative;">
-      <span class="section-tag">--&gt; blog</span>
-      <h2 class="section-title" id="blog-title">recently:</h2>
-      <div>
-        <span class="diary-stamp">last updated: <span id="blog-updated"></span></span>
-      </div>
-      <div class="spotify-scrap">
-        <div class="spotify-tape"></div>
-        <p class="spotify-label">♪ what I've been listening to ♪</p>
-        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/17S2D8xCQEVviPivD2UKEX?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-      </div>
+<!-- Letter overlay (replaces blog section) -->
+<div id="letter-overlay">
+  <button id="letter-close">×</button>
+  <div id="letter-inner">
+    <div id="letter-paper">
+      <div class="tape tape-tl"></div>
+      <div class="tape tape-tr"></div>
+      <h2 id="letter-title-el"></h2>
+      <span id="letter-date-el"></span>
+      <div id="letter-body-el"></div>
     </div>
-
-    <div class="blog-layout">
-
-      <div class="blog-col-left">
-
-        <div class="blog-stack-wrap reveal" id="blog-photo-0" style="display:none;">
-          <div class="blog-polaroid-wrapper">
-            <div class="blog-polaroid-tape"></div>
-            <div class="blog-stack">
-              <div class="blog-stack-back"></div>
-              <div class="blog-stack-front"><img class="blog-img" src="" alt="" /></div>
-            </div>
-            <p class="blog-photo-caption" id="blog-cap-0"></p>
-          </div>
-          <p class="blog-click-hint" id="blog-hint-0" style="display:none;text-align:center;margin-top:6px;">click to see another ✦</p>
-        </div>
-
-        <div class="blog-stack-wrap reveal" id="blog-photo-2" style="display:none;margin-top:40px;">
-          <div class="blog-polaroid-wrapper">
-            <div class="blog-polaroid-tape"></div>
-            <div class="blog-stack">
-              <div class="blog-stack-back"></div>
-              <div class="blog-stack-front"><img class="blog-img" src="" alt="" /></div>
-            </div>
-            <p class="blog-photo-caption" id="blog-cap-2"></p>
-          </div>
-          <p class="blog-click-hint" id="blog-hint-2" style="display:none;text-align:center;margin-top:6px;">click to see another ✦</p>
-        </div>
-
-      </div>
-
-      <div class="blog-text-card notebook-card reveal">
-        <div class="card-tape"></div>
-        <div id="blog-text-cms" class="blog-text">add writing via admin</div>
-      </div>
-
-      <div class="blog-col-right">
-
-        <div class="blog-stack-wrap reveal" id="blog-photo-1" style="display:none;">
-          <div class="blog-polaroid-wrapper">
-            <div class="blog-polaroid-tape"></div>
-            <div class="blog-stack">
-              <div class="blog-stack-back"></div>
-              <div class="blog-stack-front"><img class="blog-img" src="" alt="" /></div>
-            </div>
-            <p class="blog-photo-caption" id="blog-cap-1"></p>
-          </div>
-          <p class="blog-click-hint" id="blog-hint-1" style="display:none;text-align:center;margin-top:6px;">click to see another ✦</p>
-        </div>
-
-      </div>
-
-    </div>
-
+    <div id="letter-photos"></div>
   </div>
-</section>
+</div>
 <section id="guestbook">
   <div class="inner">
     <div class="reveal" style="text-align:center;margin-bottom:40px;">
@@ -1151,83 +1087,25 @@ document.getElementById('cat-stack').addEventListener('click',function(){
 if(d.about_text)document.getElementById('about-text-cms').textContent=d.about_text;
 var catCaption=catList&&catList[0]&&catList[0].caption?catList[0].caption:d.cat_caption;
 if(catCaption)document.getElementById('cat-caption-cms').textContent=catCaption;
-    // Blog
-if(d.blog_text)document.getElementById('blog-text-cms').textContent=d.blog_text;
-if(d.blog_title)document.getElementById('blog-title').textContent=d.blog_title;
-if(d.blog_updated){var upEl=document.getElementById('blog-updated');if(upEl)upEl.textContent=d.blog_updated;}
-var blogPhotos=d.blog_photos||[];
-for(var bi=0;bi<3;bi++){
-  (function(i){
-    var wrap=document.getElementById('blog-photo-'+i);
-    var capEl=document.getElementById('blog-cap-'+i);
-    var hintEl=document.getElementById('blog-hint-'+i);
-    var p=blogPhotos[i]||{};
-    var imgs=[p.image1,p.image2].filter(Boolean);
-    if(!wrap||!imgs.length) return;
-    wrap.style.display='flex';
-    var frontEl=wrap.querySelector('.blog-stack-front');
-    var backEl=wrap.querySelector('.blog-stack-back');
-    var imgEl=frontEl.querySelector('.blog-img');
-    imgEl.src=imgs[0];
-    // Put second image in back so it peeks through
-    if(imgs.length>1){
-      var backImg=document.createElement('img');
-      backImg.src=imgs[1];backImg.alt='';
-      backEl.appendChild(backImg);
-    }
-    if(capEl&&p.blog_caption) capEl.textContent=p.blog_caption;
-    if(imgs.length>1){
-      if(hintEl) hintEl.style.display='block';
-      var flipped=false;
-      wrap.addEventListener('click',function(){
-        flipped=!flipped;
-        // Swap images
-        var tmp=imgEl.src;
-        var backImgEl=backEl.querySelector('img');
-        imgEl.src=backImgEl?backImgEl.src:tmp;
-        if(backImgEl) backImgEl.src=tmp;
-        // Move back to front with bouncy transition
-        var curFrontRot=flipped?'rotate(2deg)':'rotate(-2deg)';
-        var curBackRot=flipped?'rotate(-4deg)':'rotate(4deg)';
-        frontEl.style.transition='transform .4s cubic-bezier(.34,1.56,.64,1)';
-        backEl.style.transition='transform .4s cubic-bezier(.34,1.56,.64,1)';
-        frontEl.style.transform=curFrontRot;
-        backEl.style.transform=curBackRot;
-      });
-    }
-  })(bi);
-}
-    // Adjust layout based on photo count and text length
-setTimeout(function(){
-  var layout=document.querySelector('.blog-layout');
-  var textCard=document.querySelector('.blog-text-card');
-  var photo0=document.getElementById('blog-photo-0');
-  var photo1=document.getElementById('blog-photo-1');
-  var photo2=document.getElementById('blog-photo-2');
-  if(!layout||!textCard) return;
-  var visCount=[photo0,photo1,photo2].filter(function(p){return p&&p.style.display!=='none';}).length;
-  if(visCount===3&&photo2&&photo2.style.display!=='none'){
-    var textH=textCard.offsetHeight;
-    var p0H=photo0?photo0.offsetHeight:0;
-    var p2H=photo2.offsetHeight;
-    if(textH<p0H+48+p2H){
-      // Use absolute positioning anchored to bottom of text card
-      var layoutRect=layout.getBoundingClientRect();
-      var textRect=textCard.getBoundingClientRect();
-      var topPos=textRect.bottom-layoutRect.top-40;
-      var rightPos=layoutRect.right-textRect.right+60;
-      photo2.parentNode.removeChild(photo2);
-      layout.style.position='relative';
-      photo2.style.position='absolute';
-      photo2.style.top=topPos+'px';
-      photo2.style.right=rightPos+'px';
-      photo2.style.zIndex='1';
-      layout.appendChild(photo2);
-      // Add padding to layout so it doesn't clip the photo
-      layout.style.paddingBottom=(topPos+p2H-textH+10)+'px';
-    }
-  }
-},500);
+    // Letter / envelope — populate from CMS data
+var letterPhotosEl=document.getElementById('letter-photos');
+if(d.blog_title) document.getElementById('letter-title-el').textContent=d.blog_title;
+if(d.blog_updated) document.getElementById('letter-date-el').textContent='✉  '+d.blog_updated;
+if(d.blog_text) document.getElementById('letter-body-el').textContent=d.blog_text;
+var polRots=[-5,3,-2,6,-4,2,-6,4];
+var polIdx=0;
+(d.blog_photos||[]).forEach(function(p){
+  [p.image1,p.image2].filter(Boolean).forEach(function(src){
+    var div=document.createElement('div');
+    div.className='letter-polaroid';
+    div.style.setProperty('--rot',polRots[polIdx%polRots.length]+'deg');
+    polIdx++;
+    var img=document.createElement('img');img.src=src;img.alt='';img.loading='lazy';
+    var cap=document.createElement('p');cap.textContent=p.blog_caption||'';
+    div.appendChild(img);div.appendChild(cap);
+    letterPhotosEl.appendChild(div);
+  });
+});
 cats.forEach(function(cat){
   var grid=document.getElementById('grid-'+cat);
   var items=d[cat]||[];
@@ -1432,6 +1310,42 @@ function foundEgg(name){
   var b=document.getElementById('egg-badge');b.classList.add('show');
   setTimeout(function(){b.classList.remove('show');},3000);
 }
+
+/* ═ ENVELOPE / LETTER ═ */
+var envOpen=false;
+var envWrap=document.getElementById('envelope-wrap');
+var envImg=document.getElementById('envelope-img');
+var letterOverlay=document.getElementById('letter-overlay');
+
+function openLetter(){
+  if(envOpen) return;
+  envOpen=true;
+  envImg.src='images/envelope-open.png';
+  letterOverlay.style.display='flex';
+  requestAnimationFrame(function(){letterOverlay.classList.add('open');});
+  foundEgg('secret letter! ✉');
+}
+function closeLetter(){
+  if(!envOpen) return;
+  envOpen=false;
+  letterOverlay.classList.remove('open');
+  setTimeout(function(){letterOverlay.style.display='none';},300);
+  envImg.src='images/envelope-closed.png';
+}
+envWrap.addEventListener('click',function(e){
+  e.stopPropagation();
+  if(envOpen) closeLetter(); else openLetter();
+});
+document.getElementById('letter-close').addEventListener('click',function(e){
+  e.stopPropagation();
+  closeLetter();
+});
+letterOverlay.addEventListener('click',function(e){
+  if(e.target===letterOverlay) closeLetter();
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'&&envOpen) closeLetter();
+});
 
 /* ═ GUESTBOOK ═ */
 var gForm=document.getElementById('guestbook-form');
