@@ -300,10 +300,10 @@
 /* ── LETTER OVERLAY ── */
 #letter-overlay{position:fixed;inset:0;z-index:450;display:flex;align-items:center;justify-content:center;background:rgba(7,12,5,.92);padding:60px 24px 40px;opacity:0;pointer-events:none;transition:opacity .4s ease;}
 #letter-overlay.open{opacity:1;pointer-events:all;}
-#letter-inner{max-width:860px;width:100%;max-height:88vh;overflow-y:auto;display:block;transform:translateY(140px) rotate(-2deg);opacity:0;transition:transform .9s cubic-bezier(.22,1,.36,1) .08s,opacity .55s ease .05s;}
+#letter-inner{max-width:860px;width:100%;max-height:88vh;overflow-y:auto;display:block;transform:translateY(140px) rotate(-2deg);opacity:0;transition:transform .9s cubic-bezier(.22,1,.36,1) .08s,opacity .55s ease .05s;position:relative;z-index:6;}
 #letter-overlay.open #letter-inner{transform:translateY(0) rotate(0deg);opacity:1;}
 #letter-scene{position:relative;padding:20px 105px 240px;}
-#letter-photos{position:absolute;inset:0;pointer-events:none;z-index:5;overflow:visible;}
+#letter-photos{position:absolute;inset:0;pointer-events:none;z-index:4;overflow:visible;}
 #letter-paper{position:relative;z-index:5;background-color:#f0ebe0;border:1px solid #c8b48a;box-shadow:4px 6px 28px rgba(0,0,0,.6);background-image:linear-gradient(rgba(180,120,55,.12) 1px,transparent 1px);background-size:100% 30px;background-position:0 29px;padding:36px 44px 36px 60px;}
 #letter-paper::before{content:'';position:absolute;top:0;bottom:0;left:50px;width:1px;background:rgba(200,80,80,.2);pointer-events:none;}
 #letter-title-el{font-family:'Playfair Display',serif;font-style:italic;font-size:1.8rem;color:#2a1808;margin-bottom:6px;}
