@@ -294,6 +294,21 @@
 
 .diary-stamp{display:inline-block;font-family:'Courier New',monospace;font-size:.75rem;color:var(--terra);border:2px solid rgba(184,115,74,.45);padding:4px 12px;transform:rotate(-2.5deg);letter-spacing:2px;text-transform:uppercase;margin-top:8px;opacity:.85;}
 
+/* ── retro TV / letterboxd widget ── */
+.tv-section{margin-top:58px;display:flex;flex-direction:column;align-items:center;gap:14px;}
+.tv-label{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--mushroom);letter-spacing:2px;text-transform:uppercase;opacity:.85;transform:rotate(-1.5deg);display:inline-block;}
+.tv-wrap{position:relative;width:700px;max-width:100%;}
+.tv-img{width:100%;display:block;pointer-events:none;}
+.tv-screen{position:absolute;left:9.8%;top:6.5%;right:28.2%;bottom:27.5%;overflow:hidden;background:#0b0b0b;border-radius:6px;}
+.tv-scanlines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.18) 3px,rgba(0,0,0,.18) 4px);pointer-events:none;z-index:10;}
+.tv-glow{position:absolute;inset:0;box-shadow:inset 0 0 30px rgba(0,0,0,.6),inset 0 0 8px rgba(180,140,80,.08);pointer-events:none;z-index:11;border-radius:6px;}
+#letterboxd-embed-wrapper-tc{width:100%;height:100%;overflow-y:auto;overflow-x:hidden;font-size:.72rem;color:#d4b896;background:#0b0b0b;padding:6px;box-sizing:border-box;filter:sepia(0.25) brightness(0.9);}
+#letterboxd-embed-wrapper-tc::-webkit-scrollbar{width:4px;}
+#letterboxd-embed-wrapper-tc::-webkit-scrollbar-thumb{background:rgba(180,140,80,.3);}
+#letterboxd-embed-wrapper-tc a{color:#c9a97a!important;text-decoration:none;}
+#letterboxd-embed-wrapper-tc img{max-width:100%;border-radius:2px;}
+@media(max-width:760px){.tv-wrap{width:100%;}}
+
 #envelope-wrap{position:absolute;bottom:40px;left:-15px;z-index:20;cursor:url('/cursors/pointer.png') 18 10,pointer;animation:envShakeLoop 9s ease-in-out infinite;transform-origin:bottom center;}
 #envelope-img{width:210px;filter:drop-shadow(3px 6px 14px rgba(0,0,0,.55));display:block;transition:filter .3s;}
 #envelope-wrap:hover #envelope-img{filter:drop-shadow(3px 6px 22px rgba(0,0,0,.8)) brightness(1.08);}
@@ -725,6 +740,25 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
 
       </div>
     </div>
+
+    <!-- Recently Watched TV -->
+    <div class="tv-section reveal">
+      <span class="tv-label">📺 &nbsp;recently watched</span>
+      <div class="tv-wrap">
+        <img src="images/tv.png" alt="retro TV" class="tv-img" />
+        <div class="tv-screen">
+          <div class="tv-scanlines"></div>
+          <div class="tv-glow"></div>
+          <div id="letterboxd-embed-wrapper-tc">Loading...</div>
+          <script>
+            fetch('https://lb-embed-content.bokonon.dev?username=lethepdf')
+              .then(r => r.text())
+              .then(data => { document.getElementById('letterboxd-embed-wrapper-tc').innerHTML = data; });
+          </script>
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>
 <!-- Letter overlay (replaces blog section) -->
