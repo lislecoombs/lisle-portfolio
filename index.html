@@ -263,7 +263,7 @@
 
 .about-scrap-grid{display:grid;grid-template-columns:1fr 260px;gap:48px;align-items:start;width:100%;}
 .about-notebook-wrap{min-width:0;transform:rotate(.5deg);}
-.about-scrap-cat-col{display:flex;flex-direction:column;align-items:center;width:260px;max-width:260px;flex-shrink:0;}
+.about-scrap-cat-col{position:relative;display:flex;flex-direction:column;align-items:center;width:260px;max-width:260px;flex-shrink:0;}
 
 .cat-polaroid-wrap{
   background:transparent;
@@ -612,7 +612,7 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
   <div class="about-scrap-cat-col">
     <img id="fish-gif" src="images/fish.gif" alt=""
   data-tip="bloop ◟(˘³˘)◞"
-  style="display:block;margin:0 auto 18px;width:115px;image-rendering:pixelated;opacity:.85;cursor:url('/cursors/pointer.png') 18 10,pointer;" />
+  style="position:absolute;bottom:calc(100% + 12px);left:50%;margin-left:-58px;width:115px;image-rendering:pixelated;opacity:.85;cursor:url('/cursors/pointer.png') 18 10,pointer;" />
     <div class="cat-polaroid-wrap">
       <div class="tape tape-tc"></div>
       <div class="cat-stack" id="cat-stack" data-tip="pet maggie">
