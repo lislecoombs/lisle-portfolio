@@ -337,6 +337,20 @@
 #spotify-modal iframe{width:100%;height:500px;border:none;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.7);display:block;background:#181818;}
 #spotify-close{position:absolute;top:20px;right:28px;font-family:'Caveat',cursive;font-size:2rem;color:var(--mushroom);background:none;border:none;cursor:url('/cursors/pointer.png') 18 10,pointer;transition:color .3s,transform .3s;z-index:460;}
 #spotify-close:hover{color:var(--cream);transform:rotate(90deg);}
+/* ── YOUTUBE POPUP (retro Win95-ish) ── */
+#yt-overlay{position:fixed;inset:0;z-index:480;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.85);padding:20px;opacity:0;pointer-events:none;transition:opacity .3s ease;}
+#yt-overlay.open{opacity:1;pointer-events:auto;}
+#yt-modal{background:#c3c3c3;border-top:2px solid #fff;border-left:2px solid #fff;border-right:2px solid #5a5a5a;border-bottom:2px solid #5a5a5a;outline:1px solid #000;padding:3px;width:100%;max-width:720px;font-family:'VT323',monospace;box-shadow:5px 5px 0 rgba(0,0,0,.5);transform:scale(.92) rotate(-1deg);opacity:0;transition:transform .4s cubic-bezier(.34,1.56,.64,1),opacity .3s ease;}
+#yt-overlay.open #yt-modal{transform:scale(1) rotate(0);opacity:1;}
+#yt-titlebar{background:linear-gradient(90deg,#000080 0%,#1084d0 100%);color:#fff;padding:4px 6px;display:flex;justify-content:space-between;align-items:center;font-size:15px;font-family:'VT323',monospace;font-weight:bold;letter-spacing:.5px;}
+#yt-title{text-shadow:1px 1px 0 rgba(0,0,0,.5);}
+#yt-close{background:#c3c3c3;border-top:1px solid #fff;border-left:1px solid #fff;border-right:1px solid #5a5a5a;border-bottom:1px solid #5a5a5a;color:#000;font-family:'VT323',monospace;font-size:14px;width:24px;height:20px;cursor:url('/cursors/pointer.png') 18 10,pointer;padding:0;line-height:1;}
+#yt-close:active{border-top-color:#5a5a5a;border-left-color:#5a5a5a;border-right-color:#fff;border-bottom-color:#fff;}
+#yt-screen{position:relative;background:#000;aspect-ratio:16/9;overflow:hidden;margin-top:3px;border-top:1px solid #5a5a5a;border-left:1px solid #5a5a5a;border-right:1px solid #fff;border-bottom:1px solid #fff;}
+#yt-iframe{width:100%;height:100%;border:0;display:block;background:#000;}
+#yt-static{position:absolute;inset:0;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><filter id='n'><feTurbulence baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='200' height='200' filter='url(%23n)' opacity='.95'/></svg>");background-size:280px 280px;opacity:1;animation:ytStaticCycle .16s steps(8) infinite;pointer-events:none;transition:opacity .5s ease-out;mix-blend-mode:screen;}
+#yt-screen.loaded #yt-static{opacity:0;}
+@keyframes ytStaticCycle{0%{background-position:0% 0%;}20%{background-position:-30% 30%;}40%{background-position:30% -30%;}60%{background-position:-50% 50%;}80%{background-position:50% -50%;}100%{background-position:0% 0%;}}
 @media(max-width:700px){.devices-row{flex-direction:column;align-items:center;}.tv-wrap,.ipod-wrap{max-width:100%;}}
 
 #envelope-wrap{position:absolute;bottom:40px;left:-15px;z-index:20;cursor:url('/cursors/pointer.png') 18 10,pointer;animation:envShakeLoop 9s ease-in-out infinite;transform-origin:bottom center;}
@@ -841,6 +855,19 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
       loading="lazy"></iframe>
   </div>
 </div>
+<!-- YouTube popup -->
+<div id="yt-overlay">
+  <div id="yt-modal">
+    <div id="yt-titlebar">
+      <span id="yt-title">&#9656; video.exe</span>
+      <button id="yt-close" aria-label="Close">&times;</button>
+    </div>
+    <div id="yt-screen">
+      <iframe id="yt-iframe" allow="autoplay; encrypted-media; clipboard-write" allowfullscreen></iframe>
+      <div id="yt-static"></div>
+    </div>
+  </div>
+</div>
 <section id="guestbook">
   <div class="inner">
     <div class="reveal" style="text-align:center;margin-bottom:40px;">
@@ -998,6 +1025,7 @@ function makeFloatTitle(container, lines) {
           a.href=LETTER_LINKS[globalIdx];
           a.target='_blank';
           a.rel='noopener noreferrer';
+          a.className='letter-link';
           a.style.cssText='text-decoration:none;color:inherit;display:inline-block;';
           a.appendChild(span);
           line.appendChild(a);
@@ -1676,6 +1704,50 @@ jojoEl.addEventListener('mouseenter', function(){
   }
   setNavOffset();
   window.addEventListener('resize',setNavOffset);
+})();
+
+/* ═ YOUTUBE POPUP for letter-link easter eggs ═ */
+(function(){
+  var overlay=document.getElementById('yt-overlay');
+  if(!overlay) return;
+  var iframe=document.getElementById('yt-iframe');
+  var screenDiv=document.getElementById('yt-screen');
+  var closeBtn=document.getElementById('yt-close');
+
+  function ytEmbed(url){
+    var m=url.match(/[?&]v=([^&]+)/);
+    if(!m) return null;
+    var listM=url.match(/[?&]list=([^&]+)/);
+    var src='https://www.youtube.com/embed/'+m[1]+'?autoplay=1&rel=0';
+    if(listM) src+='&list='+listM[1];
+    return src;
+  }
+
+  function openYt(url){
+    var embed=ytEmbed(url);
+    if(!embed){ window.open(url,'_blank','noopener'); return; }
+    screenDiv.classList.remove('loaded');
+    iframe.src=embed;
+    overlay.classList.add('open');
+    setTimeout(function(){ screenDiv.classList.add('loaded'); }, 700);
+  }
+
+  function closeYt(){
+    overlay.classList.remove('open');
+    iframe.src='';
+    screenDiv.classList.remove('loaded');
+  }
+
+  closeBtn.addEventListener('click',closeYt);
+  overlay.addEventListener('click',function(e){ if(e.target===overlay) closeYt(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&overlay.classList.contains('open')) closeYt(); });
+
+  document.addEventListener('click',function(e){
+    var link=e.target.closest('.letter-link');
+    if(!link) return;
+    e.preventDefault();
+    openYt(link.href);
+  });
 })();
 </script>
 <script>
