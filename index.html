@@ -14,7 +14,7 @@
 .dog-spin{animation:dogSpin .7s cubic-bezier(.34,1.56,.64,1) forwards!important;}
   /* ── ENVELOPE STICKER ── */
 @keyframes envShakeLoop{0%,82%,100%{transform:rotate(-7deg)}84%{transform:rotate(-13deg)}86%{transform:rotate(-1deg)}88%{transform:rotate(-12deg)}90%{transform:rotate(-3deg)}92%{transform:rotate(-10deg)}94%{transform:rotate(-7deg)}96%{transform:rotate(-9deg)}98%{transform:rotate(-7deg)}}
-  #tardis{position:absolute;width:100px;cursor:url('/cursors/pointer.png') 18 10,pointer;opacity:0;pointer-events:none;z-index:10;transition:opacity 1.5s;mix-blend-mode:screen;filter:drop-shadow(0 0 8px rgba(100,150,255,.4));left:-9999px;top:-9999px;animation:tardisLean 4s ease-in-out infinite;}
+  #tardis{position:absolute;width:70px;cursor:url('/cursors/pointer.png') 18 10,pointer;opacity:0;pointer-events:none;z-index:10;transition:opacity 1.5s;mix-blend-mode:screen;filter:drop-shadow(0 0 8px rgba(100,150,255,.4));left:-9999px;top:-9999px;animation:tardisLean 4s ease-in-out infinite;}
 @keyframes tardisJiggle{0%{transform:rotate(0)}20%{transform:rotate(-5deg) translateX(-3px)}40%{transform:rotate(5deg) translateX(3px)}60%{transform:rotate(-3deg) translateX(-2px)}80%{transform:rotate(2deg) translateX(2px)}100%{transform:rotate(0)}}
 @keyframes tardisLean{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
   @keyframes fishWiggle{0%{transform:rotate(0deg) scale(1)}20%{transform:rotate(-8deg) scale(1.1)}40%{transform:rotate(8deg) scale(1.1)}60%{transform:rotate(-5deg) scale(1.05)}80%{transform:rotate(3deg) scale(1.02)}100%{transform:rotate(0deg) scale(1)}}
@@ -319,9 +319,12 @@
 .ipod-np-row{flex:1;display:flex;min-height:0;gap:5px;padding:5px 6px 0;}
 .ipod-np-art{width:60px;height:60px;flex:0 0 60px;background-image:url('images/albums.png');background-size:100% 100%;background-position:center;box-shadow:0 1px 2px rgba(0,0,0,.4),inset 0 0 0 1px rgba(0,0,0,.3);}
 .ipod-np-info{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;overflow:hidden;padding-top:2px;}
-.ipod-np-title{font-size:11px;line-height:1.05;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity .3s ease;color:#0a1422;}
-.ipod-np-artist{font-size:9.5px;color:#384858;line-height:1.1;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity .3s ease;}
-.ipod-np-album{font-size:9.5px;color:#6a7a8a;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity .3s ease;}
+.ipod-np-title{font-size:11px;line-height:1.05;margin-bottom:2px;white-space:nowrap;overflow:hidden;transition:opacity .3s ease;color:#0a1422;}
+.ipod-np-artist{font-size:9.5px;color:#384858;line-height:1.1;margin-bottom:1px;white-space:nowrap;overflow:hidden;transition:opacity .3s ease;}
+.ipod-np-album{font-size:9.5px;color:#6a7a8a;line-height:1.1;white-space:nowrap;overflow:hidden;transition:opacity .3s ease;}
+.ipod-np-text{display:inline-block;white-space:nowrap;}
+.ipod-np-title.marquee .ipod-np-text,.ipod-np-artist.marquee .ipod-np-text,.ipod-np-album.marquee .ipod-np-text{animation:ipodMarquee var(--marquee-duration,7s) ease-in-out infinite;}
+@keyframes ipodMarquee{0%,12%{transform:translateX(0);}45%,55%{transform:translateX(var(--marquee-translate,0));}88%,100%{transform:translateX(0);}}
 .ipod-np-bar-wrap{display:flex;align-items:center;gap:4px;padding:3px 6px 5px;flex:0 0 auto;}
 .ipod-np-icon{font-size:7px;color:#384858;line-height:1;}
 .ipod-np-bar{flex:1;height:3px;background:linear-gradient(180deg,rgba(0,0,0,.18) 0%,rgba(0,0,0,.08) 100%);border-radius:2px;position:relative;overflow:hidden;border:1px solid rgba(0,0,0,.22);box-shadow:inset 0 1px 1px rgba(0,0,0,.18);}
@@ -607,6 +610,9 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
   </div>
 
   <div class="about-scrap-cat-col">
+    <img id="fish-gif" src="images/fish.gif" alt=""
+  data-tip="bloop ◟(˘³˘)◞"
+  style="display:block;margin:0 auto 18px;width:115px;image-rendering:pixelated;opacity:.85;cursor:url('/cursors/pointer.png') 18 10,pointer;" />
     <div class="cat-polaroid-wrap">
       <div class="tape tape-tc"></div>
       <div class="cat-stack" id="cat-stack" data-tip="pet maggie">
@@ -616,9 +622,6 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
     <div class="cat-caption" style="text-align:center;margin-top:12px;font-family:'Caveat',cursive;font-size:1rem;color:var(--mushroom);">
       <span style="color:var(--rose);">Maggie</span> (=^･ω･^=) <span id="cat-caption-cms">studio assistant</span>
     </div>
-    <img id="fish-gif" src="images/fish.gif" alt=""
-  data-tip="bloop ◟(˘³˘)◞"
-  style="display:block;margin:18px auto 0;width:90px;image-rendering:pixelated;opacity:.85;cursor:url('/cursors/pointer.png') 18 10,pointer;" />
   </div>
 
     <div id="envelope-wrap" data-tip="psst... click to open!">
@@ -1869,14 +1872,39 @@ if(tardisFirstAppear){
   var headerNum=document.getElementById('ipod-np-header-num');
   var infoEls=[title,artistEl,album];
 
+  function setText(el, text){
+    el.innerHTML='';
+    var span=document.createElement('span');
+    span.className='ipod-np-text';
+    span.textContent=text;
+    el.appendChild(span);
+  }
+  function checkMarquee(el){
+    var inner=el.querySelector('.ipod-np-text');
+    if(!inner) return;
+    el.classList.remove('marquee');
+    inner.style.removeProperty('--marquee-translate');
+    inner.style.removeProperty('--marquee-duration');
+    void el.offsetWidth;
+    var overflow=inner.offsetWidth-el.clientWidth;
+    if(overflow>4){
+      var dur=Math.min(12,Math.max(4,4+overflow*0.04));
+      inner.style.setProperty('--marquee-translate',-(overflow+6)+'px');
+      inner.style.setProperty('--marquee-duration',dur+'s');
+      el.classList.add('marquee');
+    }
+  }
   function showTrack(idx, immediate){
     var t=tracks[idx];
     function apply(){
-      title.textContent=t.title;
-      artistEl.textContent=t.artist;
-      album.textContent=t.album;
+      setText(title,t.title);
+      setText(artistEl,t.artist);
+      setText(album,t.album);
       headerNum.textContent=(idx+1)+' of '+tracks.length;
       infoEls.forEach(function(el){el.style.opacity='1';});
+      checkMarquee(title);
+      checkMarquee(artistEl);
+      checkMarquee(album);
     }
     if(immediate){apply();}
     else {
