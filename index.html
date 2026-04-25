@@ -8,6 +8,121 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;1,400&family=Caveat:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
 <style>
+/* ── Guestbook Form ── */
+#gb-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-width: 480px;
+  margin: 1rem auto;
+}
+
+#gb-form input,
+#gb-form textarea {
+  background: #0e1409;
+  color: #c8e6c0;
+  border: 1px solid #7a9e7e;
+  padding: 0.5rem 0.75rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  outline: none;
+}
+
+#gb-form input:focus,
+#gb-form textarea:focus {
+  border-color: #a8d5a2;
+  box-shadow: 0 0 6px #7a9e7e66;
+}
+
+#gb-form textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+#gb-form button {
+  background: #1e3a1e;
+  color: #a8d5a2;
+  border: 1px solid #7a9e7e;
+  padding: 0.5rem 1rem;
+  font-family: inherit;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: background 0.2s;
+  border-radius: 4px;
+}
+
+#gb-form button:hover {
+  background: #7a9e7e;
+  color: #0e1409;
+}
+
+#gb-status {
+  font-size: 0.85rem;
+  color: #7a9e7e;
+  text-align: center;
+  min-height: 1.2em;
+}
+
+/* ── Guestbook Entries ── */
+#gb-entries {
+  max-width: 480px;
+  margin: 2rem auto;
+}
+
+.gb-entry {
+  background: #0e1409cc;
+  border: 1px solid #3a5a3a;
+  border-radius: 6px;
+  padding: 0.85rem 1rem;
+}
+
+.gb-entry-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.75rem;
+  align-items: baseline;
+  margin-bottom: 0.4rem;
+}
+
+.gb-name {
+  color: #a8d5a2;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.gb-location {
+  color: #7a9e7e;
+  font-size: 0.82rem;
+  font-style: italic;
+}
+
+.gb-date {
+  color: #4a7a4a;
+  font-size: 0.78rem;
+  margin-left: auto;
+}
+
+.gb-message {
+  color: #c8e6c0;
+  font-size: 0.9rem;
+  margin: 0;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.gb-divider {
+  text-align: center;
+  color: #4a7a4a;
+  font-size: 0.8rem;
+  margin: 0.6rem 0;
+}
+
+.gb-empty {
+  text-align: center;
+  color: #4a7a4a;
+  font-style: italic;
+}
 @keyframes dogJump{0%{transform:translateY(0)}30%{transform:translateY(-18px)}60%{transform:translateY(-8px)}80%{transform:translateY(-14px)}100%{transform:translateY(0)}}
 @keyframes dogSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
 .dog-jump{animation:dogJump .5s ease-out forwards!important;}
@@ -877,9 +992,7 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
     </div>
     <div class="card reveal">
       <div class="card-tape"></div>
-      <form name="guestbook" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="guestbook-form" id="guestbook-form">
-        <input type="hidden" name="form-name" value="guestbook" />
-        <div style="display:none"><input name="bot-field" /></div>
+      <form class="guestbook-form" id="guestbook-form">
         <div class="form-row">
           <div class="form-field">
             <label for="g-name">your name</label>
@@ -898,8 +1011,9 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
           <label for="g-email">email (optional)</label>
           <input type="email" id="g-email" name="email" placeholder="if you&#39;d like a reply" />
         </div>
-        <button type="submit" class="form-submit">leave a note --&gt;</button>
-        <p class="form-note">◝(ᵔᗜᵔ)◜ your message saves to my inbox</p>
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAADDQQImWYXyQgwiQ" data-theme="dark"></div>
+<button type="submit" class="form-submit">leave a note --&gt;</button>
+<p id="gb-status" class="form-note"></p>
       </form>
       <div id="form-thanks" style="display:none;text-align:center;padding:20px 0;">
         <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.3rem;color:var(--wheat);">thank you for signing! </p>
@@ -907,7 +1021,8 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
       </div>
       <div style="text-align:right;margin-top:12px;">
        <img id="guestbook-dog" src="images/undertale-deltarune.gif" alt="" data-tip="click me!" style="width:70px;image-rendering:pixelated;opacity:.65;animation:drift 5s ease-in-out infinite;cursor:url('/cursors/pointer.png') 18 10,pointer;" />
-</div>
+        <div id="gb-entries" class="reveal"></div>
+      </div>
     </div>
   </div>
 </section>
@@ -2027,6 +2142,80 @@ if(tardisFirstAppear){
   overlay.addEventListener('click',function(e){if(e.target===overlay)closeSpotify();});
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&isOpen)closeSpotify();});
 })();
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://ceqdesppfpbvxurrzedc.supabase.co';
+  const SUPABASE_KEY = '0x4AAAAAADDQQPv992tp45hqyGuhiNXzH2g';
+  const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  function escapeHTML(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function formatDate(dateStr) {
+    return new Date(dateStr).toLocaleDateString('en-US', {
+      year: 'numeric', month: 'long', day: 'numeric'
+    });
+  }
+
+  async function loadEntries() {
+    const { data } = await client
+      .from('guestbook')
+      .select('name, location, message, created_at')
+      .order('created_at', { ascending: false });
+
+    const container = document.getElementById('gb-entries');
+    if (!data || data.length === 0) {
+      container.innerHTML = '<p class="gb-empty">no entries yet — be the first! </p>';
+      return;
+    }
+
+    container.innerHTML = data.map(entry => `
+      <div class="gb-entry card">
+        <div class="card-tape"></div>
+        <div class="gb-entry-header">
+          <span class="gb-name">${escapeHTML(entry.name)}</span>
+          ${entry.location ? `<span class="gb-location">✈ ${escapeHTML(entry.location)}</span>` : ''}
+          <span class="gb-date">${formatDate(entry.created_at)}</span>
+        </div>
+        <p class="gb-message">${escapeHTML(entry.message)}</p>
+      </div>
+    `).join('<div class="gb-divider">⋆ ˚｡⋆୨♡୧⋆ ˚｡⋆</div>');
+  }
+
+  document.getElementById('guestbook-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const status = document.getElementById('gb-status');
+
+    const turnstileToken = document.querySelector('[name="cf-turnstile-response"]')?.value;
+    if (!turnstileToken) {
+      status.textContent = 'please complete the verification ◝(ᵔᗜᵔ)◜';
+      return;
+    }
+
+    const name = document.getElementById('g-name').value.trim();
+    const location = document.getElementById('g-location').value.trim();
+    const message = document.getElementById('g-msg').value.trim();
+    const email = document.getElementById('g-email').value.trim();
+
+    status.textContent = 'sending...';
+
+    const { error } = await client.from('guestbook').insert([{
+      name, location, message, email: email || null
+    }]);
+
+    if (error) {
+      status.textContent = 'something went wrong — try again! (╥_╥)';
+    } else {
+      status.textContent = 'your note has been received ( ദ്ദി ˙ᗜ˙ )';
+      e.target.reset();
+      loadEntries();
+    }
+  });
+
+  loadEntries();
 </script>
 </body>
 </html>
