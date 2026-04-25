@@ -13,6 +13,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## The Website
 
 - **URL**: www.lislecoombs.me
+- **Hosting**: code lives on GitHub, site is hosted by Netlify (Netlify deploys automatically when changes are pushed to GitHub)
 - **Aesthetic**: scrapbook, homemade, nature, dark academia — handmade and slightly chaotic in a good way. GeoCities meets dark academia.
 - **Tone**: casual, silly, fun — with lots of easter eggs, but still cohesive
 - **Inspirations**: Tomodachi Life: Living the Dream, https://n10.as/, early internet blogs
