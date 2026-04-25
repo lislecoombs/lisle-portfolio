@@ -6,7 +6,7 @@
 <title>Lisle Coombs</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;1,400&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;1,400&family=Caveat:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
 <style>
 @keyframes dogJump{0%{transform:translateY(0)}30%{transform:translateY(-18px)}60%{transform:translateY(-8px)}80%{transform:translateY(-14px)}100%{transform:translateY(0)}}
 @keyframes dogSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
@@ -309,10 +309,30 @@
 #letterboxd-embed-wrapper-tc img{max-width:100%;border-radius:2px;}
 /* iPod */
 .ipod-wrap{position:relative;width:360px;max-width:100%;transform:rotate(-6deg);}
-.ipod-screen{position:absolute;left:78px;top:39px;width:204px;height:144px;overflow:hidden;clip-path:inset(0 round 4px);border-radius:4px;background:#fff;z-index:1;}
-.ipod-img{width:100%;display:block;pointer-events:none;position:relative;z-index:2;mix-blend-mode:multiply;}
-.ipod-screen-scaler{position:absolute;top:0;left:0;width:420px;height:352px;transform:scale(0.45);transform-origin:0 0;}
-.ipod-screen-scaler iframe{width:100%;height:352px;border:none;display:block;}
+.ipod-screen{position:absolute;left:78px;top:39px;width:204px;height:144px;overflow:hidden;border-radius:4px;background:linear-gradient(180deg,#e4ecf4 0%,#b8c8d8 100%);z-index:2;cursor:url('/cursors/pointer.png') 18 10,pointer;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12);}
+.ipod-img{width:100%;display:block;pointer-events:none;position:relative;z-index:1;}
+.ipod-np{position:relative;width:100%;height:100%;display:flex;flex-direction:column;font-family:'VT323',monospace;color:#0f1a2a;line-height:1;}
+.ipod-np-header{position:relative;height:16px;flex:0 0 16px;background:linear-gradient(180deg,#9cb4cc 0%,#5c7894 100%);border-bottom:1px solid rgba(0,0,0,.28);display:flex;align-items:center;justify-content:space-between;padding:0 7px;color:#fff;font-size:11px;letter-spacing:.03em;text-shadow:0 1px 0 rgba(0,0,0,.4);}
+.ipod-np-header::before{content:'';position:absolute;top:0;left:0;right:0;height:55%;background:linear-gradient(180deg,rgba(255,255,255,.45) 0%,rgba(255,255,255,0) 100%);pointer-events:none;}
+.ipod-np-header span{position:relative;z-index:1;}
+.ipod-np-row{flex:1;display:flex;min-height:0;gap:8px;padding:8px 10px 0;}
+.ipod-np-art{width:88px;height:88px;flex:0 0 88px;background-image:url('images/albums.png');background-size:100% 100%;background-position:center;box-shadow:0 1px 3px rgba(0,0,0,.4),inset 0 0 0 1px rgba(0,0,0,.3);}
+.ipod-np-info{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;overflow:hidden;padding-top:4px;}
+.ipod-np-title{font-size:14px;line-height:1.05;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity .3s ease;color:#0a1422;}
+.ipod-np-artist{font-size:12px;color:#384858;line-height:1.1;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity .3s ease;}
+.ipod-np-album{font-size:12px;color:#6a7a8a;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity .3s ease;}
+.ipod-np-bar-wrap{display:flex;align-items:center;gap:6px;padding:5px 10px 8px;flex:0 0 auto;}
+.ipod-np-icon{font-size:9px;color:#384858;line-height:1;}
+.ipod-np-bar{flex:1;height:5px;background:linear-gradient(180deg,rgba(0,0,0,.18) 0%,rgba(0,0,0,.08) 100%);border-radius:3px;position:relative;overflow:hidden;border:1px solid rgba(0,0,0,.22);box-shadow:inset 0 1px 1px rgba(0,0,0,.18);}
+.ipod-np-bar-fill{position:absolute;top:0;left:0;height:100%;width:0%;background:linear-gradient(180deg,#7a92ac 0%,#3a5272 100%);border-right:1px solid rgba(0,0,0,.25);}
+/* Spotify popup */
+#spotify-overlay{position:fixed;inset:0;z-index:450;display:flex;align-items:center;justify-content:center;background:rgba(7,12,5,.88);padding:40px 20px;opacity:0;pointer-events:none;transition:opacity .35s ease;}
+#spotify-overlay.open{opacity:1;pointer-events:all;}
+#spotify-modal{width:100%;max-width:400px;transform:scale(.92) rotate(-2deg);opacity:0;transition:transform .5s cubic-bezier(.22,1,.36,1),opacity .35s ease;}
+#spotify-overlay.open #spotify-modal{transform:scale(1) rotate(0);opacity:1;}
+#spotify-modal iframe{width:100%;height:500px;border:none;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.7);display:block;background:#181818;}
+#spotify-close{position:absolute;top:20px;right:28px;font-family:'Caveat',cursive;font-size:2rem;color:var(--mushroom);background:none;border:none;cursor:url('/cursors/pointer.png') 18 10,pointer;transition:color .3s,transform .3s;z-index:460;}
+#spotify-close:hover{color:var(--cream);transform:rotate(90deg);}
 @media(max-width:700px){.devices-row{flex-direction:column;align-items:center;}.tv-wrap,.ipod-wrap{max-width:100%;}}
 
 #envelope-wrap{position:absolute;bottom:40px;left:-15px;z-index:20;cursor:url('/cursors/pointer.png') 18 10,pointer;animation:envShakeLoop 9s ease-in-out infinite;transform-origin:bottom center;}
@@ -744,12 +764,24 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
       <!-- iPod / Spotify -->
       <div class="device-unit">
         <div class="ipod-wrap">
-          <div class="ipod-screen">
-            <div class="ipod-screen-scaler">
-              <iframe src="https://open.spotify.com/embed/playlist/17S2D8xCQEVviPivD2UKEX?utm_source=generator"
-                frameborder="0"
-                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                loading="lazy"></iframe>
+          <div class="ipod-screen" id="ipod-screen" role="button" tabindex="0" aria-label="Open Spotify playlist">
+            <div class="ipod-np">
+              <div class="ipod-np-header">
+                <span>Now Playing</span>
+                <span id="ipod-np-header-num">1 of 19</span>
+              </div>
+              <div class="ipod-np-row">
+                <div class="ipod-np-art" id="ipod-np-art"></div>
+                <div class="ipod-np-info">
+                  <div class="ipod-np-title" id="ipod-np-title">Weird Fishes</div>
+                  <div class="ipod-np-artist" id="ipod-np-artist">Lianne La Havas</div>
+                  <div class="ipod-np-album" id="ipod-np-album">Weird Fishes</div>
+                </div>
+              </div>
+              <div class="ipod-np-bar-wrap">
+                <span class="ipod-np-icon">&#9654;</span>
+                <div class="ipod-np-bar"><div class="ipod-np-bar-fill" id="ipod-np-bar-fill"></div></div>
+              </div>
             </div>
           </div>
           <img src="images/ipod.png" alt="iPod" class="ipod-img" />
@@ -791,6 +823,18 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
     </div>
   </div>
   <div id="letter-photos"></div>
+</div>
+<!-- Spotify popup -->
+<div id="spotify-overlay">
+  <button id="spotify-close" aria-label="Close">&times;</button>
+  <div id="spotify-modal">
+    <iframe id="spotify-iframe"
+      data-src="https://open.spotify.com/embed/playlist/17S2D8xCQEVviPivD2UKEX?utm_source=generator"
+      src="about:blank"
+      frameborder="0"
+      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+      loading="lazy"></iframe>
+  </div>
 </div>
 <section id="guestbook">
   <div class="inner">
@@ -1790,6 +1834,96 @@ if(tardisFirstAppear){
 
   window.addEventListener('resize',function(){baseY=window.innerHeight*.08;});
   setTimeout(appear,5000);
+})();
+
+/* iPod Now Playing */
+(function(){
+  var tracks=[
+    {title:'Weird Fishes', artist:'Lianne La Havas', album:'Weird Fishes'},
+    {title:'Caint Use My Phone (Suite)', artist:'Erykah Badu', album:'But You Caint Use My Phone'},
+    {title:'Prototype', artist:'Outkast', album:'Speakerboxxx/The Love Below'},
+    {title:'Comes To Light (Everything)', artist:'Jill Scott', album:'The Original Jill Scott'},
+    {title:'Messages from the Stars', artist:'The Rah Band', album:'Going Up'},
+    {title:"Let's Move To The Country", artist:'Bill Callahan', album:'Gold Record'},
+    {title:'Music', artist:'Cleo Sol', album:'Mother'},
+    {title:'Siri, How Do I Know If I Have Commitment Issues?', artist:'Sam Wilkes, Jacob Mann', album:'Siri, How Do I Know If I Have Commitment Issues?'},
+    {title:'Courtyard', artist:'Bobbie Gentry', album:'The Delta Sweete'},
+    {title:'A RING', artist:'TOWA TEI, Pascale Borel', album:'LAST CENTURY MODERN'},
+    {title:'Video Life', artist:'Chris Spedding', album:'Guitar Graffiti'},
+    {title:"Let's Get Blown", artist:'Snoop Dogg', album:'R&G: The Masterpiece'},
+    {title:'Never Can Say Goodbye', artist:'The Jackson 5', album:'Maybe Tomorrow'},
+    {title:'Tonight May Have To Last Me All My Life', artist:'The Avalanches, MF DOOM', album:'Since I Left You'},
+    {title:'The Wozard Of Iz', artist:'The Avalanches', album:'Wildflower'},
+    {title:'Two Hearts In 3/4 Time', artist:'The Avalanches', album:'Since I Left You'},
+    {title:'Love Train', artist:"The O'Jays", album:'Back Stabbers'},
+    {title:'Doves In The Wind', artist:'SZA, Kendrick Lamar', album:'Ctrl'},
+    {title:'Ms. Fat Booty', artist:'Mos Def', album:'Black On Both Sides'}
+  ];
+  var i=0, duration=15000;
+  var title=document.getElementById('ipod-np-title');
+  var artistEl=document.getElementById('ipod-np-artist');
+  var album=document.getElementById('ipod-np-album');
+  var fill=document.getElementById('ipod-np-bar-fill');
+  var headerNum=document.getElementById('ipod-np-header-num');
+  var infoEls=[title,artistEl,album];
+
+  function showTrack(idx, immediate){
+    var t=tracks[idx];
+    function apply(){
+      title.textContent=t.title;
+      artistEl.textContent=t.artist;
+      album.textContent=t.album;
+      headerNum.textContent=(idx+1)+' of '+tracks.length;
+      infoEls.forEach(function(el){el.style.opacity='1';});
+    }
+    if(immediate){apply();}
+    else {
+      infoEls.forEach(function(el){el.style.opacity='0';});
+      setTimeout(apply,300);
+    }
+    fill.style.transition='none';
+    fill.style.width='0%';
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        fill.style.transition='width '+duration+'ms linear';
+        fill.style.width='100%';
+      });
+    });
+  }
+
+  function nextIdx(){
+    if(tracks.length<2) return 0;
+    var n;
+    do { n=Math.floor(Math.random()*tracks.length); } while(n===i);
+    return n;
+  }
+
+  i=Math.floor(Math.random()*tracks.length);
+  showTrack(i,true);
+  setInterval(function(){
+    i=nextIdx();
+    showTrack(i,false);
+  }, duration);
+
+  /* Popup */
+  var ipodScreen=document.getElementById('ipod-screen');
+  var overlay=document.getElementById('spotify-overlay');
+  var iframe=document.getElementById('spotify-iframe');
+  var loaded=false, isOpen=false;
+  function openSpotify(){
+    if(!loaded){iframe.src=iframe.getAttribute('data-src');loaded=true;}
+    overlay.classList.add('open'); isOpen=true;
+  }
+  function closeSpotify(){
+    overlay.classList.remove('open'); isOpen=false;
+  }
+  ipodScreen.addEventListener('click',openSpotify);
+  ipodScreen.addEventListener('keydown',function(e){
+    if(e.key==='Enter'||e.key===' '){e.preventDefault();openSpotify();}
+  });
+  document.getElementById('spotify-close').addEventListener('click',closeSpotify);
+  overlay.addEventListener('click',function(e){if(e.target===overlay)closeSpotify();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&isOpen)closeSpotify();});
 })();
 </script>
 </body>
