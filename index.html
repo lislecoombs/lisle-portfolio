@@ -65,10 +65,25 @@
 }
 
 /* ── Guestbook Entries ── */
-#gb-entries {
-  max-width: 480px;
-  margin: 2rem auto;
-}
+/* Guestbook side-panel layout */
+.guestbook-row{display:flex;align-items:stretch;gap:36px;flex-wrap:wrap;}
+.guestbook-form-card{flex:1 1 420px;min-width:0;}
+.guestbook-side{flex:0 0 280px;background:rgba(244,237,216,.04);border:1px solid rgba(244,237,216,.1);border-radius:3px;padding:26px 16px 20px;position:relative;transform:rotate(2deg);margin-top:22px;display:flex;flex-direction:column;backdrop-filter:blur(3px);}
+.guestbook-side-header{text-align:center;font-family:'Caveat',cursive;font-size:1.2rem;color:var(--terra);margin-bottom:12px;letter-spacing:1px;}
+#gb-entries{flex:1;min-height:0;overflow-y:auto;max-width:none;margin:0;padding-right:6px;}
+#gb-entries::-webkit-scrollbar{width:5px;}
+#gb-entries::-webkit-scrollbar-track{background:transparent;}
+#gb-entries::-webkit-scrollbar-thumb{background:rgba(212,176,150,.3);border-radius:3px;}
+.guestbook-side .gb-entry.card{padding:11px 13px;backdrop-filter:none;background:rgba(244,237,216,.045);border-color:rgba(122,158,126,.18);}
+.guestbook-side .gb-entry .card-tape{width:36px;height:12px;top:-6px;left:18px;}
+.guestbook-side .gb-entry-header{flex-direction:column;align-items:flex-start;gap:4px;margin-bottom:6px;}
+.guestbook-side .gb-name{font-size:.95rem;}
+.guestbook-side .gb-location{font-size:.75rem;}
+.guestbook-side .gb-date{font-size:.7rem;margin-left:0;opacity:.7;}
+.guestbook-side .gb-message{font-size:.85rem;line-height:1.5;}
+.guestbook-side .gb-divider{font-size:.7rem;margin:8px 0;opacity:.7;}
+.guestbook-side .gb-empty{font-size:.9rem;padding:16px 0;}
+@media(max-width:899px){.guestbook-row{flex-direction:column;}.guestbook-side{flex-basis:auto;width:100%;transform:rotate(-1deg);margin-top:30px;}}
 
 .gb-entry {
   background: #0e1409cc;
@@ -281,7 +296,7 @@
   .gallery-empty{text-align:center;padding:60px 40px;font-family:'Caveat',cursive;font-size:1.1rem;color:rgba(255,255,255,.2);border:1px dashed rgba(255,255,255,.1);border-radius:3px;}
   .art-ph{width:100%;aspect-ratio:var(--ar,3/4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-family:'Caveat',cursive;font-size:.85rem;color:rgba(255,255,255,.18);background:var(--bg,linear-gradient(135deg,#1a1008,#2a2010));}
   #guestbook{padding:90px 52px;position:relative;}
-  #guestbook .inner{max-width:780px;margin:0 auto;}
+  #guestbook .inner{max-width:1080px;margin:0 auto;}
   .guestbook-form{display:flex;flex-direction:column;gap:16px;}
   .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
   .form-field{display:flex;flex-direction:column;gap:6px;}
@@ -990,35 +1005,42 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
       <h2 class="section-title"> °❀⋆.ೃ࿔*:･ Guestbook  ❀⋆.ೃ࿔*:･ </h2>
       <p style="font-family:'Lora',serif;font-style:italic;font-size:.95rem;color:var(--mushroom);margin-top:-16px;">Always happy to chat -- this is the best way to reach me </p>
     </div>
-    <div class="card reveal">
-      <div class="card-tape"></div>
-      <form class="guestbook-form" id="guestbook-form">
-        <div class="form-row">
-          <div class="form-field">
-            <label for="g-name">your name</label>
-            <input type="text" id="g-name" name="name" placeholder="what should I call you?" required />
+    <div class="guestbook-row reveal">
+      <div class="card guestbook-form-card">
+        <div class="card-tape"></div>
+        <form class="guestbook-form" id="guestbook-form">
+          <div class="form-row">
+            <div class="form-field">
+              <label for="g-name">your name</label>
+              <input type="text" id="g-name" name="name" placeholder="what should I call you?" required />
+            </div>
+            <div class="form-field">
+              <label for="g-location">where are you from? (optional)</label>
+              <input type="text" id="g-location" name="location" placeholder="city, country..." />
+            </div>
           </div>
           <div class="form-field">
-            <label for="g-location">where are you from?</label>
-            <input type="text" id="g-location" name="location" placeholder="city, country..." />
+            <label for="g-msg">your message</label>
+            <textarea id="g-msg" name="message" placeholder="say anything ..." required></textarea>
           </div>
+          <div class="form-field">
+            <label for="g-email">email (optional)</label>
+            <input type="email" id="g-email" name="email" placeholder="if you&#39;d like a reply" />
+            <span class="form-note" style="margin-top:2px;">only visible to me ◡̈</span>
+          </div>
+          <div class="cf-turnstile" data-sitekey="0x4AAAAAADDQQImWYXyQgwiQ" data-theme="dark"></div>
+          <button type="submit" class="form-submit">leave a note --&gt;</button>
+          <p id="gb-status" class="form-note"></p>
+        </form>
+        <div style="text-align:right;margin-top:12px;">
+          <img id="guestbook-dog" src="images/undertale-deltarune.gif" alt="" data-tip="click me!" style="width:70px;image-rendering:pixelated;opacity:.65;animation:drift 5s ease-in-out infinite;cursor:url('/cursors/pointer.png') 18 10,pointer;" />
         </div>
-        <div class="form-field">
-          <label for="g-msg">your message</label>
-          <textarea id="g-msg" name="message" placeholder="say anything ..." required></textarea>
-        </div>
-        <div class="form-field">
-          <label for="g-email">email (optional)</label>
-          <input type="email" id="g-email" name="email" placeholder="if you&#39;d like a reply" />
-        </div>
-        <div class="cf-turnstile" data-sitekey="0x4AAAAAADDQQImWYXyQgwiQ" data-theme="dark"></div>
-<button type="submit" class="form-submit">leave a note --&gt;</button>
-<p id="gb-status" class="form-note"></p>
-      </form>
-      <div style="text-align:right;margin-top:12px;">
-       <img id="guestbook-dog" src="images/undertale-deltarune.gif" alt="" data-tip="click me!" style="width:70px;image-rendering:pixelated;opacity:.65;animation:drift 5s ease-in-out infinite;cursor:url('/cursors/pointer.png') 18 10,pointer;" />
-        <div id="gb-entries" class="reveal"></div>
       </div>
+      <aside class="guestbook-side">
+        <div class="card-tape" style="left:50%;transform:translateX(-50%) rotate(-3deg);"></div>
+        <div class="guestbook-side-header">visitor notes</div>
+        <div id="gb-entries"></div>
+      </aside>
     </div>
   </div>
 </section>
