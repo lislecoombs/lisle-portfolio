@@ -1015,10 +1015,6 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
 <button type="submit" class="form-submit">leave a note --&gt;</button>
 <p id="gb-status" class="form-note"></p>
       </form>
-      <div id="form-thanks" style="display:none;text-align:center;padding:20px 0;">
-        <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.3rem;color:var(--wheat);">thank you for signing! </p>
-        <p style="font-family:'Caveat',cursive;font-size:.95rem;color:var(--mushroom);margin-top:8px;">your note has been received ( ദ്ദി ˙ᗜ˙ ) </p>
-      </div>
       <div style="text-align:right;margin-top:12px;">
        <img id="guestbook-dog" src="images/undertale-deltarune.gif" alt="" data-tip="click me!" style="width:70px;image-rendering:pixelated;opacity:.65;animation:drift 5s ease-in-out infinite;cursor:url('/cursors/pointer.png') 18 10,pointer;" />
         <div id="gb-entries" class="reveal"></div>
@@ -1666,16 +1662,6 @@ document.addEventListener('keydown',function(e){
   if(e.key==='Escape'&&envOpen) closeLetter();
 });
 
-/* ═ GUESTBOOK ═ */
-var gForm=document.getElementById('guestbook-form');
-if(gForm){
-  gForm.addEventListener('submit',function(e){
-    e.preventDefault();
-    fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(new FormData(gForm)).toString()})
-    .then(function(){gForm.style.display='none';document.getElementById('form-thanks').style.display='block';})
-    .catch(function(){gForm.style.display='none';document.getElementById('form-thanks').style.display='block';});
-  });
-}
 
 document.getElementById('yr').textContent=new Date().getFullYear();
 
