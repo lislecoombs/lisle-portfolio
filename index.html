@@ -83,6 +83,8 @@
 .guestbook-side .gb-message{font-size:.85rem;line-height:1.5;}
 .guestbook-side .gb-divider{font-size:.7rem;margin:8px 0;opacity:.7;}
 .guestbook-side .gb-empty{font-size:.9rem;padding:16px 0;}
+.gb-reply{margin-top:8px;padding:7px 10px 7px 12px;border-left:2px solid rgba(122,158,126,.45);background:rgba(122,158,126,.06);border-radius:0 3px 3px 0;font-size:.8rem;color:var(--sage);font-style:italic;line-height:1.45;}
+.gb-reply::before{content:'↳ Lisle says: ';font-family:'Caveat',cursive;color:var(--sage);font-style:normal;font-weight:bold;margin-right:3px;font-size:.95rem;}
 @media(max-width:899px){.guestbook-row{flex-direction:column;}.guestbook-side{flex-basis:auto;width:100%;transform:rotate(-1deg);margin-top:30px;}}
 
 .gb-entry {
@@ -2172,7 +2174,7 @@ if(tardisFirstAppear){
   async function loadEntries() {
     const { data } = await client
       .from('guestbook')
-      .select('name, location, message, created_at')
+      .select('name, location, message, created_at, reply')
       .order('created_at', { ascending: false });
 
     const container = document.getElementById('gb-entries');
@@ -2190,6 +2192,7 @@ if(tardisFirstAppear){
           <span class="gb-date">${formatDate(entry.created_at)}</span>
         </div>
         <p class="gb-message">${escapeHTML(entry.message)}</p>
+        ${entry.reply ? `<div class="gb-reply">${escapeHTML(entry.reply)}</div>` : ''}
       </div>
     `).join('<div class="gb-divider">⋆ ˚｡⋆୨♡୧⋆ ˚｡⋆</div>');
   }
