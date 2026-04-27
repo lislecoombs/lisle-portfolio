@@ -1065,7 +1065,7 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
       <span class="section-tag"> ♪┏(・o･)┛♪ </span>
       <div style="display:flex;align-items:center;justify-content:center;gap:14px;">
         <a href="https://uquiz.com/quiz/6ijfLx/pick-random-things-get-a-bird" target="_blank" rel="noopener" style="cursor:url('/cursors/pointer.png') 18 10,pointer;">
-          <img src="images/pigeon.gif" alt="pigeon" style="width:115px;display:block;transform:translateY(-12px);" />
+          <img id="pigeon-gif" src="images/pigeon.gif" alt="pigeon" style="width:115px;display:block;transform:translateY(-12px);" />
         </a>
         <h2 class="section-title"> links to socials, etc. </h2>
       </div>
@@ -1110,8 +1110,25 @@ var SND={
   kq:    new Audio('sounds/kq.mp3'),
   huh: mkAudio('sounds/huh.mp3'),
   bubbles: mkAudio('sounds/bubbles.mp3'),
+  pigeon:  mkAudio('sounds/pigeon.mp3', 1),
+  sparkle: mkAudio('sounds/sparkle.mp3', 1),
+  click:   mkAudio('sounds/click.mp3', .35),
 };
 function play(snd){try{snd.currentTime=0;snd.play();}catch(e){}}
+
+/* ═ CLICK SOUND CONFIG ═
+   click.mp3 plays on every click EXCEPT clicks that trigger another sound.
+   To add a new click-triggered sound:
+   • If the element ALWAYS plays a sound on click → add its selector to the list below.
+   • If the element only SOMETIMES plays a sound (e.g. on the Nth click) → set
+     sndTriggeredThisTick=true inside the branch where the sound plays.
+   • Hover sounds don't need anything (click.mp3 is click-only).
+   • Elements that already use e.stopPropagation() (#guestbook-dog, #tardis,
+     #envelope-wrap, #letter-close) don't need to be listed — their clicks
+     never reach this handler anyway. */
+  
+var SOUND_TRIGGER_SELECTORS = '#fish-gif,.gallery-tab,#cat-stack,#fav-surfsup,#fav-wwdits';
+var sndTriggeredThisTick = false;
 
 function resumeMusic(){
   if(!musicReady||musicPlaying) return;
@@ -1308,18 +1325,32 @@ document.addEventListener('mousemove',function(e){mxN=e.clientX/window.innerWidt
 function getCStars(c){var bx=c.cx*W,by=c.cy*H;return c.pattern.map(function(p){return {x:bx+p.x,y:by+p.y};});}
 
 document.addEventListener('click',function(e){
-  // Skip clicks on interactive elements so we don't fire on links/buttons/etc
-  if(e.target.closest('a,button,input,textarea,select,label,iframe,.gallery-item,.fav-link,.cat-stack,#cat-stack,.ipod-screen,.tv-screen,#fish-gif,#guestbook-dog,#envelope-wrap,#tardis,.float-letter')) return;
-  var mx=e.clientX,my=e.clientY;
-  constellations.forEach(function(c){
-    var cs=getCStars(c);
-    var minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
-    cs.forEach(function(s){if(s.x<minX)minX=s.x;if(s.x>maxX)maxX=s.x;if(s.y<minY)minY=s.y;if(s.y>maxY)maxY=s.y;});
-    var pad=30;
-    if(mx>=minX-pad&&mx<=maxX+pad&&my>=minY-pad&&my<=maxY+pad){
-      c.litUntil = Date.now() + 5000;
-    }
-  });
+  /* capture flag from conditional triggers, then schedule reset */
+  var triggered=sndTriggeredThisTick;
+  setTimeout(function(){sndTriggeredThisTick=false;},0);
+
+  /* did the click land on a registered sound-trigger element? */
+  var onSoundEl=e.target.closest(SOUND_TRIGGER_SELECTORS);
+
+  /* constellation check — skip interactive elements as before */
+  if(!e.target.closest('a,button,input,textarea,select,label,iframe,.gallery-item,.fav-link,.cat-stack,#cat-stack,.ipod-screen,.tv-screen,#fish-gif,#guestbook-dog,#envelope-wrap,#tardis,.float-letter')){
+    var mx=e.clientX,my=e.clientY;
+    var hitConstellation=false;
+    constellations.forEach(function(c){
+      var cs=getCStars(c);
+      var minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
+      cs.forEach(function(s){if(s.x<minX)minX=s.x;if(s.x>maxX)maxX=s.x;if(s.y<minY)minY=s.y;if(s.y>maxY)maxY=s.y;});
+      var pad=30;
+      if(mx>=minX-pad&&mx<=maxX+pad&&my>=minY-pad&&my<=maxY+pad){
+        c.litUntil=Date.now()+5000;
+        hitConstellation=true;
+      }
+    });
+    if(hitConstellation){play(SND.sparkle);return;}
+  }
+
+  /* play click sound unless something else made sound this click */
+  if(!onSoundEl && !triggered) play(SND.click);
 });
 
 var sf=0;
@@ -1493,8 +1524,9 @@ thirdPortrait.addEventListener('animationend', function(){
   thirdPortrait.classList.remove('secret-reveal');
 }, {once:true});
     }
+    sndTriggeredThisTick=true;
     play(SND.huh);
-    foundEgg('( ˙▿˙ )?');
+    foundEgg('( ˙▿˙ )?
   }
 });
     // cat_photo: support both new list format [{image,caption}] and old flat string fields
@@ -1616,6 +1648,16 @@ function attachLightbox(grid){
 loadCMS();
 
 
+/* ═ PIGEON ═ */
+(function(){
+  var pigeonEl=document.getElementById('pigeon-gif');
+  if(!pigeonEl) return;
+  pigeonEl.addEventListener('mouseenter',function(){
+    SND.pigeon.currentTime=0;
+    SND.pigeon.play().catch(function(){});
+  });
+})();
+
 /* ═ FISH ═ */
 (function(){
   var fishEl=document.getElementById('fish-gif');
@@ -1673,7 +1715,7 @@ var tripleTimer=null,tripleCount=0;
 document.getElementById('logo-btn').addEventListener('click',function(e){
   tripleCount++;clearTimeout(tripleTimer);
   tripleTimer=setTimeout(function(){tripleCount=0;},500);
-  if(tripleCount>=5){tripleCount=0;showStarPlatinum();}
+  if(tripleCount>=5){tripleCount=0;sndTriggeredThisTick=true;showStarPlatinum();}
 });
   
 /* ═ TRIPLE-CLICK → STAR PLATINUM ═ */
