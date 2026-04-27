@@ -1997,11 +1997,18 @@ jojoEl.addEventListener('mouseenter', function(){
   var closeBtn=document.getElementById('yt-close');
 
   function ytEmbed(url){
+    var id=null;
+    /* standard: youtube.com/watch?v=ID */
     var m=url.match(/[?&]v=([^&]+)/);
-    if(!m) return null;
+    if(m) id=m[1];
+    /* short: youtu.be/ID */
+    if(!id){ var s=url.match(/youtu\.be\/([^?&]+)/); if(s) id=s[1]; }
+    if(!id) return null;
     var listM=url.match(/[?&]list=([^&]+)/);
-    var src='https://www.youtube.com/embed/'+m[1]+'?autoplay=1&rel=0';
+    var tM=url.match(/[?&]t=([^&]+)/);
+    var src='https://www.youtube.com/embed/'+id+'?autoplay=1&rel=0';
     if(listM) src+='&list='+listM[1];
+    if(tM) src+='&start='+tM[1];
     return src;
   }
 
