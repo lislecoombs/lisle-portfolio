@@ -549,6 +549,8 @@
   transform:translateX(-50%) translateY(0);
 }
 .ipod-wrap[data-tip]::after{bottom:calc(100% - 30px);}
+#envelope-wrap[data-tip]::after{bottom:auto;top:calc(100% + 10px);transform:translateX(-50%) translateY(-5px);}
+#envelope-wrap[data-tip]:hover::after{transform:translateX(-50%) translateY(0);}
 
 /* ── GOODREADS WIDGET SCRAPBOOK RESTYLE ── */
 .fav-card-books a{cursor:url('/cursors/pointer.png') 18 10,pointer!important;}
@@ -1200,26 +1202,89 @@ makeFloatTitle(document.getElementById('portfolio-title'),[
 var canvas=document.getElementById('starfield');
 var ctx=canvas.getContext('2d');
 var W,H,stars=[];
-var mxN=.5,myN=.5;
+var mxN=.5,myN=.5,mPx=-9999,mPy=-9999;
 var starColors=['#f4edd8','#a8c4d8','#d4b896','#d4a09a','#7a9e7e','#c4973a'];
+
+// Constellations — pattern coords are relative to (cx*W, cy*H)
+var constellations=[{
+  name:'Big Dipper',
+  // 0=Dubhe, 1=Megrez, 2=Phecda, 3=Merak, 4=Alioth, 5=Mizar, 6=Alkaid
+  pattern:[{x:130,y:0},{x:90,y:6},{x:96,y:36},{x:135,y:30},{x:60,y:11},{x:30,y:21},{x:0,y:35}],
+  lines:[[0,1],[1,2],[2,3],[3,0],[1,4],[4,5],[5,6]],
+  cx:0.78, cy:0.16,
+  color:'#f4edd8',
+  litUntil:0
+}];
+
 function resizeCv(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
 resizeCv();window.addEventListener('resize',resizeCv);
-function mkStar(){return {x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.6+.2,alpha:Math.random()*.6+.4,vx:(Math.random()-.5)*.13,vy:(Math.random()-.5)*.13,phase:Math.random()*Math.PI*2,speed:Math.random()*.01+.003,color:starColors[Math.floor(Math.random()*starColors.length)]};}
+function mkStar(){return {x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.6+.2,alpha:Math.random()*.5+.4,vx:(Math.random()-.5)*.04,vy:(Math.random()-.5)*.04,phase:Math.random()*Math.PI*2,speed:Math.random()*.025+.01,color:starColors[Math.floor(Math.random()*starColors.length)]};}
 for(var _i=0;_i<280;_i++)stars.push(mkStar());
-document.addEventListener('mousemove',function(e){mxN=e.clientX/window.innerWidth;myN=e.clientY/window.innerHeight;});
+document.addEventListener('mousemove',function(e){mxN=e.clientX/window.innerWidth;myN=e.clientY/window.innerHeight;mPx=e.clientX;mPy=e.clientY;});
+
+function getCStars(c){var bx=c.cx*W,by=c.cy*H;return c.pattern.map(function(p){return {x:bx+p.x,y:by+p.y};});}
+
+document.addEventListener('click',function(e){
+  // Skip clicks on interactive elements so we don't fire on links/buttons/etc
+  if(e.target.closest('a,button,input,textarea,select,label,iframe,.gallery-item,.fav-link,.cat-stack,#cat-stack,.ipod-screen,.tv-screen,#fish-gif,#guestbook-dog,#envelope-wrap,#tardis,.float-letter')) return;
+  var mx=e.clientX,my=e.clientY;
+  constellations.forEach(function(c){
+    var cs=getCStars(c);
+    var minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
+    cs.forEach(function(s){if(s.x<minX)minX=s.x;if(s.x>maxX)maxX=s.x;if(s.y<minY)minY=s.y;if(s.y>maxY)maxY=s.y;});
+    var pad=30;
+    if(mx>=minX-pad&&mx<=maxX+pad&&my>=minY-pad&&my<=maxY+pad){
+      c.litUntil = Date.now() + 5000;
+    }
+  });
+});
+
 var sf=0;
 function drawStars(){
   ctx.clearRect(0,0,W,H);sf++;
-  var offX=(mxN-.5)*22,offY=(myN-.5)*22;
+  var offX=(mxN-.5)*8,offY=(myN-.5)*8;
   var grd=ctx.createRadialGradient(W/2+offX*.3,H/2+offY*.3,0,W/2,H/2,W*.5);
   grd.addColorStop(0,'rgba(74,107,78,.07)');grd.addColorStop(.5,'rgba(90,136,178,.03)');grd.addColorStop(1,'rgba(0,0,0,0)');
   ctx.fillStyle=grd;ctx.fillRect(0,0,W,H);
+  var hoverR=70,hoverR2=hoverR*hoverR;
   stars.forEach(function(s){
-    s.x+=s.vx+(mxN-.5)*.05;s.y+=s.vy+(myN-.5)*.05;
+    s.x+=s.vx;s.y+=s.vy;
     if(s.x<0)s.x=W;if(s.x>W)s.x=0;if(s.y<0)s.y=H;if(s.y>H)s.y=0;
-    var tw=.5+.5*Math.sin(sf*s.speed+s.phase);
-    ctx.beginPath();ctx.arc(s.x+offX*s.r*.12,s.y+offY*s.r*.12,s.r,0,Math.PI*2);
-    ctx.fillStyle=s.color;ctx.globalAlpha=s.alpha*tw;ctx.fill();ctx.globalAlpha=1;
+    var tw=.35+.65*Math.abs(Math.sin(sf*s.speed+s.phase));
+    var dx=s.x-mPx,dy=s.y-mPy,d2=dx*dx+dy*dy,boost=1;
+    if(d2<hoverR2) boost=1+(1-Math.sqrt(d2)/hoverR)*1.4;
+    ctx.beginPath();ctx.arc(s.x+offX*s.r*.12,s.y+offY*s.r*.12,s.r*Math.min(boost,1.7),0,Math.PI*2);
+    ctx.fillStyle=s.color;
+    var a=s.alpha*tw*boost;if(a>1)a=1;
+    ctx.globalAlpha=a;ctx.fill();ctx.globalAlpha=1;
+  });
+  // Constellations
+  var now=Date.now();
+  constellations.forEach(function(c){
+    var cs=getCStars(c);
+    var litT=c.litUntil>now?(c.litUntil-now)/5000:0;
+    var lit=litT>0;
+    if(lit){
+      ctx.strokeStyle='rgba(244,237,216,'+(0.55*litT)+')';
+      ctx.lineWidth=1.2;
+      ctx.beginPath();
+      c.lines.forEach(function(ln){var s1=cs[ln[0]],s2=cs[ln[1]];ctx.moveTo(s1.x,s1.y);ctx.lineTo(s2.x,s2.y);});
+      ctx.stroke();
+    }
+    cs.forEach(function(s,i){
+      var size=lit?(2.4+litT*1.2):1.7;
+      var alpha=lit?.95:.65;
+      var twk=.85+.15*Math.sin(sf*0.06+i);
+      if(lit){
+        var glowR=size*4;
+        var grd2=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,glowR);
+        grd2.addColorStop(0,'rgba(244,237,216,'+(.5*litT)+')');
+        grd2.addColorStop(1,'rgba(244,237,216,0)');
+        ctx.fillStyle=grd2;ctx.beginPath();ctx.arc(s.x,s.y,glowR,0,Math.PI*2);ctx.fill();
+      }
+      ctx.beginPath();ctx.arc(s.x,s.y,size,0,Math.PI*2);
+      ctx.fillStyle=c.color;ctx.globalAlpha=alpha*twk;ctx.fill();ctx.globalAlpha=1;
+    });
   });
   requestAnimationFrame(drawStars);
 }
@@ -1582,7 +1647,7 @@ function tbcShow(){
   }
   document.getElementById('tbc-sepia').classList.add('on');
   document.getElementById('tbc-overlay').classList.add('on');
-  SND.round.currentTime=0;
+  if(SND.round.ended) SND.round.currentTime=0;
   SND.round.play().catch(function(e){console.warn('TBC audio failed:',e);});
   foundEgg('To Be Continued...');
   SND.round.onended=function(){
@@ -1597,7 +1662,6 @@ function tbcHide(){
   document.getElementById('tbc-sepia').classList.remove('on');
   document.getElementById('tbc-overlay').classList.remove('on');
   SND.round.pause();
-  SND.round.currentTime=0;
   SND.round.onended=null;
   if(tbcMusicWasPlaying&&musicReady){
     ytPlayer.playVideo();
