@@ -1206,15 +1206,44 @@ var mxN=.5,myN=.5,mPx=-9999,mPy=-9999;
 var starColors=['#f4edd8','#a8c4d8','#d4b896','#d4a09a','#7a9e7e','#c4973a'];
 
 // Constellations — pattern coords are relative to (cx*W, cy*H)
-var constellations=[{
-  name:'Big Dipper',
-  // 0=Dubhe, 1=Megrez, 2=Phecda, 3=Merak, 4=Alioth, 5=Mizar, 6=Alkaid
-  pattern:[{x:130,y:0},{x:90,y:6},{x:96,y:36},{x:135,y:30},{x:60,y:11},{x:30,y:21},{x:0,y:35}],
-  lines:[[0,1],[1,2],[2,3],[3,0],[1,4],[4,5],[5,6]],
-  cx:0.78, cy:0.16,
-  color:'#f4edd8',
-  litUntil:0
-}];
+var constellations=[
+  {
+    name:'Big Dipper',
+    // 0=Dubhe,1=Megrez,2=Phecda,3=Merak,4=Alioth,5=Mizar,6=Alkaid
+    pattern:[{x:130,y:0},{x:90,y:6},{x:96,y:36},{x:135,y:30},{x:60,y:11},{x:30,y:21},{x:0,y:35}],
+    lines:[[0,1],[1,2],[2,3],[3,0],[1,4],[4,5],[5,6]],
+    cx:0.60, cy:0.10,
+    color:'#f4edd8',
+    litUntil:0
+  },
+  {
+    name:'Ursa Minor',
+    // 0=Polaris,1=Yildun,2=eps UMi,3=bowl-junction,4=Pherkad,5=Kochab,6=bowl-4th
+    pattern:[{x:0,y:28},{x:22,y:18},{x:44,y:10},{x:62,y:4},{x:76,y:0},{x:82,y:16},{x:65,y:22}],
+    lines:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,3]],
+    cx:0.40, cy:0.08,
+    color:'#f4edd8',
+    litUntil:0
+  },
+  {
+    name:'Orion',
+    // 0=Betelgeuse,1=Bellatrix,2=Mintaka,3=Alnilam,4=Alnitak,5=Saiph,6=Rigel
+    pattern:[{x:20,y:0},{x:100,y:5},{x:10,y:80},{x:48,y:88},{x:80,y:82},{x:5,y:168},{x:105,y:158}],
+    lines:[[0,1],[0,2],[1,4],[2,3],[3,4],[2,5],[4,6]],
+    cx:0.18, cy:0.50,
+    color:'#f4edd8',
+    litUntil:0
+  },
+  {
+    name:'Andromeda',
+    // 0=Alpheratz,1=delta And,2=Mirach,3=mu And,4=Almach
+    pattern:[{x:0,y:28},{x:42,y:14},{x:90,y:0},{x:132,y:12},{x:168,y:30}],
+    lines:[[0,1],[1,2],[2,3],[3,4]],
+    cx:0.74, cy:0.38,
+    color:'#f4edd8',
+    litUntil:0
+  }
+];
 
 function resizeCv(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
 resizeCv();window.addEventListener('resize',resizeCv);
