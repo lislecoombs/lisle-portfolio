@@ -1113,6 +1113,7 @@ var SND={
   pigeon:  mkAudio('sounds/pigeon.mp3', 1),
   sparkle: mkAudio('sounds/sparkle.mp3', 1),
   click:   mkAudio('sounds/click.mp3', .35),
+  paper:   mkAudio('sounds/paper.mp3', 1),
 };
 function play(snd){try{snd.currentTime=0;snd.play();}catch(e){}}
 
@@ -1127,7 +1128,7 @@ function play(snd){try{snd.currentTime=0;snd.play();}catch(e){}}
      #envelope-wrap, #letter-close) don't need to be listed — their clicks
      never reach this handler anyway. */
   
-var SOUND_TRIGGER_SELECTORS = '#fish-gif,.gallery-tab,#cat-stack,#fav-surfsup,#fav-wwdits';
+var SOUND_TRIGGER_SELECTORS = '#fish-gif,#cat-stack,#fav-surfsup,#fav-wwdits';
 var sndTriggeredThisTick = false;
 
 function resumeMusic(){
@@ -1681,9 +1682,9 @@ document.querySelectorAll('.gallery-tab').forEach(function(tab){
     document.getElementById('sec-'+cat).classList.add('active');
 
     // tab sounds
-    if(cat==='photography') play(SND.camera);
-    else if(cat==='paintings') play(SND.squish);
-    else if(cat==='drawings') play(SND.pencil);
+    if(cat==='photography'){sndTriggeredThisTick=true;play(SND.camera);}
+    else if(cat==='paintings'){sndTriggeredThisTick=true;play(SND.squish);}
+    else if(cat==='drawings'){sndTriggeredThisTick=true;play(SND.pencil);}
   });
 });
 
@@ -1872,6 +1873,7 @@ envWrap.addEventListener('mouseout',function(){
 });
 envWrap.addEventListener('click',function(e){
   e.stopPropagation();
+  play(SND.paper);
   if(envOpen) closeLetter(); else openLetter();
 });
 document.getElementById('letter-close').addEventListener('click',function(e){
