@@ -359,6 +359,317 @@
   .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;}
   .reveal.in{opacity:1;transform:translateY(0);}
   #egg-badge{position:fixed;bottom:22px;right:22px;font-family:'Caveat',cursive;font-size:.85rem;color:var(--sage);z-index:200;opacity:0;transition:opacity 1s;pointer-events:none;}
+
+/* ═════════════════════════════════════════════════════════════════════
+   SPACE KITTY EASTER EGG TRACKER
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* ─── STAGE (fixed bottom-right) ─── */
+#sk-stage{
+  position:fixed;
+  bottom:0;
+  right:0;
+  width:600px;
+  height:480px;
+  pointer-events:none;
+  z-index:500;
+}
+
+/* ─── UFO (only shown during entrance) ─── */
+#sk-ufo{
+  position:absolute;
+  width:140px;
+  bottom:300px;
+  right:30px;
+  transform:translateX(280px) rotate(0deg);
+  transition:transform 1.3s cubic-bezier(.34,1.4,.64,1);
+  filter:drop-shadow(0 0 10px rgba(150,255,180,.3));
+  z-index:3;
+  opacity:0;
+  pointer-events:none;
+}
+#sk-ufo.sk-visible{opacity:1;}
+#sk-ufo.sk-entered{transform:translateX(0) rotate(0deg);}
+
+#sk-ufo.sk-reckless{
+  animation:skReckless 2s cubic-bezier(.45,.05,.55,.95);
+  transition:none;
+}
+#sk-ufo.sk-bobbing{animation:skUfoBob 1.6s ease-in-out infinite;}
+#sk-ufo.sk-leaving{
+  animation:skLeaveJerky 1.5s cubic-bezier(.42,0,.85,.5) forwards;
+  transition:none;
+}
+
+@keyframes skReckless{
+  0%   {transform:translateX(0)     translateY(0)    rotate(0deg);}
+  4%   {transform:translateX(-4px)  translateY(-2px) rotate(-1deg);}
+  9%   {transform:translateX(-12px) translateY(-6px) rotate(-3deg);}
+  14%  {transform:translateX(-28px) translateY(-9px) rotate(-5deg);}
+  20%  {transform:translateX(-65px) translateY(8px)  rotate(8deg);}
+  28%  {transform:translateX(-130px) translateY(-18px) rotate(-12deg);}
+  34%  {transform:translateX(-160px) translateY(10px)  rotate(15deg);}
+  43%  {transform:translateX(-130px) translateY(-8px) rotate(-5deg);}
+  51%  {transform:translateX(-150px) translateY(15px) rotate(11deg);}
+  60%  {transform:translateX(-90px)  translateY(-10px) rotate(-9deg);}
+  70%  {transform:translateX(-40px)  translateY(8px)   rotate(6deg);}
+  79%  {transform:translateX(15px)   translateY(-4px) rotate(-4deg);}
+  87%  {transform:translateX(-10px)  translateY(3px)  rotate(3deg);}
+  94%  {transform:translateX(4px)    translateY(-1px) rotate(-1deg);}
+  100% {transform:translateX(0)      translateY(0)    rotate(0deg);}
+}
+@keyframes skUfoBob{
+  0%,100%{transform:translateY(0) rotate(-2deg);}
+  50%{transform:translateY(-5px) rotate(2deg);}
+}
+@keyframes skLeaveJerky{
+  0%   {transform:translateX(0)    translateY(0)    rotate(0deg);}
+  10%  {transform:translateX(8px)  translateY(-6px) rotate(3deg);}
+  20%  {transform:translateX(35px) translateY(4px)  rotate(-2deg);}
+  35%  {transform:translateX(110px) translateY(-12px) rotate(7deg);}
+  55%  {transform:translateX(280px) translateY(-5px)  rotate(10deg);}
+  75%  {transform:translateX(500px) translateY(-15px) rotate(13deg);}
+  100% {transform:translateX(780px) translateY(-25px) rotate(15deg);}
+}
+
+/* ─── BEAM ─── */
+#sk-beam{
+  position:absolute;
+  width:130px;
+  height:375px;
+  bottom:5px;
+  right:35px;
+  background:linear-gradient(180deg,
+    rgba(220,255,150,.55) 0%,
+    rgba(200,240,140,.4) 60%,
+    rgba(180,230,130,.3) 100%);
+  clip-path:polygon(35% 0, 65% 0, 100% 100%, 0% 100%);
+  transform:scaleY(0);
+  transform-origin:top center;
+  opacity:0;
+  pointer-events:none;
+  z-index:2;
+}
+#sk-beam.sk-active{
+  transform:scaleY(1);
+  opacity:1;
+  transition:transform .7s cubic-bezier(.4,.5,.5,1), opacity .25s;
+  animation:skBeamFlicker 1.4s ease-in-out infinite .7s;
+}
+#sk-beam.sk-retracting{
+  transform:scaleY(0);
+  opacity:.2;
+  transition:transform .65s cubic-bezier(.5,0,.7,.5), opacity .65s;
+  animation:none;
+}
+@keyframes skBeamFlicker{
+  0%,100%{filter:brightness(1);}
+  45%{filter:brightness(1.35);}
+  50%{filter:brightness(.8);}
+  55%{filter:brightness(1.2);}
+}
+
+/* ─── SPACE KITTY ─── */
+#sk-cat{
+  position:absolute;
+  width:95px;
+  bottom:25px;
+  right:53px; /* centered in beam: beam_right(35) + (130-95)/2 */
+  opacity:0;
+  transform:scale(0);
+  transform-origin:bottom center;
+  pointer-events:none;
+  filter:drop-shadow(0 0 6px rgba(180,255,200,.4));
+  z-index:1;
+  cursor:url('/cursors/pointer.png') 18 10, pointer;
+  image-rendering:pixelated;
+}
+#sk-cat.sk-materialized{
+  opacity:1;
+  transform:scale(1);
+  transition:opacity .4s, transform .55s cubic-bezier(.34,1.7,.64,1);
+  pointer-events:auto;
+}
+#sk-cat.sk-idle{
+  animation:skCatFloat 3s ease-in-out infinite;
+  z-index:5;
+}
+#sk-cat.sk-pulse-once{
+  animation:skCatPulseOnce 1.4s ease-in-out, skCatFloat 3s ease-in-out infinite 1.4s;
+  z-index:5;
+}
+#sk-cat.sk-pulse-continuous{
+  animation:skCatPulseLoop 1.6s ease-in-out infinite;
+  z-index:5;
+}
+@keyframes skCatFloat{
+  0%,100%{transform:translateY(0) rotate(-1deg) scale(1);filter:drop-shadow(0 0 6px rgba(180,255,200,.4));}
+  50%{transform:translateY(-3px) rotate(1deg) scale(1);filter:drop-shadow(0 0 6px rgba(180,255,200,.4));}
+}
+@keyframes skCatPulseOnce{
+  0%,100%{transform:translateY(0) rotate(-1deg) scale(1);filter:drop-shadow(0 0 6px rgba(180,255,200,.4));}
+  40%{transform:translateY(-4px) rotate(1deg) scale(1.08);filter:drop-shadow(0 0 18px rgba(180,255,200,.95));}
+  70%{transform:translateY(-2px) rotate(0deg) scale(1.03);filter:drop-shadow(0 0 12px rgba(180,255,200,.7));}
+}
+@keyframes skCatPulseLoop{
+  0%,100%{transform:translateY(0) rotate(-1deg) scale(1);filter:drop-shadow(0 0 8px rgba(180,255,200,.5));}
+  50%{transform:translateY(-3px) rotate(1deg) scale(1.06);filter:drop-shadow(0 0 18px rgba(180,255,200,.95));}
+}
+#sk-cat:hover{filter:drop-shadow(0 0 14px rgba(180,255,200,.85));}
+
+/* ─── PIXEL SPEECH BUBBLE ─── */
+#sk-bubble{
+  position:absolute;
+  bottom:160px;
+  right:50px;
+  background:var(--cream);
+  color:var(--night);
+  font-family:'VT323',monospace;
+  font-size:1.4rem;
+  line-height:1.05;
+  letter-spacing:1px;
+  padding:10px 16px 12px;
+  border:4px solid var(--night);
+  max-width:240px;
+  text-align:center;
+  box-shadow:4px 4px 0 0 rgba(0,0,0,.35);
+  transform:scale(0);
+  transform-origin:bottom right;
+  opacity:0;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1), opacity .2s;
+  pointer-events:none;
+  z-index:6;
+  -webkit-font-smoothing:none;
+  font-smooth:never;
+  white-space:normal;
+}
+#sk-bubble.sk-show{transform:scale(1);opacity:1;}
+
+.sk-b-word{display:inline-block;white-space:nowrap;vertical-align:top;}
+.sk-b-char{display:inline-block;width:.62em;text-align:center;}
+.sk-b-space{display:inline-block;width:.35em;}
+
+/* Stepped pixel tail */
+.sk-t-step{
+  position:absolute;
+  background:var(--cream);
+  border-left:4px solid var(--night);
+  border-right:4px solid var(--night);
+  border-bottom:4px solid var(--night);
+}
+.sk-t-1{bottom:-12px;right:18px;width:24px;height:12px;}
+.sk-t-2{bottom:-24px;right:21px;width:18px;height:12px;}
+.sk-t-3{bottom:-36px;right:24px;width:12px;height:12px;}
+.sk-t-tip{
+  position:absolute;
+  bottom:-42px;right:27px;
+  width:6px;height:6px;
+  background:var(--night);
+}
+.sk-t-mask{
+  position:absolute;
+  bottom:-4px;right:22px;
+  width:16px;height:4px;
+  background:var(--cream);
+  z-index:1;
+}
+
+/* ─── JOURNAL PLACEHOLDER (Phase 1 only — Phase 2 replaces this) ─── */
+#sk-journal{
+  position:fixed;
+  inset:0;
+  z-index:498;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(7,12,5,.85);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .3s ease;
+  padding:40px 200px 200px 40px;
+}
+#sk-journal.open{opacity:1;pointer-events:auto;}
+#sk-journal-content{
+  background:rgba(244,237,216,.06);
+  border:1px solid rgba(244,237,216,.18);
+  border-radius:4px;
+  padding:48px 40px 40px;
+  max-width:520px;
+  width:100%;
+  position:relative;
+  backdrop-filter:blur(8px);
+  transform:translateY(20px) rotate(-1deg);
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1);
+  font-family:'Caveat',cursive;
+  color:var(--cream);
+  text-align:center;
+}
+#sk-journal.open #sk-journal-content{transform:translateY(0) rotate(-1deg);}
+#sk-journal-content::before{
+  content:'';position:absolute;
+  width:60px;height:18px;
+  background:rgba(212,176,150,.25);
+  border-radius:1px;
+  top:-9px;left:30px;
+  transform:rotate(-3deg);
+}
+#sk-journal-content::after{
+  content:'';position:absolute;
+  width:52px;height:16px;
+  background:rgba(212,176,150,.22);
+  border-radius:1px;
+  top:-8px;right:34px;
+  transform:rotate(2.5deg);
+}
+#sk-journal h2{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-size:1.8rem;
+  color:var(--cream);
+  margin-bottom:6px;
+  letter-spacing:.5px;
+}
+#sk-journal-tag{
+  font-family:'Caveat',cursive;
+  font-size:.95rem;
+  color:var(--terra);
+  letter-spacing:3px;
+  text-transform:uppercase;
+  display:block;
+  margin-bottom:14px;
+}
+#sk-journal-coming{font-size:1.3rem;color:var(--wheat);margin:18px 0 6px;font-style:italic;}
+#sk-journal-counter{font-size:1.5rem;color:var(--sage);margin:14px 0 4px;}
+#sk-journal-counter strong{
+  color:var(--cream);
+  font-size:2.2rem;
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+}
+#sk-journal-hint{font-size:1rem;color:var(--mushroom);opacity:.7;margin-top:20px;font-style:italic;}
+#sk-journal-close{
+  position:absolute;
+  top:10px;right:14px;
+  background:none;border:none;
+  color:var(--mushroom);
+  font-family:'Caveat',cursive;
+  font-size:1.6rem;
+  cursor:url('/cursors/pointer.png') 18 10, pointer;
+  line-height:1;
+  padding:4px 10px;
+  transition:color .2s;
+}
+#sk-journal-close:hover{color:var(--rose);}
+
+@media(max-width:700px){
+  #sk-stage{width:100vw;height:380px;}
+  #sk-ufo{width:110px;bottom:240px;right:18px;}
+  #sk-beam{width:100px;height:300px;right:23px;}
+  #sk-cat{width:75px;bottom:18px;right:35px;}
+  #sk-bubble{bottom:130px;right:30px;font-size:1.2rem;max-width:200px;}
+  #sk-journal{padding:20px 20px 160px 20px;}
+  #sk-journal-content{padding:36px 24px 28px;}
+}
   #egg-badge.show{opacity:.7;}
   @media(max-width:900px){nav{padding:16px 24px;}section,#guestbook{padding:70px 24px;}.hero-layout{grid-template-columns:1fr;text-align:center;gap:40px;}.hero-left,.hero-right{text-align:center;}.float-title{justify-content:center!important;}.portrait-stack{margin:0 auto 32px;}.about-grid{grid-template-columns:1fr;}.gallery-grid{columns:2 160px;}footer{padding:28px 24px;}.form-row{grid-template-columns:1fr;}}
  /* ── SCRAPBOOK OVERRIDES ── */
@@ -690,6 +1001,34 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
 <div id="dio-overlay">
 <div id="dio-text">KONO DIO DA!!</div>
 </div>
+<!-- ═══ SPACE KITTY STAGE + JOURNAL (Phase 1) ═══ -->
+<div id="sk-stage" aria-hidden="true">
+  <img id="sk-ufo" src="images/UFO.png" alt="" />
+  <div id="sk-beam"></div>
+  <img id="sk-cat" src="images/spacekitty.png" alt="space kitty - click to open easter egg journal" />
+  <div id="sk-bubble">
+    <span id="sk-bubble-text"></span>
+    <span class="sk-t-mask"></span>
+    <span class="sk-t-step sk-t-1"></span>
+    <span class="sk-t-step sk-t-2"></span>
+    <span class="sk-t-step sk-t-3"></span>
+    <span class="sk-t-tip"></span>
+  </div>
+</div>
+<audio id="sk-ufo-sound" src="sounds/UFO.mp3" preload="auto"></audio>
+
+<!-- Phase 1 placeholder journal — Phase 2 will replace this -->
+<div id="sk-journal" role="dialog" aria-labelledby="sk-journal-title">
+  <div id="sk-journal-content">
+    <button id="sk-journal-close" aria-label="Close">×</button>
+    <span id="sk-journal-tag">--&gt; space kitty's journal</span>
+    <h2 id="sk-journal-title">under construction</h2>
+    <p id="sk-journal-coming">the real journal arrives in phase 2!</p>
+    <p id="sk-journal-counter">eggs found: <strong id="sk-journal-count">0</strong> / <span id="sk-journal-total">20</span></p>
+    <p id="sk-journal-hint">(click outside or press esc to close)</p>
+  </div>
+</div>
+
 <div id="tbc-overlay"><img id="tbc-arrow" src="images/tbc-arrow.png" alt="To Be Continued" /></div>
 <div id="tbc-sepia"></div>
 <div id="lightbox">
@@ -1128,7 +1467,7 @@ function play(snd){try{snd.currentTime=0;snd.play();}catch(e){}}
      #envelope-wrap, #letter-close) don't need to be listed — their clicks
      never reach this handler anyway. */
   
-var SOUND_TRIGGER_SELECTORS = '#fish-gif,#cat-stack,#fav-surfsup,#fav-wwdits';
+var SOUND_TRIGGER_SELECTORS = '#fish-gif,#cat-stack,#fav-surfsup,#fav-wwdits,#sk-cat';
 var sndTriggeredThisTick = false;
 
 function resumeMusic(){
@@ -1334,7 +1673,7 @@ document.addEventListener('click',function(e){
   var onSoundEl=e.target.closest(SOUND_TRIGGER_SELECTORS);
 
   /* constellation check — skip interactive elements as before */
-  if(!e.target.closest('a,button,input,textarea,select,label,iframe,.gallery-item,.fav-link,.cat-stack,#cat-stack,.ipod-screen,.tv-screen,#fish-gif,#guestbook-dog,#envelope-wrap,#tardis,.float-letter')){
+  if(!e.target.closest('a,button,input,textarea,select,label,iframe,.gallery-item,.fav-link,.cat-stack,#cat-stack,.ipod-screen,.tv-screen,#fish-gif,#guestbook-dog,#envelope-wrap,#tardis,.float-letter,#sk-cat,#sk-stage,#sk-journal')){
     var mx=e.clientX,my=e.clientY;
     var hitConstellation=false;
     constellations.forEach(function(c){
@@ -1345,6 +1684,7 @@ document.addEventListener('click',function(e){
       if(mx>=minX-pad&&mx<=maxX+pad&&my>=minY-pad&&my<=maxY+pad){
         c.litUntil=Date.now()+5000;
         hitConstellation=true;
+        if(window.EggTracker) EggTracker.markConstellation(c.name, constellations.length);
       }
     });
     if(hitConstellation){play(SND.sparkle);return;}
@@ -1527,7 +1867,8 @@ thirdPortrait.addEventListener('animationend', function(){
     }
     sndTriggeredThisTick=true;
     play(SND.huh);
-    foundEgg('( ˙▿˙ )?'); 
+    foundEgg('( ˙▿˙ )?');
+    if(window.EggTracker) EggTracker.trigger('portrait-secret');
   }
 });
     // cat_photo: support both new list format [{image,caption}] and old flat string fields
@@ -1656,6 +1997,7 @@ loadCMS();
   pigeonEl.addEventListener('mouseenter',function(){
     SND.pigeon.currentTime=0;
     SND.pigeon.play().catch(function(){});
+    if(window.EggTracker) EggTracker.trigger('pigeon');
   });
 })();
 
@@ -1665,6 +2007,7 @@ loadCMS();
   if(!fishEl) return;
   fishEl.addEventListener('click',function(){
     play(SND.bubbles);
+    if(window.EggTracker) EggTracker.trigger('fish-click');
     fishEl.classList.remove('fish-excited');
     void fishEl.offsetWidth;
     fishEl.classList.add('fish-excited');
@@ -1708,7 +2051,10 @@ document.addEventListener('keydown',function(e){
 function showKonami(){
   document.getElementById('konami-bg').classList.add('on');
   spawnConfetti();foundEgg('cat found!');
-  document.getElementById('konami-bg').addEventListener('click',function(){document.getElementById('konami-bg').classList.remove('on');},{once:true});
+  document.getElementById('konami-bg').addEventListener('click',function(){
+    document.getElementById('konami-bg').classList.remove('on');
+    if(window.EggTracker) EggTracker.trigger('konami');
+  },{once:true});
 }
 
 /* ═ TRIPLE-CLICK → STAR PLATINUM ═ */
@@ -1741,6 +2087,7 @@ function showStarPlatinum(){
     oraResumed=true;
     SND.ora.onended=null;
     if(wasPlaying) resumeMusic();
+    if(window.EggTracker) EggTracker.trigger('ora-platinum');
   }
   ov.onclick=function(e){
     e.stopPropagation();
@@ -1795,6 +2142,7 @@ function tbcHide(){
     if(musicBtn) musicBtn.classList.remove('paused');
     if(musicLabel) musicLabel.textContent='music on';
   }
+  if(window.EggTracker) EggTracker.trigger('tbc');
 }
 
 window.addEventListener('scroll',function(){
@@ -1814,14 +2162,11 @@ function spawnConfetti(){
   }
 }
 
-/* ═ EGG COUNTER ═ */
+/* ═ EGG COUNTER ═
+   Replaced by EggTracker (Space Kitty system, see bottom of file).
+   Kept as a no-op shim so existing foundEgg() calls don't break. */
 var eggCount=0;var found=new Set();
-function foundEgg(name){
-  if(found.has(name))return;found.add(name);eggCount++;
-  document.getElementById('egg-n').textContent=eggCount;
-  var b=document.getElementById('egg-badge');b.classList.add('show');
-  setTimeout(function(){b.classList.remove('show');},3000);
-}
+function foundEgg(name){ /* no-op — replaced by EggTracker.trigger() */ }
 
 /* ═ ENVELOPE / LETTER ═ */
 var envOpen=false;
@@ -1864,6 +2209,7 @@ function closeLetter(){
   envOpen=false;
   letterOverlay.classList.remove('open');
   if(!envWrap.matches(':hover')) envImg.src='images/envelope-closed.png';
+  if(window.EggTracker) EggTracker.trigger('blog-open');
 }
 envWrap.addEventListener('mouseover',function(){
   if(!envOpen) envImg.src='images/envelope-open.png';
@@ -1899,6 +2245,7 @@ document.getElementById('yr').textContent=new Date().getFullYear();
   dog.addEventListener('click', function(e){
     e.stopPropagation();
     dogClickCount++;
+    if(dogClickCount === 1 && window.EggTracker) EggTracker.trigger('dog-first');
 
     // Remove any existing animation classes so re-triggering works
     dog.classList.remove('dog-jump', 'dog-spin');
@@ -1908,6 +2255,7 @@ document.getElementById('yr').textContent=new Date().getFullYear();
       dog.classList.add('dog-spin');
       play(SND.bark10);
       foundEgg('good dog!!');
+      if(window.EggTracker) EggTracker.trigger('dog-spin');
     } else {
       dog.classList.add('dog-jump');
       play(SND.bark);
@@ -1931,6 +2279,7 @@ document.getElementById('yr').textContent=new Date().getFullYear();
       var snd = CJ_SOUNDS[cjSoundIdx % CJ_SOUNDS.length];
       cjSoundIdx++;
       play(snd);
+      if(window.EggTracker) EggTracker.trigger('surfs-up');
     });
   }
 
@@ -1943,13 +2292,17 @@ document.getElementById('yr').textContent=new Date().getFullYear();
       wwditsSounds.forEach(function(s){s.pause();s.currentTime=0;});
       wwditsSounds[wwditsIdx].play().catch(function(){});
       wwditsIdx=(wwditsIdx+1)%3;
+      if(window.EggTracker) EggTracker.trigger('wwdits');
     });
   }
   
-  // Mob Psycho: set dimple img src
+  // Mob Psycho: set dimple img src + hover trigger
   var mobEl = document.getElementById('fav-mob');
   if(mobEl){
     mobEl.querySelector('.fav-hover-img').src = DIMPLE_IMG;
+    mobEl.addEventListener('mouseenter', function(){
+      if(window.EggTracker) EggTracker.trigger('dimple');
+    });
   }
 
   // JoJo: play Killer Queen on hover, redirect to 404 
@@ -1960,6 +2313,7 @@ var kqWasPlaying = false;
 jojoEl.addEventListener('mouseenter', function(){
   if(!kqPlaying){
     kqPlaying = true;
+    if(window.EggTracker) EggTracker.trigger('jojo-kq');
     kqWasPlaying=musicPlaying;
     jojoEl.classList.add('jojo-active');
     if(musicReady && musicPlaying){
@@ -2069,6 +2423,7 @@ jojoEl.addEventListener('mouseenter', function(){
     overlay.classList.remove('open');
     iframe.src='';
     screenDiv.classList.remove('loaded');
+    if(window.EggTracker) EggTracker.finalizeYouTubeVisit(Object.keys(LETTER_LINKS).length);
   }
 
   closeBtn.addEventListener('click',closeYt);
@@ -2079,6 +2434,7 @@ jojoEl.addEventListener('mouseenter', function(){
     var link=e.target.closest('.letter-link');
     if(!link) return;
     e.preventDefault();
+    if(window.EggTracker) EggTracker.markYouTubeVisit(link.href);
     openYt(link.href);
   });
 })();
@@ -2154,6 +2510,7 @@ if(tardisFirstAppear){
     snd.currentTime=0;
     snd.play().catch(function(err){console.warn('TARDIS audio failed:',err);});
     docClickIdx++;
+    if(window.EggTracker) EggTracker.trigger('tardis-click');
   });
 
   el.addEventListener('mousedown',function(e){
@@ -2204,6 +2561,7 @@ if(tardisFirstAppear){
         s.pause();s.currentTime=0;s.volume=.8;
       });
       sndShake.play().catch(function(){});
+      if(window.EggTracker) EggTracker.trigger('tardis-shake');
       checkShakeStop();
     }
   }
@@ -2432,10 +2790,551 @@ if(tardisFirstAppear){
       status.textContent = 'your note has been received ( ദ്ദി ˙ᗜ˙ )';
       e.target.reset();
       loadEntries();
+      if(window.EggTracker) EggTracker.trigger('guestbook-sign');
     }
   });
 
-  loadEntries();
+loadEntries();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SPACE KITTY EASTER EGG TRACKER (Phase 1)
+     ═══════════════════════════════════════════════════════════════════ -->
+<script>
+/* ─── EGG REGISTRY ─── */
+var EGG_REGISTRY = {
+  /* CONSTELLATION CHAIN */
+  'first-constellation': {
+    sticker: 'images/stardrawing.png',
+    message: "ooh a star pattern! my home planet's up there somewhere... probably."
+  },
+  'all-constellations': {
+    sticker: 'images/star.png',
+    message: "you found EVERY constellation. that was on my bucket list. show off."
+  },
+  /* TARDIS CHAIN */
+  'tardis-click': {
+    sticker: 'images/bannana.png',
+    message: "did you just touch the time-banana? the doctors hate when i call it that."
+  },
+  'tardis-shake': {
+    sticker: 'images/earth-stamp.png',
+    message: "DO NOT SHAKE THE TIME-BANANA. it's like a snow globe but worse."
+  },
+  /* PORTRAIT */
+  'portrait-secret': {
+    sticker: 'images/googleyeyes.png',
+    message: "huh??? a hidden photo. you went LOOKING. respect."
+  },
+  /* YOUTUBE CHAIN */
+  'youtube-first': {
+    sticker: 'images/tv-doggy.png',
+    message: "ohhh hidden videos in the words?? sneaky. there's more, keep looking."
+  },
+  'youtube-all': {
+    sticker: 'images/ticket.png',
+    message: "ALL eleven hidden videos found. you're a menace. i admire you."
+  },
+  /* SINGLE TRIGGERS */
+  'fish-click': {
+    sticker: 'images/shell-stamp.png',
+    message: "fish go bloop. that is just the law of fish."
+  },
+  'wwdits': {
+    sticker: 'images/gumheart.png',
+    message: "vampire detected. on this site?? bat-coded behavior fr."
+  },
+  'surfs-up': {
+    sticker: 'images/orange.png',
+    message: "chicken joe SIGHTING. ten of ten cinema. cowabunga or whatever."
+  },
+  'dimple': {
+    sticker: 'images/pickle.png',
+    message: "wait i know that guy. he's a SPIRIT and a WEIRDO. respect."
+  },
+  'jojo-kq': {
+    sticker: 'images/holycow.png',
+    message: "uhh dont touch that. KILLER QUEEN already touched it. yeah he's gone."
+  },
+  'pigeon': {
+    sticker: 'images/paw.png',
+    message: "HELLO PIGEON. i love them. they're like tiny dinosaurs."
+  },
+  'guestbook-sign': {
+    sticker: 'images/heart-bandaid.png',
+    message: "you LEFT A NOTE!! lisle's gonna be so happy. i'm so happy. wow."
+  },
+  /* DOG CHAIN */
+  'dog-first': {
+    sticker: 'images/doggy.png',
+    message: "A DOG! who's a good — wait. clicking it more might do something."
+  },
+  'dog-spin': {
+    sticker: 'images/dog-sticker.png',
+    message: "the dog is SPINNING. this is your fault. i'm proud."
+  },
+  /* FIRES ON CLOSE */
+  'tbc': {
+    sticker: 'images/special.png',
+    message: "to be continued! ✦ jojo brain rot officially in the chat."
+  },
+  'ora-platinum': {
+    sticker: 'images/ladybug.png',
+    message: "ORA ORA ORA — sorry. i blacked out. did i see star platinum?"
+  },
+  'konami': {
+    sticker: 'images/butterfly.png',
+    message: "↑↑↓↓←→←→BA. you old-school nerd. love it here."
+  },
+  'blog-open': {
+    sticker: 'images/cuties.png',
+    message: "you opened the secret letter! lisle's deepest thoughts. or a grocery list."
+  },
+  /* META — fires when all 20 above are found */
+  'all-eggs': {
+    sticker: 'images/cat-sticker.png',
+    message: "wait. WAIT. you found EVERY egg?? i'm gonna cry. or dance. probably dance.",
+    isMetaAll: true
+  }
+};
+
+/* ─── INTRO MESSAGES (shown the first time any egg is ever found) ─── */
+var SK_INTRO_1 = "heeey! i'm space kitty! looks like you found a hidden easter egg!";
+var SK_INTRO_2 = "i'll keep a journal of all the ones you find — click me to peek inside!";
+
+/* ─── EggTracker — records eggs to localStorage, drives the kitty ─── */
+var EggTracker = (function(){
+  var STORAGE_KEY = 'lisle_eggs_v1';
+  var YT_KEY      = 'lisle_yt_visited_v1';
+  var CONST_KEY   = 'lisle_constells_v1';
+
+  function loadSet(key){
+    try {
+      var raw = localStorage.getItem(key);
+      if(!raw) return new Set();
+      var arr = JSON.parse(raw);
+      return new Set(Array.isArray(arr) ? arr : []);
+    } catch(e){ return new Set(); }
+  }
+  function saveSet(key, set){
+    try { localStorage.setItem(key, JSON.stringify(Array.from(set))); } catch(e){}
+  }
+
+  var foundEggs = loadSet(STORAGE_KEY);
+  var ytVisited = loadSet(YT_KEY);
+  var constHits = loadSet(CONST_KEY);
+
+  function totalRealEggs(){
+    var n = 0;
+    for(var id in EGG_REGISTRY){
+      if(EGG_REGISTRY.hasOwnProperty(id) && !EGG_REGISTRY[id].isMetaAll) n++;
+    }
+    return n;
+  }
+  function realFoundCount(){
+    var n = 0;
+    foundEggs.forEach(function(id){
+      if(EGG_REGISTRY[id] && !EGG_REGISTRY[id].isMetaAll) n++;
+    });
+    return n;
+  }
+
+  function updateLegacyBadge(){
+    var nEl = document.getElementById('egg-n');
+    if(nEl) nEl.textContent = foundEggs.size;
+    if(typeof window.eggCount !== 'undefined') window.eggCount = foundEggs.size;
+  }
+
+  function trigger(eggId){
+    var egg = EGG_REGISTRY[eggId];
+    if(!egg) {
+      console.warn('EggTracker: unknown egg id:', eggId);
+      return;
+    }
+    if(foundEggs.has(eggId)) return;
+
+    var isFirstEverEgg = (realFoundCount() === 0) && !egg.isMetaAll;
+
+    foundEggs.add(eggId);
+    saveSet(STORAGE_KEY, foundEggs);
+    updateLegacyBadge();
+
+    if(window.SpaceKitty && SpaceKitty.isReady()){
+      if(isFirstEverEgg){
+        SpaceKitty.playFirstTime(eggId);
+      } else {
+        SpaceKitty.showEggMessage(eggId);
+      }
+    }
+
+    /* Auto-trigger the all-eggs capstone when all 20 reals are found. */
+    if(!egg.isMetaAll && realFoundCount() === totalRealEggs()){
+      setTimeout(function(){ trigger('all-eggs'); }, 6500);
+    }
+  }
+
+  function markYouTubeVisit(href){
+    if(!href) return;
+    if(ytVisited.has(href)) return;
+    ytVisited.add(href);
+    saveSet(YT_KEY, ytVisited);
+  }
+  function finalizeYouTubeVisit(totalCount){
+    if(ytVisited.size === 0) return;
+    if(!foundEggs.has('youtube-first')){
+      trigger('youtube-first');
+    }
+    if(ytVisited.size >= totalCount && !foundEggs.has('youtube-all')){
+      setTimeout(function(){ trigger('youtube-all'); }, 5500);
+    }
+  }
+
+  function markConstellation(name, totalCount){
+    if(!name) return;
+    if(constHits.has(name)) return;
+    constHits.add(name);
+    saveSet(CONST_KEY, constHits);
+    if(!foundEggs.has('first-constellation')){
+      trigger('first-constellation');
+    }
+    if(constHits.size >= totalCount && !foundEggs.has('all-constellations')){
+      setTimeout(function(){ trigger('all-constellations'); }, 5500);
+    }
+  }
+
+  function reset(){
+    foundEggs = new Set();
+    ytVisited = new Set();
+    constHits = new Set();
+    saveSet(STORAGE_KEY, foundEggs);
+    saveSet(YT_KEY, ytVisited);
+    saveSet(CONST_KEY, constHits);
+    updateLegacyBadge();
+  }
+
+  return {
+    trigger: trigger,
+    markYouTubeVisit: markYouTubeVisit,
+    finalizeYouTubeVisit: finalizeYouTubeVisit,
+    markConstellation: markConstellation,
+    has: function(id){ return foundEggs.has(id); },
+    realFoundCount: realFoundCount,
+    totalRealEggs: totalRealEggs,
+    getFoundIds: function(){ return Array.from(foundEggs); },
+    getRegistry: function(){ return EGG_REGISTRY; },
+    reset: reset
+  };
+})();
+window.EggTracker = EggTracker;
+
+/* ─── SpaceKitty — UFO entrance, bubbles, journal ─── */
+var SpaceKitty = (function(){
+  var stage, ufo, beam, cat, bubble, bubbleText, ufoSound;
+  var ready = false;
+
+  var bubbleTimer = null;
+  var translateRaf = null;
+  var translateTimeout = null;
+  var phaseTimeouts = [];
+  var introTimeouts = [];
+  var lastMessage = null;
+  var meowSounds = null;
+  var meowIdx = 0;
+
+  function clearPhaseTimeouts(){
+    phaseTimeouts.forEach(function(t){ clearTimeout(t); });
+    phaseTimeouts = [];
+  }
+  function clearIntroTimeouts(){
+    introTimeouts.forEach(function(t){ clearTimeout(t); });
+    introTimeouts = [];
+  }
+  function clearBubbleState(){
+    if(translateRaf){ cancelAnimationFrame(translateRaf); translateRaf = null; }
+    if(translateTimeout){ clearTimeout(translateTimeout); translateTimeout = null; }
+    if(bubbleTimer){ clearTimeout(bubbleTimer); bubbleTimer = null; }
+  }
+
+  /* Alien glyphs */
+  var ALIENS = '\u25b2\u25bc\u25ca\u232c\u23e7\u2394\u2316\u03de\u03a8\u03a9\u00a4\u00a7\u2206\u2202\u25c8\u25c7\u2662\u23c3\u25d0\u25d1\u03e0\u25ec\u25ed\u268c\u268d\u268e\u268f';
+  function randomAlien(){
+    return ALIENS[Math.floor(Math.random() * ALIENS.length)];
+  }
+
+  function buildBubbleSpans(text){
+    bubbleText.innerHTML = '';
+    var entries = [];
+    var parts = text.split(/(\s+)/);
+    parts.forEach(function(part){
+      if(part === '') return;
+      if(/^\s+$/.test(part)){
+        var sp = document.createElement('span');
+        sp.className = 'sk-b-space';
+        sp.innerHTML = '&nbsp;';
+        bubbleText.appendChild(sp);
+      } else {
+        var word = document.createElement('span');
+        word.className = 'sk-b-word';
+        for(var i = 0; i < part.length; i++){
+          var c = document.createElement('span');
+          c.className = 'sk-b-char';
+          c.textContent = part[i];
+          word.appendChild(c);
+          entries.push({span:c, finalChar:part[i]});
+        }
+        bubbleText.appendChild(word);
+      }
+    });
+    return entries;
+  }
+
+  function translateChars(entries, duration){
+    var n = entries.length;
+    var translateTimes = entries.map(function(e, i){
+      var p = n > 1 ? i / (n - 1) : 0;
+      var base = p * duration * 0.55;
+      var jit = Math.random() * duration * 0.55;
+      return Math.min(duration, base + jit);
+    });
+
+    var startTime = performance.now();
+    if(translateRaf) cancelAnimationFrame(translateRaf);
+
+    function frame(){
+      var elapsed = performance.now() - startTime;
+      var still = false;
+      for(var i = 0; i < n; i++){
+        if(elapsed >= translateTimes[i]){
+          entries[i].span.textContent = entries[i].finalChar;
+        } else {
+          var ai = (Math.floor(elapsed / 50) + i * 7) % ALIENS.length;
+          entries[i].span.textContent = ALIENS[ai];
+          still = true;
+        }
+      }
+      if(still) translateRaf = requestAnimationFrame(frame);
+      else translateRaf = null;
+    }
+    translateRaf = requestAnimationFrame(frame);
+  }
+
+  function showBubble(text, opts){
+    if(!ready) return;
+    opts = opts || {};
+    var duration = opts.duration || 5000;
+
+    clearBubbleState();
+    bubble.style.width = '';
+    bubble.style.height = '';
+
+    var entries = buildBubbleSpans(text);
+    bubble.classList.add('sk-show');
+
+    if(!opts.skipPulse){
+      cat.classList.remove('sk-pulse-once');
+      void cat.offsetWidth;
+      cat.classList.add('sk-pulse-once');
+    }
+
+    requestAnimationFrame(function(){
+      var rect = bubble.getBoundingClientRect();
+      bubble.style.width = rect.width + 'px';
+      bubble.style.height = rect.height + 'px';
+
+      entries.forEach(function(e){ e.span.textContent = randomAlien(); });
+
+      translateTimeout = setTimeout(function(){
+        translateTimeout = null;
+        translateChars(entries, 1000);
+      }, 60);
+    });
+
+    lastMessage = text;
+
+    bubbleTimer = setTimeout(function(){
+      bubble.classList.remove('sk-show');
+      if(!opts.skipPulse){
+        cat.classList.remove('sk-pulse-once');
+      }
+      bubbleTimer = null;
+    }, duration);
+  }
+
+  function showEggMessage(eggId){
+    var egg = EGG_REGISTRY[eggId];
+    if(!egg) return;
+    showBubble(egg.message);
+  }
+
+  function placeKittyImmediately(){
+    cat.classList.add('sk-materialized', 'sk-idle');
+  }
+
+  function playUFOEntrance(callback){
+    clearPhaseTimeouts();
+    clearIntroTimeouts();
+    ufo.classList.remove('sk-entered','sk-reckless','sk-bobbing','sk-leaving');
+    beam.classList.remove('sk-active','sk-retracting');
+    cat.classList.remove('sk-materialized','sk-idle','sk-pulse-once','sk-pulse-continuous');
+
+    ufo.classList.add('sk-visible');
+
+    try { ufoSound.currentTime = 0; ufoSound.play().catch(function(){}); } catch(e){}
+
+    phaseTimeouts.push(setTimeout(function(){ ufo.classList.add('sk-entered'); }, 50));
+    phaseTimeouts.push(setTimeout(function(){ ufo.classList.add('sk-reckless'); }, 1350));
+    phaseTimeouts.push(setTimeout(function(){
+      ufo.classList.remove('sk-reckless');
+      ufo.classList.add('sk-bobbing');
+    }, 3350));
+    phaseTimeouts.push(setTimeout(function(){ beam.classList.add('sk-active'); }, 3550));
+    phaseTimeouts.push(setTimeout(function(){ cat.classList.add('sk-materialized'); }, 4250));
+    phaseTimeouts.push(setTimeout(function(){
+      beam.classList.remove('sk-active');
+      beam.classList.add('sk-retracting');
+      cat.classList.add('sk-idle');
+    }, 5250));
+    phaseTimeouts.push(setTimeout(function(){
+      ufo.classList.remove('sk-bobbing');
+      ufo.classList.add('sk-leaving');
+    }, 5950));
+    phaseTimeouts.push(setTimeout(function(){
+      ufo.classList.remove('sk-visible','sk-entered','sk-leaving');
+      if(callback) callback();
+    }, 7500));
+  }
+
+  function playFirstTime(firstEggId){
+    var firstEgg = EGG_REGISTRY[firstEggId];
+    if(!firstEgg) return;
+
+    playUFOEntrance(function(){
+      cat.classList.remove('sk-pulse-once','sk-idle');
+      void cat.offsetWidth;
+      cat.classList.add('sk-pulse-continuous');
+
+      showBubble(SK_INTRO_1, { duration: 4500, skipPulse: true });
+
+      introTimeouts.push(setTimeout(function(){
+        showBubble(SK_INTRO_2, { duration: 4800, skipPulse: true });
+      }, 4600));
+
+      introTimeouts.push(setTimeout(function(){
+        showBubble(firstEgg.message, { duration: 5000, skipPulse: true });
+      }, 9500));
+
+      introTimeouts.push(setTimeout(function(){
+        cat.classList.remove('sk-pulse-continuous');
+        cat.classList.add('sk-idle');
+      }, 14600));
+    });
+  }
+
+  function onCatClick(e){
+    if(e) e.stopPropagation();
+    if(!cat.classList.contains('sk-materialized')) return;
+
+    if(meowSounds && meowSounds.length){
+      var snd = meowSounds[meowIdx % meowSounds.length];
+      meowIdx++;
+      try { snd.currentTime = 0; snd.play().catch(function(){}); } catch(e2){}
+    }
+
+    openJournal();
+  }
+
+  function onCatHover(){
+    if(!cat.classList.contains('sk-materialized')) return;
+    if(!lastMessage) return;
+    if(bubble.classList.contains('sk-show')) return;
+    var modal = document.getElementById('sk-journal');
+    if(modal && modal.classList.contains('open')) return;
+    showBubble(lastMessage);
+  }
+
+  function openJournal(){
+    var modal = document.getElementById('sk-journal');
+    if(!modal) return;
+    var count = document.getElementById('sk-journal-count');
+    var total = document.getElementById('sk-journal-total');
+    if(count) count.textContent = EggTracker.realFoundCount();
+    if(total) total.textContent = EggTracker.totalRealEggs();
+    modal.classList.add('open');
+  }
+  function closeJournal(){
+    var modal = document.getElementById('sk-journal');
+    if(modal) modal.classList.remove('open');
+  }
+
+  function init(){
+    stage      = document.getElementById('sk-stage');
+    ufo        = document.getElementById('sk-ufo');
+    beam       = document.getElementById('sk-beam');
+    cat        = document.getElementById('sk-cat');
+    bubble     = document.getElementById('sk-bubble');
+    bubbleText = document.getElementById('sk-bubble-text');
+    ufoSound   = document.getElementById('sk-ufo-sound');
+
+    if(!stage || !cat || !bubble){
+      console.warn('SpaceKitty: missing required DOM elements, aborting init');
+      return;
+    }
+
+    if(typeof window.mkAudio === 'function'){
+      meowSounds = [
+        window.mkAudio('sounds/spacecat1.mp3', .8),
+        window.mkAudio('sounds/spacecat2.mp3', .8),
+        window.mkAudio('sounds/spacecat3.mp3', .8)
+      ];
+    }
+
+    cat.addEventListener('click', onCatClick);
+    cat.addEventListener('mouseenter', onCatHover);
+
+    var jClose = document.getElementById('sk-journal-close');
+    if(jClose){
+      jClose.addEventListener('click', function(e){
+        e.stopPropagation();
+        closeJournal();
+      });
+    }
+    var modal = document.getElementById('sk-journal');
+    if(modal){
+      modal.addEventListener('click', function(e){
+        if(e.target === modal) closeJournal();
+      });
+    }
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && modal && modal.classList.contains('open')) closeJournal();
+    });
+
+    ready = true;
+
+    /* Returning visitors: place kitty immediately if they have eggs */
+    if(EggTracker.realFoundCount() > 0){
+      placeKittyImmediately();
+    }
+  }
+
+  return {
+    init: init,
+    isReady: function(){ return ready; },
+    playFirstTime: playFirstTime,
+    showEggMessage: showEggMessage,
+    showBubble: showBubble,
+    openJournal: openJournal,
+    closeJournal: closeJournal,
+    placeKittyImmediately: placeKittyImmediately
+  };
+})();
+window.SpaceKitty = SpaceKitty;
+
+/* ─── Boot ─── */
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', SpaceKitty.init);
+} else {
+  SpaceKitty.init();
+}
 </script>
 </body>
 </html>
