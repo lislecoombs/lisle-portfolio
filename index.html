@@ -3137,9 +3137,13 @@ var SpaceKitty = (function(){
     }
 
     requestAnimationFrame(function(){
-      var rect = bubble.getBoundingClientRect();
-      bubble.style.width = rect.width + 'px';
-      bubble.style.height = rect.height + 'px';
+      /* offsetWidth/offsetHeight ignore CSS transforms, so we get the
+         bubble's natural layout size even while it's mid-scale animation.
+         (getBoundingClientRect returns the SCALED size, which would be near-0.) */
+      var w = bubble.offsetWidth;
+      var h = bubble.offsetHeight;
+      bubble.style.width = w + 'px';
+      bubble.style.height = h + 'px';
 
       entries.forEach(function(e){ e.span.textContent = randomAlien(); });
 
