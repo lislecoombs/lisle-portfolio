@@ -526,7 +526,7 @@
   position:fixed;
   inset:0;
   pointer-events:none;
-  z-index:1; /* above canvas (z-auto) but below everything interactive */
+  z-index:1;
   opacity:0;
   transition:opacity 1.5s ease;
   mix-blend-mode:screen;
@@ -534,70 +534,85 @@
 }
 .rainbow-active #rainbow-overlay{opacity:1;}
 
-/* Each aurora layer holds 1-2 colored blobs and animates as a unit
-   using `transform`. Transforms are GPU-accelerated and definitely visible
-   when they animate (unlike background-position on radial gradients,
-   which doesn't behave the way you'd expect with `at X% Y%` syntax). */
+/* Big blurry blobs that bleed into each other for a continuous aurora wash.
+   Larger blobs (45-55vw vs 26-32vw before) + heavier blur (90px vs 50px)
+   = no more "fireflies", colors melt together. */
 .aurora-layer{
   position:absolute;
-  inset:-20%; /* oversize so transforms don't reveal edges */
-  filter:blur(50px);
+  inset:-30%; /* extra oversize since blobs are bigger and travel further */
+  filter:blur(90px);
   will-change:transform;
 }
 
-/* Layer 1: pink + gold blobs */
+/* Layer 1: pink + gold */
 .aurora-1{
   background:
-    radial-gradient(circle 30vw at 25% 30%, rgba(255, 90, 170, .55), transparent 60%),
-    radial-gradient(circle 26vw at 15% 75%, rgba(255, 200, 90,  .45), transparent 60%);
+    radial-gradient(circle 50vw at 25% 30%, rgba(255, 90, 170, .50), transparent 65%),
+    radial-gradient(circle 45vw at 15% 75%, rgba(255, 200, 90,  .42), transparent 65%);
 }
-/* Layer 2: green + teal blobs */
+/* Layer 2: green + teal */
 .aurora-2{
   background:
-    radial-gradient(circle 28vw at 75% 25%, rgba(110, 230, 150, .50), transparent 60%),
-    radial-gradient(circle 26vw at 45% 15%, rgba(120, 240, 220, .42), transparent 60%);
+    radial-gradient(circle 48vw at 75% 25%, rgba(110, 230, 150, .48), transparent 65%),
+    radial-gradient(circle 44vw at 45% 15%, rgba(120, 240, 220, .40), transparent 65%);
 }
-/* Layer 3: blue + violet blobs */
+/* Layer 3: blue + violet */
 .aurora-3{
   background:
-    radial-gradient(circle 32vw at 55% 70%, rgba(110, 170, 255, .52), transparent 60%),
-    radial-gradient(circle 28vw at 85% 78%, rgba(190, 110, 245, .48), transparent 60%);
+    radial-gradient(circle 52vw at 55% 70%, rgba(110, 170, 255, .50), transparent 65%),
+    radial-gradient(circle 48vw at 85% 78%, rgba(190, 110, 245, .46), transparent 65%);
 }
 
-/* Each layer drifts on its own ellipse path at its own speed.
-   Different durations + different rotation directions = the blobs
-   constantly cross paths, which is the actual aurora motion you want. */
-.rainbow-active .aurora-1{animation:auroraFloat1 24s linear infinite;}
-.rainbow-active .aurora-2{animation:auroraFloat2 30s linear infinite;}
-.rainbow-active .aurora-3{animation:auroraFloat3 36s linear infinite;}
+/* BASE LAYERS: always running, slow & sleepy. These never restart, so there's
+   never a "flash" when rainbow toggles or burst ends. */
+.rainbow-active .aurora-layer:not(.aurora-burst-layer){
+  animation-duration:38s, 46s, 54s; /* applied per-layer below */
+  animation-timing-function:linear;
+  animation-iteration-count:infinite;
+  animation-play-state:running;
+}
+.rainbow-active .aurora-1:not(.aurora-burst-layer){animation-name:auroraFloat1; animation-duration:38s;}
+.rainbow-active .aurora-2:not(.aurora-burst-layer){animation-name:auroraFloat2; animation-duration:46s;}
+.rainbow-active .aurora-3:not(.aurora-burst-layer){animation-name:auroraFloat3; animation-duration:54s;}
 
-.rainbow-burst .aurora-1{animation:auroraFloat1 7s linear infinite;}
-.rainbow-burst .aurora-2{animation:auroraFloat2 9s linear infinite;}
-.rainbow-burst .aurora-3{animation:auroraFloat3 11s linear infinite;}
+/* BURST LAYERS: faster duplicates that fade in during the burst phase
+   and fade out smoothly when burst ends. The fade is what creates the
+   smooth "speed up → slow down" transition (instead of an animation
+   restart). The base layers underneath keep running unchanged. */
+.aurora-burst-layer{
+  opacity:0;
+  transition:opacity 4s ease-out; /* slow fade-out of the fast layer */
+}
+.rainbow-burst .aurora-burst-layer{
+  opacity:1;
+  transition:opacity .8s ease-in; /* quick fade-in when burst starts */
+}
+.rainbow-burst .aurora-1.aurora-burst-layer{animation:auroraFloat1 9s linear infinite;}
+.rainbow-burst .aurora-2.aurora-burst-layer{animation:auroraFloat2 11s linear infinite;}
+.rainbow-burst .aurora-3.aurora-burst-layer{animation:auroraFloat3 13s linear infinite;}
 
-/* Each layer travels a different direction and rotation.
-   Travel distances are 100-200px, which on a blurred soft blob produces
-   visible motion without being jarring. */
+/* Travel paths — 60-100px movement.
+   Smaller paths than before (was 100-200px) so motion feels lazy. */
 @keyframes auroraFloat1{
-  0%   {transform:translate(0,    0)    rotate(0deg);}
-  25%  {transform:translate(150px, 80px) rotate(90deg);}
-  50%  {transform:translate(80px, 180px) rotate(180deg);}
-  75%  {transform:translate(-100px, 100px) rotate(270deg);}
-  100% {transform:translate(0,    0)    rotate(360deg);}
+  0%   {transform:translate(0,    0)   rotate(0deg);}
+  25%  {transform:translate(80px, 50px)  rotate(90deg);}
+  50%  {transform:translate(40px, 90px)  rotate(180deg);}
+  75%  {transform:translate(-60px,60px)  rotate(270deg);}
+  100% {transform:translate(0,    0)   rotate(360deg);}
 }
 @keyframes auroraFloat2{
-  0%   {transform:translate(0,    0)    rotate(0deg);}
-  25%  {transform:translate(-120px, 60px) rotate(-80deg);}
-  50%  {transform:translate(-180px, -80px) rotate(-180deg);}
-  75%  {transform:translate(60px, -120px) rotate(-260deg);}
-  100% {transform:translate(0,    0)    rotate(-360deg);}
+  0%   {transform:translate(0,    0)   rotate(0deg);}
+  25%  {transform:translate(-70px,40px)  rotate(-80deg);}
+  50%  {transform:translate(-100px,-50px) rotate(-180deg);}
+  75%  {transform:translate(40px,-70px)  rotate(-260deg);}
+  100% {transform:translate(0,    0)   rotate(-360deg);}
 }
 @keyframes auroraFloat3{
-  0%   {transform:translate(0,    0)    rotate(0deg);}
-  25%  {transform:translate(100px, -150px) rotate(60deg);}
-  50%  {transform:translate(-80px, -100px) rotate(140deg);}
-  75%  {transform:translate(-150px, 80px) rotate(220deg);}
-  100% {transform:translate(0,    0)    rotate(360deg);}
+  0%   {transform:translate(0,    0)   rotate(0deg);}
+  25%  {transform:translate(60px,-90px)  rotate(60deg);}
+  50%  {transform:translate(-50px,-60px) rotate(140deg);}
+  75%  {transform:translate(-90px,50px)  rotate(220deg);}
+  100% {transform:translate(0,    0)   rotate(360deg);}
 }
 
 /* Kitty side-to-side dance — first-time activation only */
@@ -1227,9 +1242,14 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
 </button>
 <canvas id="starfield"></canvas>
 <div id="rainbow-overlay" aria-hidden="true">
+  <!-- Slow base layers — always visible when rainbow is on -->
   <div class="aurora-layer aurora-1"></div>
   <div class="aurora-layer aurora-2"></div>
   <div class="aurora-layer aurora-3"></div>
+  <!-- Fast burst layers — only visible during the burst phase, fade out smoothly -->
+  <div class="aurora-layer aurora-1 aurora-burst-layer"></div>
+  <div class="aurora-layer aurora-2 aurora-burst-layer"></div>
+  <div class="aurora-layer aurora-3 aurora-burst-layer"></div>
 </div>
 <div id="egg-badge">(o_O) <span id="egg-n">0</span> secrets found</div>
 <div id="konami-bg">
