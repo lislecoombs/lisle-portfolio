@@ -3558,11 +3558,11 @@ var SpaceKitty = (function(){
 
     modal.classList.add('open');
 
-    /* Phase 1: cover sits still for ~500ms so viewer can see it,
+    /* Phase 1: cover sits still for ~600ms so viewer can see it,
        then lifts, hinges open, spread fades in, cover hides. */
     setTimeout(function(){
       cover.classList.add('lifted');
-    }, 500);
+    }, 600);
     setTimeout(function(){
       cover.classList.remove('lifted');
       cover.classList.add('opened');
