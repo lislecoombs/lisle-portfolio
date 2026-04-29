@@ -520,7 +520,8 @@
 /* ═════════════════════════════════════════════════════════════════════
    RAINBOW MODE (Phase 4 — all-eggs celebration)
    ═════════════════════════════════════════════════════════════════════ */
-
+  
+  /* ─── RAINBOW OVERLAY ─── */
 #rainbow-overlay{
   position:fixed;
   inset:0;
@@ -529,69 +530,74 @@
   opacity:0;
   transition:opacity 1.5s ease;
   mix-blend-mode:screen;
-  /* Reduced blur: 90px → 45px. Heavy blur was making positional changes
-     invisible because the blurred edges already extended across the whole
-     screen. With less blur, the blobs become discrete shifting shapes. */
-  filter:blur(45px);
-  background:
-    radial-gradient(circle 38vw at 18% 25%, rgba(255, 90, 170, .42),  transparent 65%),
-    radial-gradient(circle 35vw at 78% 22%, rgba(110, 230, 150, .38), transparent 65%),
-    radial-gradient(circle 42vw at 55% 72%, rgba(110, 170, 255, .42), transparent 65%),
-    radial-gradient(circle 32vw at 12% 78%, rgba(255, 200, 90,  .35), transparent 65%),
-    radial-gradient(circle 38vw at 86% 80%, rgba(190, 110, 245, .40), transparent 65%),
-    radial-gradient(circle 34vw at 42% 12%, rgba(120, 240, 220, .35), transparent 65%);
+  overflow:hidden;
 }
-.rainbow-active #rainbow-overlay{
-  opacity:1;
-  /* Faster cycle (10s → was 16s) + linear timing (was ease-in-out) keeps
-     blobs in constant motion. Linear means the blobs move at steady speed
-     instead of slowing at the keyframes — much more visibly drifting. */
-  animation:auroraDrift 10s linear infinite;
-}
-.rainbow-burst #rainbow-overlay{
-  animation:auroraDrift 3s linear infinite;
+.rainbow-active #rainbow-overlay{opacity:1;}
+
+/* Each aurora layer holds 1-2 colored blobs and animates as a unit
+   using `transform`. Transforms are GPU-accelerated and definitely visible
+   when they animate (unlike background-position on radial gradients,
+   which doesn't behave the way you'd expect with `at X% Y%` syntax). */
+.aurora-layer{
+  position:absolute;
+  inset:-20%; /* oversize so transforms don't reveal edges */
+  filter:blur(50px);
+  will-change:transform;
 }
 
-/* Aurora drift — each layer follows its own path through the viewport.
-   At each keyframe, the 6 blobs are at different positions, swapping
-   territories with each other so colors visibly shift around the screen. */
-@keyframes auroraDrift{
-  0%, 100% {
-    background-position:
-      0%   0%,   /* pink: top-left */
-      100% 0%,   /* green: top-right */
-      50%  100%, /* blue: bottom-center */
-      0%   100%, /* gold: bottom-left */
-      100% 100%, /* violet: bottom-right */
-      50%  0%;   /* teal: top-center */
-  }
-  25% {
-    background-position:
-      60%  20%,
-      30%  50%,
-      80%  60%,
-      40%  90%,
-      10%  70%,
-      90%  30%;
-  }
-  50% {
-    background-position:
-      100% 70%,  /* pink slid to right */
-      0%   80%,  /* green slid to left */
-      30%  20%,  /* blue went to top-left */
-      80%  10%,  /* gold went to top-right */
-      50%  50%,  /* violet to center */
-      20%  90%;  /* teal to bottom-left */
-  }
-  75% {
-    background-position:
-      30%  90%,
-      70%  10%,
-      10%  40%,
-      90%  60%,
-      40%  20%,
-      80%  70%;
-  }
+/* Layer 1: pink + gold blobs */
+.aurora-1{
+  background:
+    radial-gradient(circle 30vw at 25% 30%, rgba(255, 90, 170, .55), transparent 60%),
+    radial-gradient(circle 26vw at 15% 75%, rgba(255, 200, 90,  .45), transparent 60%);
+}
+/* Layer 2: green + teal blobs */
+.aurora-2{
+  background:
+    radial-gradient(circle 28vw at 75% 25%, rgba(110, 230, 150, .50), transparent 60%),
+    radial-gradient(circle 26vw at 45% 15%, rgba(120, 240, 220, .42), transparent 60%);
+}
+/* Layer 3: blue + violet blobs */
+.aurora-3{
+  background:
+    radial-gradient(circle 32vw at 55% 70%, rgba(110, 170, 255, .52), transparent 60%),
+    radial-gradient(circle 28vw at 85% 78%, rgba(190, 110, 245, .48), transparent 60%);
+}
+
+/* Each layer drifts on its own ellipse path at its own speed.
+   Different durations + different rotation directions = the blobs
+   constantly cross paths, which is the actual aurora motion you want. */
+.rainbow-active .aurora-1{animation:auroraFloat1 24s linear infinite;}
+.rainbow-active .aurora-2{animation:auroraFloat2 30s linear infinite;}
+.rainbow-active .aurora-3{animation:auroraFloat3 36s linear infinite;}
+
+.rainbow-burst .aurora-1{animation:auroraFloat1 7s linear infinite;}
+.rainbow-burst .aurora-2{animation:auroraFloat2 9s linear infinite;}
+.rainbow-burst .aurora-3{animation:auroraFloat3 11s linear infinite;}
+
+/* Each layer travels a different direction and rotation.
+   Travel distances are 100-200px, which on a blurred soft blob produces
+   visible motion without being jarring. */
+@keyframes auroraFloat1{
+  0%   {transform:translate(0,    0)    rotate(0deg);}
+  25%  {transform:translate(150px, 80px) rotate(90deg);}
+  50%  {transform:translate(80px, 180px) rotate(180deg);}
+  75%  {transform:translate(-100px, 100px) rotate(270deg);}
+  100% {transform:translate(0,    0)    rotate(360deg);}
+}
+@keyframes auroraFloat2{
+  0%   {transform:translate(0,    0)    rotate(0deg);}
+  25%  {transform:translate(-120px, 60px) rotate(-80deg);}
+  50%  {transform:translate(-180px, -80px) rotate(-180deg);}
+  75%  {transform:translate(60px, -120px) rotate(-260deg);}
+  100% {transform:translate(0,    0)    rotate(-360deg);}
+}
+@keyframes auroraFloat3{
+  0%   {transform:translate(0,    0)    rotate(0deg);}
+  25%  {transform:translate(100px, -150px) rotate(60deg);}
+  50%  {transform:translate(-80px, -100px) rotate(140deg);}
+  75%  {transform:translate(-150px, 80px) rotate(220deg);}
+  100% {transform:translate(0,    0)    rotate(360deg);}
 }
 
 /* Kitty side-to-side dance — first-time activation only */
@@ -1220,7 +1226,11 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
   <span id="music-label" style="display:none;"></span>
 </button>
 <canvas id="starfield"></canvas>
-<div id="rainbow-overlay" aria-hidden="true"></div>
+<div id="rainbow-overlay" aria-hidden="true">
+  <div class="aurora-layer aurora-1"></div>
+  <div class="aurora-layer aurora-2"></div>
+  <div class="aurora-layer aurora-3"></div>
+</div>
 <div id="egg-badge">(o_O) <span id="egg-n">0</span> secrets found</div>
 <div id="konami-bg">
   <span class="konami-hint">click anywhere to close</span>
