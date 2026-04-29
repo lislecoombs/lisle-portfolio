@@ -3076,6 +3076,54 @@ var EGG_REGISTRY = {
 var SK_INTRO_1 = "hey! i'm space kitty! you found one of Lisle's website secrets..!";
 var SK_INTRO_2 = "i'll keep a journal of all the ones you find — click me to peek inside!";
 
+/* ─── IDLE MESSAGES (cycle randomly while journal is open) ─── */
+var KITTY_IDLE_MESSAGES = [
+  "psst hi",
+  "you're doing great by the way",
+  "earth has only ONE moon??? cute",
+  "i'm watching you scroll. it's kind of mesmerizing",
+  "lisle made me!! she's nice. forgets to drink water tho",
+  "maggie is my second cousin twice removed. cosmic genealogy gets weird",
+  "your wifi is INCREDIBLE compared to my home planet btw",
+  "would you still be friends with me if i had no head",
+  "wait what was i saying",
+  "stretching... yawning... was just sleeping in the UFO",
+  "lisle has SO many art supplies. truly unhinged behavior",
+  "if you find all the eggs i'll do a backflip. probably",
+  "the human mouth. what's the DEAL",
+  "i could go for a cosmic jellybean rn",
+  "maggie sent me a postcard once. just paw prints",
+  "ooh i made some of these stickers myself btw",
+  "earth is so... wet. why is it so wet",
+  "hello",
+  "you again. nice to see you",
+  "fun fact: my UFO has terrible parking"
+];
+
+/* ─── HINTS (one per egg, shown when egg not yet found) ─── */
+var KITTY_HINTS = {
+  'first-constellation': "i swear there are connect-the-dot patterns hiding in the night sky",
+  'all-constellations':  "constellations are all OVER up there. i think there's like 8 of them?",
+  'tardis-click':        "sometimes a little blue box drifts through the page. seems harmless",
+  'tardis-shake':        "do you ever just want to grab something and shake it. me too",
+  'portrait-secret':     "lisle's photo seems normal. seems.",
+  'youtube-first':       "the floating letters at the top hide things. especially some letters",
+  'youtube-all':         "ELEVEN hidden videos. thats how many there are. just so you know",
+  'fish-click':          "the fish is lonely. it just wants to be acknowledged",
+  'wwdits':              "one of lisle's favorites is... batty",
+  'surfs-up':            "one of lisle's favorites loves a good wave",
+  'dimple':              "lisle's mob psycho favorite has a little secret if you get close",
+  'jojo-kq':             "do NOT hover the jojo favorite. or do. but. yknow.",
+  'pigeon':              "pigeons coo. just one of those things. especially THIS pigeon",
+  'guestbook-sign':      "lisle reads every guestbook entry yknow. just throwing that out there",
+  'dog-first':           "the guestbook has a guard dog. you should say hi sometime",
+  'dog-spin':            "dogs love attention. and i mean A LOT of attention",
+  'tbc':                 "scrolling to the very very bottom can be... interesting",
+  'ora-platinum':        "the logo? she's high maintenance. needs lots of attention",
+  'konami':              "↑↑↓↓←→←→ba. type it. you know you want to",
+  'blog-open':           "did you check the blog? there's a little something to open"
+};
+
 /* ─── EggTracker — records eggs to localStorage, drives the kitty ─── */
 var EggTracker = (function(){
   var STORAGE_KEY = 'lisle_eggs_v1';
@@ -3205,7 +3253,8 @@ window.EggTracker = EggTracker;
 var SpaceKitty = (function(){
   var stage, ufo, beam, cat, bubble, bubbleText, ufoSound;
   var ready = false;
-
+  
+  /* State */
   var bubbleTimer = null;
   var translateRaf = null;
   var translateTimeout = null;
@@ -3214,6 +3263,12 @@ var SpaceKitty = (function(){
   var lastMessage = null;
   var meowSounds = null;
   var meowIdx = 0;
+
+  /* Idle chat state (Phase 2 Part 2) */
+  var idleTimer = null;
+  var idleQueue = [];
+  var lastEggFoundTime = Date.now();
+  var journalOpenCount = 0;
 
   function clearPhaseTimeouts(){
     phaseTimeouts.forEach(function(t){ clearTimeout(t); });
@@ -3349,9 +3404,18 @@ var SpaceKitty = (function(){
       }
       bubbleTimer = null;
     }, duration);
+
+    /* If journal is open, push the next idle message out to 12-15s from now.
+       Works for sticker clicks, idle messages, AND kitty cycling — so any
+       interaction naturally spaces out the next idle. */
+    var sjModal = document.getElementById('sk-journal');
+    if(sjModal && sjModal.classList.contains('open')){
+      scheduleNextIdle();
+    }
   }
 
   function showEggMessage(eggId){
+    lastEggFoundTime = Date.now();
     var egg = EGG_REGISTRY[eggId];
     if(!egg) return;
     showBubble(egg.message);
@@ -3396,6 +3460,7 @@ var SpaceKitty = (function(){
   }
 
   function playFirstTime(firstEggId){
+    lastEggFoundTime = Date.now();
     var firstEgg = EGG_REGISTRY[firstEggId];
     if(!firstEgg) return;
 
@@ -3425,10 +3490,18 @@ var SpaceKitty = (function(){
     if(e) e.stopPropagation();
     if(!cat.classList.contains('sk-materialized')) return;
 
+    /* Always play a meow on click */
     if(meowSounds && meowSounds.length){
       var snd = meowSounds[meowIdx % meowSounds.length];
       meowIdx++;
       try { snd.currentTime = 0; snd.play().catch(function(){}); } catch(e2){}
+    }
+
+    /* If journal is already open, cycle to next idle message instead of re-opening */
+    var modal = document.getElementById('sk-journal');
+    if(modal && modal.classList.contains('open')){
+      showIdleMessage();
+      return;
     }
 
     openJournal();
@@ -3541,6 +3614,84 @@ var SpaceKitty = (function(){
     closeJournal();
   }
 
+  /* ─── Idle messaging system (Phase 2 Part 2) ─── */
+  var IDLE_MIN_MS = 12000;
+  var IDLE_MAX_MS = 15000;
+
+  function shuffleArray(arr){
+    var a = arr.slice();
+    for(var i = a.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function getUndiscoveredEggIds(){
+    return Object.keys(EGG_REGISTRY).filter(function(id){
+      return !EGG_REGISTRY[id].isMetaAll && !EggTracker.has(id);
+    });
+  }
+
+  /* Picks the next message to show. Mixes idle chatter with hints for
+     undiscovered eggs. Hint chance starts at 20% and creeps up if user is
+     stuck (long idle / many journal opens). Caps at 65% so idle banter
+     stays a regular thing. */
+  function pickIdleMessage(){
+    var hintChance = 0.2;
+    var elapsed = Date.now() - lastEggFoundTime;
+    if(elapsed > 120000) hintChance += 0.15;  // 2 min since last egg
+    if(elapsed > 240000) hintChance += 0.15;  // 4 min since last egg
+    if(journalOpenCount >= 3) hintChance += 0.10;
+    if(journalOpenCount >= 6) hintChance += 0.10;
+    if(hintChance > 0.65) hintChance = 0.65;
+
+    var undiscovered = getUndiscoveredEggIds();
+    if(undiscovered.length === 0) hintChance = 0;
+
+    if(Math.random() < hintChance && undiscovered.length > 0){
+      var eggId = undiscovered[Math.floor(Math.random() * undiscovered.length)];
+      var hint = (typeof KITTY_HINTS !== 'undefined') ? KITTY_HINTS[eggId] : null;
+      if(hint) return hint;
+      /* fall through to regular idle if no hint exists for this egg */
+    }
+
+    /* Pull from the shuffled idle queue. Refill + reshuffle when empty
+       so order is always different on each run-through. */
+    if(idleQueue.length === 0){
+      if(typeof KITTY_IDLE_MESSAGES === 'undefined' || KITTY_IDLE_MESSAGES.length === 0){
+        return null;
+      }
+      idleQueue = shuffleArray(KITTY_IDLE_MESSAGES);
+    }
+    return idleQueue.shift();
+  }
+
+  function scheduleNextIdle(){
+    if(idleTimer){ clearTimeout(idleTimer); idleTimer = null; }
+    var delay = IDLE_MIN_MS + Math.random() * (IDLE_MAX_MS - IDLE_MIN_MS);
+    idleTimer = setTimeout(showIdleMessage, delay);
+  }
+
+  function stopIdleLoop(){
+    if(idleTimer){ clearTimeout(idleTimer); idleTimer = null; }
+  }
+
+  function showIdleMessage(){
+    var modal = document.getElementById('sk-journal');
+    if(!modal || !modal.classList.contains('open')){
+      stopIdleLoop();
+      return;
+    }
+    var msg = pickIdleMessage();
+    if(msg){
+      showBubble(msg, {noStore: true, skipPulse: true});
+      /* showBubble auto-reschedules the next idle if journal is open */
+    } else {
+      scheduleNextIdle();
+    }
+  }
+
   /* ─── Open / close journal with cover-to-spread animation ─── */
   function openJournal(){
     var modal = document.getElementById('sk-journal');
@@ -3557,6 +3708,8 @@ var SpaceKitty = (function(){
     renderStickers();
 
     modal.classList.add('open');
+    journalOpenCount++;
+    scheduleNextIdle();
 
     /* Phase 1: cover sits still for ~600ms so viewer can see it,
        then lifts, hinges open, spread fades in, cover hides. */
@@ -3581,6 +3734,7 @@ var SpaceKitty = (function(){
     var spread = document.getElementById('sk-spread');
     if(!modal) return;
     modal.classList.remove('open');
+    stopIdleLoop();
     /* Reset cover/spread state after fade-out completes,
        AND clear stickers from DOM (otherwise their hover/click handlers
        stay live in the invisible journal area, intercepting mouse events
