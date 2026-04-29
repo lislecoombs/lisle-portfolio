@@ -527,77 +527,75 @@
   pointer-events:none;
   z-index:1; /* above canvas (z-auto) but below everything interactive */
   opacity:0;
-  transition:opacity 1.2s ease;
+  transition:opacity 1.5s ease;
   /* screen blend mode lightens against the dark background */
   mix-blend-mode:screen;
-  /* heavy blur softens the layered radial gradients into aurora curtains */
-  filter:blur(100px);
-  /* Multiple radial gradients = soft blobs of color floating in different
-     positions. They overlap, so you see pink + green + blue + violet
-     simultaneously in different regions, with naturally darker gaps between.
-     Each layer animates at a different speed (see keyframes below) for an
-     organic shifting feel. */
+  /* heavy blur softens the layered gradients into aurora curtains */
+  filter:blur(90px);
+  /* SMALLER, MORE COMPACT BLOBS that overlap less. Each blob is more
+     localized, so you see distinct colors in distinct regions. Lower
+     opacity values prevent the overlapping wash that made everything pink.
+     Each blob is sized 100-150% of viewport (was 200%+) so it actually
+     looks like a discrete cloud, not a screen-wide tint. */
   background:
-    radial-gradient(ellipse 70% 50% at 20% 30%, rgba(255, 100, 180, .55), transparent 70%),
-    radial-gradient(ellipse 60% 40% at 80% 25%, rgba(140, 220, 150, .5),  transparent 70%),
-    radial-gradient(ellipse 80% 50% at 50% 70%, rgba(140, 180, 250, .5),  transparent 70%),
-    radial-gradient(ellipse 50% 40% at 15% 80%, rgba(255, 200, 100, .45), transparent 70%),
-    radial-gradient(ellipse 60% 45% at 85% 75%, rgba(200, 130, 240, .5),  transparent 70%),
-    radial-gradient(ellipse 55% 35% at 45% 15%, rgba(255, 220, 120, .4),  transparent 70%);
-  background-size:200% 200%, 180% 180%, 220% 200%, 190% 190%, 210% 200%, 200% 180%;
-  background-position:0% 0%, 100% 0%, 50% 100%, 0% 100%, 100% 100%, 50% 0%;
+    radial-gradient(circle 50vw at 18% 25%, rgba(255, 90, 170, .42),  transparent 65%),
+    radial-gradient(circle 45vw at 78% 22%, rgba(110, 230, 150, .38), transparent 65%),
+    radial-gradient(circle 55vw at 55% 72%, rgba(110, 170, 255, .42), transparent 65%),
+    radial-gradient(circle 40vw at 12% 78%, rgba(255, 200, 90,  .35), transparent 65%),
+    radial-gradient(circle 48vw at 86% 80%, rgba(190, 110, 245, .40), transparent 65%),
+    radial-gradient(circle 42vw at 42% 12%, rgba(120, 240, 220, .35), transparent 65%);
 }
 .rainbow-active #rainbow-overlay{
   opacity:1;
-  animation:
-    auroraShift1 26s ease-in-out infinite,
-    auroraShift2 32s ease-in-out infinite,
-    auroraShift3 38s ease-in-out infinite,
-    auroraShift4 29s ease-in-out infinite,
-    auroraShift5 34s ease-in-out infinite,
-    auroraShift6 40s ease-in-out infinite;
+  /* One single keyframe drives all 6 layers via `background-position`.
+     Each cycle is fast enough to be visibly moving (~14-18s per loop)
+     but slow enough to feel ambient, not frantic. */
+  animation:auroraDrift 16s ease-in-out infinite;
 }
 .rainbow-burst #rainbow-overlay{
-  animation:
-    auroraShift1 6.5s ease-in-out infinite,
-    auroraShift2 8.0s ease-in-out infinite,
-    auroraShift3 9.5s ease-in-out infinite,
-    auroraShift4 7.2s ease-in-out infinite,
-    auroraShift5 8.5s ease-in-out infinite,
-    auroraShift6 10s ease-in-out infinite;
+  animation:auroraDrift 4.5s ease-in-out infinite;
 }
 
-/* Each layer drifts in a different direction at a different speed.
-   The browser auto-interpolates the comma-separated background-position
-   values for each layer independently. */
-@keyframes auroraShift1{
-  0%,100%{background-position:0% 0%, 100% 0%, 50% 100%, 0% 100%, 100% 100%, 50% 0%;}
-  50%   {background-position:80% 50%, 100% 0%, 50% 100%, 0% 100%, 100% 100%, 50% 0%;}
-}
-@keyframes auroraShift2{
-  0%,100%{background-position:0% 0%, 100% 0%, 50% 100%, 0% 100%, 100% 100%, 50% 0%;}
-  50%   {background-position:0% 0%, 20% 60%, 50% 100%, 0% 100%, 100% 100%, 50% 0%;}
-}
-@keyframes auroraShift3{
-  0%,100%{background-position:0% 0%, 100% 0%, 50% 100%, 0% 100%, 100% 100%, 50% 0%;}
-  50%   {background-position:0% 0%, 100% 0%, 100% 30%, 0% 100%, 100% 100%, 50% 0%;}
-}
-@keyframes auroraShift4{
-  0%,100%{background-position:0% 0%, 100% 0%, 50% 100%, 0% 100%, 100% 100%, 50% 0%;}
-  50%   {background-position:0% 0%, 100% 0%, 50% 100%, 70% 30%, 100% 100%, 50% 0%;}
-}
-@keyframes auroraShift5{
-  0%,100%{background-position:0% 0%, 100% 0%, 50% 100%, 0% 100%, 100% 100%, 50% 0%;}
-  50%   {background-position:0% 0%, 100% 0%, 50% 100%, 0% 100%, 30% 50%, 50% 0%;}
-}
-@keyframes auroraShift6{
-  0%,100%{background-position:0% 0%, 100% 0%, 50% 100%, 0% 100%, 100% 100%, 50% 0%;}
-  50%   {background-position:0% 0%, 100% 0%, 50% 100%, 0% 100%, 100% 100%, 20% 80%;}
-}
-@keyframes rainbowShift{
-  0%   {background-position:0%   50%;}
-  50%  {background-position:100% 50%;}
-  100% {background-position:0%   50%;}
+/* Aurora drift — each layer follows its own path through the viewport.
+   At each keyframe, the 6 blobs are at different positions, swapping
+   territories with each other so colors visibly shift around the screen. */
+@keyframes auroraDrift{
+  0%, 100% {
+    background-position:
+      0%   0%,   /* pink: top-left */
+      100% 0%,   /* green: top-right */
+      50%  100%, /* blue: bottom-center */
+      0%   100%, /* gold: bottom-left */
+      100% 100%, /* violet: bottom-right */
+      50%  0%;   /* teal: top-center */
+  }
+  25% {
+    background-position:
+      60%  20%,
+      30%  50%,
+      80%  60%,
+      40%  90%,
+      10%  70%,
+      90%  30%;
+  }
+  50% {
+    background-position:
+      100% 70%,  /* pink slid to right */
+      0%   80%,  /* green slid to left */
+      30%  20%,  /* blue went to top-left */
+      80%  10%,  /* gold went to top-right */
+      50%  50%,  /* violet to center */
+      20%  90%;  /* teal to bottom-left */
+  }
+  75% {
+    background-position:
+      30%  90%,
+      70%  10%,
+      10%  40%,
+      90%  60%,
+      40%  20%,
+      80%  70%;
+  }
 }
 
 /* Kitty side-to-side dance — first-time activation only */
