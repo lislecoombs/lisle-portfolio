@@ -3559,7 +3559,7 @@ var SpaceKitty = (function(){
   var auroraRaf = null;
   var auroraStartTime = 0;
   var auroraBurstStartTime = 0; /* when the current burst began (or 0 if none) */
-  var BURST_RAMP_MS = 12000; /* total time for fast→slow ramp; longer = smoother */
+  var BURST_RAMP_MS = 24000; /* total time for fast→slow ramp; longer = smoother */
 
   function auroraTick(){
     if(!window.RAINBOW_MODE){ auroraRaf = null; return; }
@@ -3574,7 +3574,7 @@ var SpaceKitty = (function(){
       if(burstElapsed < BURST_RAMP_MS){
         var t = burstElapsed / BURST_RAMP_MS; /* 0..1 */
         var eased = 1 - Math.pow(t, 3); /* cubic ease-out: starts fast, slows */
-        speedFactor = 1.0 + 3.0 * eased;
+        speedFactor = 1.0 + 2.0 * eased;
       } else {
         auroraBurstStartTime = 0; /* burst phase done */
       }
