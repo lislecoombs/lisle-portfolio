@@ -672,7 +672,7 @@
   pointer-events:none;
   z-index:5;
   transform:rotate(-8deg);
-  filter:drop-shadow(1px 2px 0 rgba(110,30,30,.12));
+  filter:drop-shadow(1px 2px 0 rgba(0,0,0,.18));
   opacity:.92;
 }
 
@@ -738,9 +738,7 @@
   transform:rotate(var(--rot, 0deg));
 }
 .sk-sticker:hover{
-  transform:rotate(0deg) scale(1.18);
   filter:drop-shadow(2px 4px 8px rgba(0,0,0,.55));
-  z-index:50;
 }
 
 /* ─── CONFIRMATION OVERLAY (eraser confirm) ─── */
@@ -1174,17 +1172,17 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
         <defs>
           <path id="sk-stamp-arc" d="M 27 65 A 38 38 0 0 1 103 65" fill="none"/>
         </defs>
-        <circle cx="65" cy="65" r="58" fill="none" stroke="rgba(140,50,50,.75)" stroke-width="2.5" stroke-dasharray="180,3,160,2"/>
-        <circle cx="65" cy="65" r="44" fill="none" stroke="rgba(140,50,50,.55)" stroke-width="1"/>
-        <text font-family="'Courier New', monospace" font-size="9" font-weight="bold" fill="rgba(140,50,50,.85)" letter-spacing="2">
+        <circle cx="65" cy="65" r="58" fill="none" stroke="rgba(0,1,7,.7)" stroke-width="2.5" stroke-dasharray="180,3,160,2"/>
+        <circle cx="65" cy="65" r="44" fill="none" stroke="rgba(0,1,7,.4)" stroke-width="1"/>
+        <text font-family="'Courier New', monospace" font-size="9" font-weight="bold" fill="rgba(0,1,7,.85)" letter-spacing="2">
           <textPath href="#sk-stamp-arc" startOffset="50%" text-anchor="middle">EGGS FOUND</textPath>
         </text>
-        <text x="34" y="69" font-size="7" fill="rgba(140,50,50,.7)" font-family="serif">✦</text>
-        <text x="91" y="69" font-size="7" fill="rgba(140,50,50,.7)" font-family="serif">✦</text>
-        <text x="65" y="74" text-anchor="middle" font-family="'Courier New', monospace" font-size="20" font-weight="bold" fill="rgba(140,50,50,.9)" letter-spacing="1">
+        <text x="34" y="69" font-size="7" fill="rgba(0,1,7,.6)" font-family="serif">✦</text>
+        <text x="91" y="69" font-size="7" fill="rgba(0,1,7,.6)" font-family="serif">✦</text>
+        <text x="65" y="74" text-anchor="middle" font-family="'Courier New', monospace" font-size="20" font-weight="bold" fill="rgba(0,1,7,.9)" letter-spacing="1">
           <tspan id="sk-count">0</tspan>/<tspan id="sk-total">20</tspan>
         </text>
-        <text x="65" y="94" text-anchor="middle" font-family="'Courier New', monospace" font-size="6.5" fill="rgba(140,50,50,.7)" letter-spacing="2">SPACE KITTY</text>
+        <text x="65" y="94" text-anchor="middle" font-family="'Courier New', monospace" font-size="6.5" fill="rgba(0,1,7,.65)" letter-spacing="2">SPACE KITTY</text>
       </svg>
       <button class="sk-eraser" id="sk-eraser" aria-label="erase progress">
         <img src="images/eraser.png" alt="" onerror="this.style.display='none'" />
@@ -1952,7 +1950,7 @@ musicBtn.addEventListener('click',function(){
 });
 
 /* ═ TYPEWRITER ═ */
-var phrases=['horror movie fan','amateur rock climber','explore to find the hidden easter eggs!','cat lover','( ˘ ³˘(◡‿◡˶)'];
+var phrases=['click around to find suprises!','amateur rock climber','horror movie fan','cat lover','( ˘ ³˘(◡‿◡˶)'];
 var pi=0,ci=0,del=false;
 var tw=document.getElementById('tw');
 function type(){
@@ -3502,12 +3500,10 @@ var SpaceKitty = (function(){
       img.dataset.eggId = eggId;
       /* If image fails to load, hide silently */
       img.onerror = function(){ this.style.display = 'none'; };
-      /* Hover or click → kitty bubble plays the egg's message.
-         noStore: don't pollute lastMessage (so kitty hover replays after closing journal
-                  still show the user's most recent ACTUAL egg trigger, not a sticker hover).
-         skipIfSame: prevents bubble flicker if user hovers the same sticker repeatedly. */
+      /* Click only → kitty bubble plays the egg's message.
+         noStore: don't pollute lastMessage so kitty hover replays after closing journal
+                  still show the user's most recent ACTUAL egg trigger, not a sticker click. */
       var msg = egg.message;
-      img.addEventListener('mouseenter', function(){ showBubble(msg, {noStore:true, skipIfSame:true}); });
       img.addEventListener('click', function(e){
         e.stopPropagation();
         showBubble(msg, {noStore:true});
@@ -3562,22 +3558,21 @@ var SpaceKitty = (function(){
 
     modal.classList.add('open');
 
-    /* Phase 1: lift the cover slightly */
-    requestAnimationFrame(function(){
+    /* Phase 1: cover sits still for ~500ms so viewer can see it,
+       then lifts, hinges open, spread fades in, cover hides. */
+    setTimeout(function(){
       cover.classList.add('lifted');
-    });
-    /* Phase 2: hinge cover open + start spread fade-in */
+    }, 500);
     setTimeout(function(){
       cover.classList.remove('lifted');
       cover.classList.add('opened');
-    }, 400);
+    }, 900);
     setTimeout(function(){
       spread.classList.add('shown');
-    }, 650);
-    /* Phase 3: hide cover after rotation completes */
+    }, 1150);
     setTimeout(function(){
       cover.classList.add('hidden');
-    }, 1250);
+    }, 1750);
   }
 
   function closeJournal(){
@@ -3586,10 +3581,15 @@ var SpaceKitty = (function(){
     var spread = document.getElementById('sk-spread');
     if(!modal) return;
     modal.classList.remove('open');
-    /* Reset cover/spread state after fade-out completes */
+    /* Reset cover/spread state after fade-out completes,
+       AND clear stickers from DOM (otherwise their hover/click handlers
+       stay live in the invisible journal area, intercepting mouse events
+       on the page below) */
     setTimeout(function(){
       if(cover){ cover.classList.remove('lifted','opened','hidden'); }
       if(spread){ spread.classList.remove('shown'); }
+      var stickers = document.getElementById('sk-stickers');
+      if(stickers) stickers.innerHTML = '';
       hideEraserConfirm();
     }, 350);
   }
