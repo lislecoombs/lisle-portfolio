@@ -574,7 +574,10 @@
   z-index:1;
 }
 
-/* ─── JOURNAL PLACEHOLDER (Phase 1 only — Phase 2 replaces this) ─── */
+/* ═════════════════════════════════════════════════════════════════════
+   JOURNAL (Phase 2 — Part 1)
+   ═════════════════════════════════════════════════════════════════════ */
+
 #sk-journal{
   position:fixed;
   inset:0;
@@ -586,80 +589,224 @@
   opacity:0;
   pointer-events:none;
   transition:opacity .3s ease;
-  padding:40px 200px 200px 40px;
+  padding:20px 180px 180px 20px; /* keeps kitty corner free */
 }
-#sk-journal.open{opacity:1;pointer-events:auto;}
-#sk-journal-content{
-  background:rgba(244,237,216,.06);
-  border:1px solid rgba(244,237,216,.18);
-  border-radius:4px;
-  padding:48px 40px 40px;
-  max-width:520px;
-  width:100%;
+#sk-journal.open{
+  opacity:1;
+  pointer-events:auto;
+}
+
+/* ─── STAGE (the journal area; has perspective for hinge) ─── */
+.sk-journal-stage{
   position:relative;
-  backdrop-filter:blur(8px);
-  transform:translateY(20px) rotate(-1deg);
-  transition:transform .35s cubic-bezier(.34,1.56,.64,1);
-  font-family:'Caveat',cursive;
-  color:var(--cream);
-  text-align:center;
+  width:min(1000px, 84vw, 88vh);
+  aspect-ratio:1.252/1;
+  perspective:1500px;
+  transform-style:preserve-3d;
 }
-#sk-journal.open #sk-journal-content{transform:translateY(0) rotate(-1deg);}
-#sk-journal-content::before{
-  content:'';position:absolute;
-  width:60px;height:18px;
-  background:rgba(212,176,150,.25);
-  border-radius:1px;
-  top:-9px;left:30px;
+
+/* ─── COVER ─── */
+.sk-cover{
+  position:absolute;
+  inset:0;
+  transform-origin:0% 50%;
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+  z-index:2;
+  filter:drop-shadow(8px 12px 25px rgba(0,0,0,.6));
+  backface-visibility:hidden;
+  pointer-events:none;
+}
+.sk-cover img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+  pointer-events:none;
+  user-select:none;
+  -webkit-user-drag:none;
+}
+.sk-cover.lifted{
+  transform:scale(1.03) translateY(-12px);
+}
+.sk-cover.opened{
+  transform:rotateY(-180deg);
+  transition:transform .8s cubic-bezier(.42,0,.58,1);
+}
+.sk-cover.hidden{
+  display:none;
+}
+
+/* ─── SPREAD (the open journal pages) ─── */
+.sk-spread{
+  position:absolute;
+  inset:0;
+  opacity:0;
+  transition:opacity .6s ease-out;
+  z-index:1;
+  pointer-events:none;
+}
+.sk-spread.shown{
+  opacity:1;
+  pointer-events:auto;
+}
+.sk-spread-bg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+  user-select:none;
+  pointer-events:none;
+  -webkit-user-drag:none;
+}
+
+/* ─── COUNT STAMP ─── */
+.sk-stamp{
+  position:absolute;
+  top:3%;
+  left:50%;
+  transform:translateX(-50%) rotate(-2deg);
+  font-family:'Courier New', Courier, monospace;
+  color:rgba(110,30,30,.7);
+  text-align:center;
+  padding:5px 14px 6px;
+  border:2px solid rgba(110,30,30,.5);
+  border-radius:2px;
+  pointer-events:none;
+  z-index:5;
+  text-transform:uppercase;
+  letter-spacing:2px;
+  font-weight:bold;
+  background:rgba(244,237,216,.08);
+  box-shadow:1px 1px 0 rgba(110,30,30,.18), inset 0 0 12px rgba(110,30,30,.06);
+}
+.sk-stamp-label{font-size:.62rem; display:block; line-height:1;}
+.sk-stamp-count{font-size:1.05rem; display:block; line-height:1.2; margin-top:3px;}
+
+/* ─── ERASER BUTTON ─── */
+.sk-eraser{
+  position:absolute;
+  top:3%;
+  right:4%;
+  width:55px;
+  height:auto;
+  background:none;
+  border:none;
+  cursor:url('/cursors/pointer.png') 18 10, pointer;
+  padding:0;
+  z-index:10;
+  transition:transform .2s;
+}
+.sk-eraser img{
+  width:100%;
+  height:auto;
+  display:block;
+  filter:drop-shadow(2px 3px 4px rgba(0,0,0,.4));
+  pointer-events:none;
+}
+.sk-eraser:hover{
+  transform:rotate(8deg) scale(1.1);
+}
+.sk-eraser-tip{
+  position:absolute;
+  top:calc(3% + 62px);
+  right:3%;
+  font-family:'Caveat', cursive;
+  color:rgba(110,30,30,.8);
+  font-size:1rem;
+  opacity:0;
+  transition:opacity .2s;
+  pointer-events:none;
+  z-index:10;
+  white-space:nowrap;
   transform:rotate(-3deg);
 }
-#sk-journal-content::after{
-  content:'';position:absolute;
-  width:52px;height:16px;
-  background:rgba(212,176,150,.22);
-  border-radius:1px;
-  top:-8px;right:34px;
-  transform:rotate(2.5deg);
+.sk-eraser:hover ~ .sk-eraser-tip{
+  opacity:1;
 }
-#sk-journal h2{
-  font-family:'Playfair Display',serif;
-  font-style:italic;
-  font-size:1.8rem;
-  color:var(--cream);
-  margin-bottom:6px;
-  letter-spacing:.5px;
-}
-#sk-journal-tag{
-  font-family:'Caveat',cursive;
-  font-size:.95rem;
-  color:var(--terra);
-  letter-spacing:3px;
-  text-transform:uppercase;
-  display:block;
-  margin-bottom:14px;
-}
-#sk-journal-coming{font-size:1.3rem;color:var(--wheat);margin:18px 0 6px;font-style:italic;}
-#sk-journal-counter{font-size:1.5rem;color:var(--sage);margin:14px 0 4px;}
-#sk-journal-counter strong{
-  color:var(--cream);
-  font-size:2.2rem;
-  font-family:'Playfair Display',serif;
-  font-style:italic;
-}
-#sk-journal-hint{font-size:1rem;color:var(--mushroom);opacity:.7;margin-top:20px;font-style:italic;}
-#sk-journal-close{
+
+/* ─── STICKERS ─── */
+.sk-stickers{
   position:absolute;
-  top:10px;right:14px;
-  background:none;border:none;
-  color:var(--mushroom);
-  font-family:'Caveat',cursive;
-  font-size:1.6rem;
-  cursor:url('/cursors/pointer.png') 18 10, pointer;
-  line-height:1;
-  padding:4px 10px;
-  transition:color .2s;
+  inset:0;
+  pointer-events:none;
+  z-index:4;
 }
-#sk-journal-close:hover{color:var(--rose);}
+.sk-sticker{
+  position:absolute;
+  cursor:url('/cursors/pointer.png') 18 10, pointer;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1), filter .25s;
+  filter:drop-shadow(2px 3px 5px rgba(0,0,0,.35));
+  user-select:none;
+  -webkit-user-drag:none;
+  pointer-events:auto;
+  transform:rotate(var(--rot, 0deg));
+}
+.sk-sticker:hover{
+  transform:rotate(0deg) scale(1.18);
+  filter:drop-shadow(2px 4px 8px rgba(0,0,0,.55));
+  z-index:50;
+}
+
+/* ─── CONFIRMATION OVERLAY (eraser confirm) ─── */
+.sk-confirm{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,.55);
+  z-index:20;
+  backdrop-filter:blur(4px);
+}
+.sk-confirm[hidden]{display:none;}
+.sk-confirm-box{
+  background:var(--cream);
+  padding:24px 30px 22px;
+  border:2px solid #2a1808;
+  font-family:'Caveat', cursive;
+  text-align:center;
+  max-width:340px;
+  transform:rotate(-1deg);
+  box-shadow:6px 6px 0 0 rgba(0,0,0,.4);
+}
+.sk-confirm-text{
+  font-size:1.4rem;
+  color:#2a1808;
+  margin:0 0 18px;
+  line-height:1.3;
+}
+.sk-confirm-buttons{
+  display:flex;
+  gap:14px;
+  justify-content:center;
+}
+.sk-confirm-buttons button{
+  font-family:'Caveat', cursive;
+  font-size:1.1rem;
+  background:transparent;
+  border:1.5px solid var(--mushroom);
+  padding:8px 18px;
+  cursor:url('/cursors/pointer.png') 18 10, pointer;
+  transition:all .2s;
+  border-radius:1px;
+}
+.sk-confirm-yes{
+  color:var(--rose);
+  border-color:var(--rose);
+}
+.sk-confirm-yes:hover{
+  background:var(--rose);
+  color:var(--cream);
+}
+.sk-confirm-no{
+  color:var(--mushroom);
+}
+.sk-confirm-no:hover{
+  background:var(--mushroom);
+  color:var(--cream);
+}
 
 @media(max-width:700px){
   #sk-stage{width:100vw;height:380px;}
@@ -667,8 +814,10 @@
   #sk-beam{width:100px;height:300px;right:23px;}
   #sk-cat{width:75px;bottom:18px;right:35px;}
   #sk-bubble{bottom:130px;right:30px;font-size:1.2rem;max-width:200px;}
-  #sk-journal{padding:20px 20px 160px 20px;}
-  #sk-journal-content{padding:36px 24px 28px;}
+  #sk-journal{padding:20px 20px 200px 20px;}
+  .sk-stamp-label{font-size:.56rem;}
+  .sk-stamp-count{font-size:.9rem;}
+  .sk-eraser{width:42px;}
 }
   #egg-badge.show{opacity:.7;}
   @media(max-width:900px){nav{padding:16px 24px;}section,#guestbook{padding:70px 24px;}.hero-layout{grid-template-columns:1fr;text-align:center;gap:40px;}.hero-left,.hero-right{text-align:center;}.float-title{justify-content:center!important;}.portrait-stack{margin:0 auto 32px;}.about-grid{grid-template-columns:1fr;}.gallery-grid{columns:2 160px;}footer{padding:28px 24px;}.form-row{grid-template-columns:1fr;}}
@@ -1017,15 +1166,36 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
 </div>
 <audio id="sk-ufo-sound" src="sounds/UFO.mp3" preload="auto"></audio>
 
-<!-- Phase 1 placeholder journal — Phase 2 will replace this -->
-<div id="sk-journal" role="dialog" aria-labelledby="sk-journal-title">
-  <div id="sk-journal-content">
-    <button id="sk-journal-close" aria-label="Close">×</button>
-    <span id="sk-journal-tag">--&gt; space kitty's journal</span>
-    <h2 id="sk-journal-title">under construction</h2>
-    <p id="sk-journal-coming">the real journal arrives in phase 2!</p>
-    <p id="sk-journal-counter">eggs found: <strong id="sk-journal-count">0</strong> / <span id="sk-journal-total">20</span></p>
-    <p id="sk-journal-hint">(click outside or press esc to close)</p>
+<!-- ═══ JOURNAL (Phase 2 — Part 1) ═══ -->
+<div id="sk-journal" role="dialog" aria-label="space kitty's journal">
+  <div class="sk-journal-stage">
+    <!-- Cover -->
+    <div class="sk-cover" id="sk-cover">
+      <img src="images/journal-cover.png" alt="space kitty's journal" />
+    </div>
+    <!-- Spread (open pages) -->
+    <div class="sk-spread" id="sk-spread">
+      <img class="sk-spread-bg" src="images/journal-open.png" alt="" />
+      <div class="sk-stamp">
+        <span class="sk-stamp-label">eggs found</span>
+        <span class="sk-stamp-count"><span id="sk-count">0</span> / <span id="sk-total">20</span></span>
+      </div>
+      <button class="sk-eraser" id="sk-eraser" aria-label="erase progress">
+        <img src="images/eraser.png" alt="" onerror="this.style.display='none'" />
+      </button>
+      <span class="sk-eraser-tip">erase progress?</span>
+      <div class="sk-stickers" id="sk-stickers"></div>
+      <!-- Confirmation overlay -->
+      <div class="sk-confirm" id="sk-confirm" hidden>
+        <div class="sk-confirm-box">
+          <p class="sk-confirm-text">are you sure? this erases all your egg progress.</p>
+          <div class="sk-confirm-buttons">
+            <button class="sk-confirm-yes" id="sk-confirm-yes">yes, erase</button>
+            <button class="sk-confirm-no" id="sk-confirm-no">no, cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -3263,18 +3433,141 @@ var SpaceKitty = (function(){
     showBubble(lastMessage);
   }
 
+  /* ─── STICKER POSITIONS ─── */
+  /* Each sticker uses: top/left as % of the spread, width in px, rotation in deg.
+     Tweak these freely — they're the messy-collage layout for the journal. */
+  var STICKER_POSITIONS = {
+    'first-constellation':    { top:'12%', left:'7%',  width:75, rotate:-8 },
+    'all-constellations':     { top:'14%', left:'72%', width:80, rotate:5 },
+    'tardis-click':           { top:'30%', left:'17%', width:70, rotate:12 },
+    'tardis-shake':           { top:'25%', left:'58%', width:65, rotate:-7 },
+    'portrait-secret':        { top:'52%', left:'5%',  width:80, rotate:-3 },
+    'youtube-first':          { top:'45%', left:'82%', width:65, rotate:8 },
+    'youtube-all':            { top:'62%', left:'75%', width:72, rotate:-5 },
+    'fish-click':             { top:'38%', left:'25%', width:68, rotate:-10 },
+    'wwdits':                 { top:'70%', left:'12%', width:78, rotate:6 },
+    'surfs-up':               { top:'18%', left:'33%', width:70, rotate:-3 },
+    'dimple':                 { top:'58%', left:'30%', width:75, rotate:9 },
+    'jojo-kq':                { top:'25%', left:'42%', width:85, rotate:-12 },
+    'pigeon':                 { top:'82%', left:'8%',  width:65, rotate:-4 },
+    'guestbook-sign':         { top:'78%', left:'30%', width:72, rotate:7 },
+    'dog-first':              { top:'48%', left:'55%', width:68, rotate:11 },
+    'dog-spin':               { top:'85%', left:'58%', width:75, rotate:-8 },
+    'tbc':                    { top:'68%', left:'45%', width:62, rotate:4 },
+    'ora-platinum':           { top:'37%', left:'68%', width:70, rotate:-9 },
+    'konami':                 { top:'30%', left:'85%', width:65, rotate:6 },
+    'blog-open':              { top:'78%', left:'82%', width:68, rotate:-6 },
+    'all-eggs':               { top:'88%', left:'45%', width:90, rotate:3 }
+  };
+
+  /* ─── Render stickers in journal based on what's been found ─── */
+  function renderStickers(){
+    var container = document.getElementById('sk-stickers');
+    if(!container) return;
+    container.innerHTML = '';
+    Object.keys(STICKER_POSITIONS).forEach(function(eggId){
+      if(!EggTracker.has(eggId)) return; /* unfound = invisible */
+      var pos = STICKER_POSITIONS[eggId];
+      var egg = EGG_REGISTRY[eggId];
+      if(!egg) return;
+      var img = document.createElement('img');
+      img.src = egg.sticker;
+      img.alt = '';
+      img.className = 'sk-sticker';
+      img.style.top = pos.top;
+      img.style.left = pos.left;
+      img.style.width = pos.width + 'px';
+      img.style.setProperty('--rot', pos.rotate + 'deg');
+      img.dataset.eggId = eggId;
+      /* If image fails to load, hide silently */
+      img.onerror = function(){ this.style.display = 'none'; };
+      /* Hover or click → kitty bubble plays the egg's message */
+      var msg = egg.message;
+      img.addEventListener('mouseenter', function(){ showBubble(msg); });
+      img.addEventListener('click', function(e){
+        e.stopPropagation();
+        showBubble(msg);
+      });
+      container.appendChild(img);
+    });
+  }
+
+  function updateCount(){
+    var c = document.getElementById('sk-count');
+    var t = document.getElementById('sk-total');
+    if(c) c.textContent = EggTracker.realFoundCount();
+    if(t) t.textContent = EggTracker.totalRealEggs();
+  }
+
+  /* ─── Eraser confirmation ─── */
+  function showEraserConfirm(){
+    var c = document.getElementById('sk-confirm');
+    if(c) c.hidden = false;
+  }
+  function hideEraserConfirm(){
+    var c = document.getElementById('sk-confirm');
+    if(c) c.hidden = true;
+  }
+  function eraseProgress(){
+    EggTracker.reset();
+    renderStickers();
+    updateCount();
+    hideEraserConfirm();
+    /* clear any active bubble + reset cat to "before any eggs" state */
+    if(bubbleTimer){ clearTimeout(bubbleTimer); bubbleTimer = null; }
+    bubble.classList.remove('sk-show');
+    lastMessage = null;
+    cat.classList.remove('sk-materialized','sk-idle','sk-pulse-once','sk-pulse-continuous');
+    closeJournal();
+  }
+
+  /* ─── Open / close journal with cover-to-spread animation ─── */
   function openJournal(){
     var modal = document.getElementById('sk-journal');
-    if(!modal) return;
-    var count = document.getElementById('sk-journal-count');
-    var total = document.getElementById('sk-journal-total');
-    if(count) count.textContent = EggTracker.realFoundCount();
-    if(total) total.textContent = EggTracker.totalRealEggs();
+    var cover = document.getElementById('sk-cover');
+    var spread = document.getElementById('sk-spread');
+    if(!modal || !cover || !spread) return;
+
+    /* Reset state in case journal was previously open */
+    cover.classList.remove('lifted','opened','hidden');
+    spread.classList.remove('shown');
+    hideEraserConfirm();
+
+    updateCount();
+    renderStickers();
+
     modal.classList.add('open');
+
+    /* Phase 1: lift the cover slightly */
+    requestAnimationFrame(function(){
+      cover.classList.add('lifted');
+    });
+    /* Phase 2: hinge cover open + start spread fade-in */
+    setTimeout(function(){
+      cover.classList.remove('lifted');
+      cover.classList.add('opened');
+    }, 400);
+    setTimeout(function(){
+      spread.classList.add('shown');
+    }, 650);
+    /* Phase 3: hide cover after rotation completes */
+    setTimeout(function(){
+      cover.classList.add('hidden');
+    }, 1250);
   }
+
   function closeJournal(){
     var modal = document.getElementById('sk-journal');
-    if(modal) modal.classList.remove('open');
+    var cover = document.getElementById('sk-cover');
+    var spread = document.getElementById('sk-spread');
+    if(!modal) return;
+    modal.classList.remove('open');
+    /* Reset cover/spread state after fade-out completes */
+    setTimeout(function(){
+      if(cover){ cover.classList.remove('lifted','opened','hidden'); }
+      if(spread){ spread.classList.remove('shown'); }
+      hideEraserConfirm();
+    }, 350);
   }
 
   function init(){
@@ -3302,15 +3595,9 @@ var SpaceKitty = (function(){
     cat.addEventListener('click', onCatClick);
     cat.addEventListener('mouseenter', onCatHover);
 
-    var jClose = document.getElementById('sk-journal-close');
-    if(jClose){
-      jClose.addEventListener('click', function(e){
-        e.stopPropagation();
-        closeJournal();
-      });
-    }
     var modal = document.getElementById('sk-journal');
     if(modal){
+      /* Click anywhere outside the journal stage closes it */
       modal.addEventListener('click', function(e){
         if(e.target === modal) closeJournal();
       });
@@ -3318,6 +3605,31 @@ var SpaceKitty = (function(){
     document.addEventListener('keydown', function(e){
       if(e.key === 'Escape' && modal && modal.classList.contains('open')) closeJournal();
     });
+
+    /* Cover is decorative during the opening animation — no click handler needed.
+       openJournal() (triggered by clicking the kitty) drives the full sequence. */
+
+    /* Eraser button — show confirmation */
+    var eraserBtn = document.getElementById('sk-eraser');
+    if(eraserBtn){
+      eraserBtn.addEventListener('click', function(e){
+        e.stopPropagation();
+        showEraserConfirm();
+      });
+    }
+    /* Confirmation buttons */
+    var yesBtn = document.getElementById('sk-confirm-yes');
+    var noBtn  = document.getElementById('sk-confirm-no');
+    if(yesBtn) yesBtn.addEventListener('click', function(e){ e.stopPropagation(); eraseProgress(); });
+    if(noBtn)  noBtn.addEventListener('click',  function(e){ e.stopPropagation(); hideEraserConfirm(); });
+    /* Click inside the confirmation panel shouldn't close the journal */
+    var confirmEl = document.getElementById('sk-confirm');
+    if(confirmEl){
+      confirmEl.addEventListener('click', function(e){
+        /* Only close confirmation if clicking the dim backdrop, not the box */
+        if(e.target === confirmEl) hideEraserConfirm();
+      });
+    }
 
     ready = true;
 
