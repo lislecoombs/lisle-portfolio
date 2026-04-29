@@ -603,6 +603,7 @@
   aspect-ratio:1.252/1;
   perspective:1500px;
   transform-style:preserve-3d;
+  transform:rotate(-2deg) translateY(28px);
 }
 
 /* ─── COVER ─── */
@@ -661,66 +662,59 @@
   -webkit-user-drag:none;
 }
 
-/* ─── COUNT STAMP ─── */
+/* ─── COUNT STAMP (passport-style SVG) ─── */
 .sk-stamp{
   position:absolute;
-  top:3%;
-  left:50%;
-  transform:translateX(-50%) rotate(-2deg);
-  font-family:'Courier New', Courier, monospace;
-  color:rgba(110,30,30,.7);
-  text-align:center;
-  padding:5px 14px 6px;
-  border:2px solid rgba(110,30,30,.5);
-  border-radius:2px;
+  top:7%;
+  left:13%;
+  width:115px;
+  height:115px;
   pointer-events:none;
   z-index:5;
-  text-transform:uppercase;
-  letter-spacing:2px;
-  font-weight:bold;
-  background:rgba(244,237,216,.08);
-  box-shadow:1px 1px 0 rgba(110,30,30,.18), inset 0 0 12px rgba(110,30,30,.06);
+  transform:rotate(-8deg);
+  filter:drop-shadow(1px 2px 0 rgba(110,30,30,.12));
+  opacity:.92;
 }
-.sk-stamp-label{font-size:.62rem; display:block; line-height:1;}
-.sk-stamp-count{font-size:1.05rem; display:block; line-height:1.2; margin-top:3px;}
 
-/* ─── ERASER BUTTON ─── */
+/* ─── ERASER (floats outside journal, like sitting on the desk) ─── */
 .sk-eraser{
   position:absolute;
-  top:3%;
-  right:4%;
-  width:55px;
+  top:48%;
+  right:-9%;
+  width:100px;
   height:auto;
   background:none;
   border:none;
   cursor:url('/cursors/pointer.png') 18 10, pointer;
   padding:0;
   z-index:10;
-  transition:transform .2s;
+  transform:rotate(18deg);
+  transition:transform .25s;
 }
 .sk-eraser img{
   width:100%;
   height:auto;
   display:block;
-  filter:drop-shadow(2px 3px 4px rgba(0,0,0,.4));
+  filter:drop-shadow(4px 6px 10px rgba(0,0,0,.55));
   pointer-events:none;
 }
 .sk-eraser:hover{
-  transform:rotate(8deg) scale(1.1);
+  transform:rotate(8deg) scale(1.08);
 }
 .sk-eraser-tip{
   position:absolute;
-  top:calc(3% + 62px);
-  right:3%;
+  top:calc(48% + 110px);
+  right:-10%;
   font-family:'Caveat', cursive;
-  color:rgba(110,30,30,.8);
-  font-size:1rem;
+  color:rgba(244,237,216,.85);
+  font-size:1.15rem;
   opacity:0;
   transition:opacity .2s;
   pointer-events:none;
   z-index:10;
   white-space:nowrap;
   transform:rotate(-3deg);
+  text-shadow:0 0 6px rgba(0,0,0,.5);
 }
 .sk-eraser:hover ~ .sk-eraser-tip{
   opacity:1;
@@ -1176,10 +1170,22 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
     <!-- Spread (open pages) -->
     <div class="sk-spread" id="sk-spread">
       <img class="sk-spread-bg" src="images/journal-open.png" alt="" />
-      <div class="sk-stamp">
-        <span class="sk-stamp-label">eggs found</span>
-        <span class="sk-stamp-count"><span id="sk-count">0</span> / <span id="sk-total">20</span></span>
-      </div>
+      <svg class="sk-stamp" viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <path id="sk-stamp-arc" d="M 27 65 A 38 38 0 0 1 103 65" fill="none"/>
+        </defs>
+        <circle cx="65" cy="65" r="58" fill="none" stroke="rgba(140,50,50,.75)" stroke-width="2.5" stroke-dasharray="180,3,160,2"/>
+        <circle cx="65" cy="65" r="44" fill="none" stroke="rgba(140,50,50,.55)" stroke-width="1"/>
+        <text font-family="'Courier New', monospace" font-size="9" font-weight="bold" fill="rgba(140,50,50,.85)" letter-spacing="2">
+          <textPath href="#sk-stamp-arc" startOffset="50%" text-anchor="middle">EGGS FOUND</textPath>
+        </text>
+        <text x="34" y="69" font-size="7" fill="rgba(140,50,50,.7)" font-family="serif">✦</text>
+        <text x="91" y="69" font-size="7" fill="rgba(140,50,50,.7)" font-family="serif">✦</text>
+        <text x="65" y="74" text-anchor="middle" font-family="'Courier New', monospace" font-size="20" font-weight="bold" fill="rgba(140,50,50,.9)" letter-spacing="1">
+          <tspan id="sk-count">0</tspan>/<tspan id="sk-total">20</tspan>
+        </text>
+        <text x="65" y="94" text-anchor="middle" font-family="'Courier New', monospace" font-size="6.5" fill="rgba(140,50,50,.7)" letter-spacing="2">SPACE KITTY</text>
+      </svg>
       <button class="sk-eraser" id="sk-eraser" aria-label="erase progress">
         <img src="images/eraser.png" alt="" onerror="this.style.display='none'" />
       </button>
@@ -3296,9 +3302,15 @@ var SpaceKitty = (function(){
     /* Safety: if the cat hasn't materialized yet (UFO still in flight),
        don't show a bubble. Still record the message so hover-replay can show it later. */
     if(!cat.classList.contains('sk-materialized')){
-      lastMessage = text;
+      if(!opts.noStore) lastMessage = text;
       return;
     }
+
+    /* Skip if same text is already actively showing (prevents flicker on rapid re-hover) */
+    if(opts.skipIfSame && bubble.classList.contains('sk-show') && bubble.dataset.currentText === text){
+      return;
+    }
+    bubble.dataset.currentText = text;
 
     clearBubbleState();
     bubble.style.width = '';
@@ -3330,7 +3342,7 @@ var SpaceKitty = (function(){
       }, 60);
     });
 
-    lastMessage = text;
+    if(!opts.noStore) lastMessage = text;
 
     bubbleTimer = setTimeout(function(){
       bubble.classList.remove('sk-show');
@@ -3436,28 +3448,37 @@ var SpaceKitty = (function(){
   /* ─── STICKER POSITIONS ─── */
   /* Each sticker uses: top/left as % of the spread, width in px, rotation in deg.
      Tweak these freely — they're the messy-collage layout for the journal. */
+  /* Sticker positions tuned for new journal-open.png:
+     - LEFT page safe zone:  ~13-44% horizontal
+     - RIGHT page safe zone: ~56-87% horizontal
+     - Vertical safe zone:   ~12-86% (top buffer for stamp at top-left of left page)
+     - Center spine ~45-55% is kept clear (no stickers cross it)
+     - Edge buffers prevent stickers floating off the page */
   var STICKER_POSITIONS = {
-    'first-constellation':    { top:'12%', left:'7%',  width:75, rotate:-8 },
-    'all-constellations':     { top:'14%', left:'72%', width:80, rotate:5 },
-    'tardis-click':           { top:'30%', left:'17%', width:70, rotate:12 },
-    'tardis-shake':           { top:'25%', left:'58%', width:65, rotate:-7 },
-    'portrait-secret':        { top:'52%', left:'5%',  width:80, rotate:-3 },
-    'youtube-first':          { top:'45%', left:'82%', width:65, rotate:8 },
-    'youtube-all':            { top:'62%', left:'75%', width:72, rotate:-5 },
-    'fish-click':             { top:'38%', left:'25%', width:68, rotate:-10 },
-    'wwdits':                 { top:'70%', left:'12%', width:78, rotate:6 },
-    'surfs-up':               { top:'18%', left:'33%', width:70, rotate:-3 },
-    'dimple':                 { top:'58%', left:'30%', width:75, rotate:9 },
-    'jojo-kq':                { top:'25%', left:'42%', width:85, rotate:-12 },
-    'pigeon':                 { top:'82%', left:'8%',  width:65, rotate:-4 },
-    'guestbook-sign':         { top:'78%', left:'30%', width:72, rotate:7 },
-    'dog-first':              { top:'48%', left:'55%', width:68, rotate:11 },
-    'dog-spin':               { top:'85%', left:'58%', width:75, rotate:-8 },
-    'tbc':                    { top:'68%', left:'45%', width:62, rotate:4 },
-    'ora-platinum':           { top:'37%', left:'68%', width:70, rotate:-9 },
-    'konami':                 { top:'30%', left:'85%', width:65, rotate:6 },
-    'blog-open':              { top:'78%', left:'82%', width:68, rotate:-6 },
-    'all-eggs':               { top:'88%', left:'45%', width:90, rotate:3 }
+    /* ─── LEFT PAGE ─── */
+    'first-constellation':    { top:'30%', left:'13%', width:70, rotate:-8 },
+    'tardis-click':           { top:'22%', left:'30%', width:65, rotate:12 },
+    'portrait-secret':        { top:'52%', left:'13%', width:75, rotate:-3 },
+    'fish-click':             { top:'45%', left:'30%', width:65, rotate:-10 },
+    'wwdits':                 { top:'72%', left:'15%', width:75, rotate:6 },
+    'surfs-up':               { top:'15%', left:'34%', width:62, rotate:-3 },
+    'dimple':                 { top:'60%', left:'32%', width:70, rotate:9 },
+    'jojo-kq':                { top:'40%', left:'22%', width:75, rotate:-12 },
+    'pigeon':                 { top:'78%', left:'32%', width:60, rotate:-4 },
+    'guestbook-sign':         { top:'82%', left:'15%', width:65, rotate:7 },
+    /* ─── RIGHT PAGE ─── */
+    'all-constellations':     { top:'14%', left:'62%', width:75, rotate:5 },
+    'tardis-shake':           { top:'26%', left:'78%', width:62, rotate:-7 },
+    'youtube-first':          { top:'18%', left:'70%', width:62, rotate:8 },
+    'youtube-all':            { top:'72%', left:'78%', width:65, rotate:-5 },
+    'dog-first':              { top:'40%', left:'58%', width:65, rotate:11 },
+    'dog-spin':               { top:'82%', left:'62%', width:72, rotate:-8 },
+    'tbc':                    { top:'70%', left:'58%', width:60, rotate:4 },
+    'ora-platinum':           { top:'42%', left:'78%', width:68, rotate:-9 },
+    'konami':                 { top:'30%', left:'68%', width:60, rotate:6 },
+    'blog-open':              { top:'82%', left:'80%', width:62, rotate:-6 },
+    /* ─── META (centered on right page) ─── */
+    'all-eggs':               { top:'55%', left:'68%', width:85, rotate:3 }
   };
 
   /* ─── Render stickers in journal based on what's been found ─── */
@@ -3481,12 +3502,15 @@ var SpaceKitty = (function(){
       img.dataset.eggId = eggId;
       /* If image fails to load, hide silently */
       img.onerror = function(){ this.style.display = 'none'; };
-      /* Hover or click → kitty bubble plays the egg's message */
+      /* Hover or click → kitty bubble plays the egg's message.
+         noStore: don't pollute lastMessage (so kitty hover replays after closing journal
+                  still show the user's most recent ACTUAL egg trigger, not a sticker hover).
+         skipIfSame: prevents bubble flicker if user hovers the same sticker repeatedly. */
       var msg = egg.message;
-      img.addEventListener('mouseenter', function(){ showBubble(msg); });
+      img.addEventListener('mouseenter', function(){ showBubble(msg, {noStore:true, skipIfSame:true}); });
       img.addEventListener('click', function(e){
         e.stopPropagation();
-        showBubble(msg);
+        showBubble(msg, {noStore:true});
       });
       container.appendChild(img);
     });
