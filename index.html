@@ -3551,67 +3551,84 @@ var SpaceKitty = (function(){
     return !!window.RAINBOW_MODE;
   }
 
-  /* Aurora animation driver (replaces CSS animations on aurora layers).
-     Uses requestAnimationFrame to set transforms each tick based on a
-     smoothly-interpolating speed factor. This avoids the "flash" that
-     CSS animation duration changes cause (because CSS restarts the
-     animation at frame 0 when duration changes). */
+  /* Aurora animation driver. Uses requestAnimationFrame to set transforms
+     each tick based on a smoothly-interpolating speed factor.
+
+     Phase and rotation are accumulators — they only ever INCREASE, with
+     the per-frame increment scaled by speedFactor. This guarantees:
+     - No backward motion when speed changes
+     - No teleports when speed changes (which the previous version had,
+       because (elapsed % period) discontinuously jumped when period changed) */
   var auroraRaf = null;
-  var auroraStartTime = 0;
-  var auroraBurstStartTime = 0; /* when the current burst began (or 0 if none) */
-  var BURST_RAMP_MS = 24000; /* total time for fast→slow ramp; longer = smoother */
+  var auroraLastFrameTime = 0;
+  var auroraBurstStartTime = 0;
+  var BURST_RAMP_MS = 14000; /* total time for fast→slow ramp */
+
+  /* Per-layer accumulators for position phase and rotation angle. */
+  var auroraPhase = [0, 0, 0];
+  var auroraRot   = [0, 0, 0];
 
   function auroraTick(){
     if(!window.RAINBOW_MODE){ auroraRaf = null; return; }
     var now = performance.now();
-    var elapsed = now - auroraStartTime;
+    var dt = auroraLastFrameTime > 0 ? (now - auroraLastFrameTime) : 16;
+    auroraLastFrameTime = now;
 
-    /* Speed factor: 1.0 = slow steady, ~4.0 = fast burst.
-       Smoothly eases from 4.0 → 1.0 over BURST_RAMP_MS using a cubic ease. */
+    /* Speed factor: 1.0 = sleepy steady, ~3.0 = burst.
+       Drops smoothly to 1.0 over BURST_RAMP_MS using cubic ease-out.
+       Lower max (3.0 vs 4.0 before) = the burst is less intense, so the
+       initial fast→slow change isn't as visually dramatic. */
     var speedFactor = 1.0;
     if(auroraBurstStartTime > 0){
       var burstElapsed = now - auroraBurstStartTime;
       if(burstElapsed < BURST_RAMP_MS){
-        var t = burstElapsed / BURST_RAMP_MS; /* 0..1 */
-        var eased = 1 - Math.pow(t, 3); /* cubic ease-out: starts fast, slows */
+        var t = burstElapsed / BURST_RAMP_MS;
+        var eased = 1 - Math.pow(t, 3);
         speedFactor = 1.0 + 2.0 * eased;
       } else {
-        auroraBurstStartTime = 0; /* burst phase done */
+        auroraBurstStartTime = 0;
       }
     }
 
-    /* Each layer rotates around its own ellipse path.
-       phase = how far through the cycle we are, 0..2π.
-       Each layer has different base period + offset for variety. */
-    var basePeriods = [38000, 46000, 54000]; /* ms per cycle (slow steady) */
-    var pathRadii   = [[80,  90],  [100, 70], [90, 90]]; /* x,y radius of each layer's path */
-    var rotateSpeeds= [360, -360, 360]; /* deg per cycle */
-    var phaseOffsets= [0, Math.PI*2/3, Math.PI*4/3];
+    var basePeriods  = [38000, 46000, 54000]; /* ms per cycle at speedFactor=1 */
+    var pathRadii    = [[80, 90], [100, 70], [90, 90]];
+    var rotateRates  = [360, -360, 360]; /* deg per cycle */
+    var phaseOffsets = [0, Math.PI*2/3, Math.PI*4/3];
 
     for(var i = 0; i < 3; i++){
-      var period = basePeriods[i] / speedFactor;
-      var phase = ((elapsed % period) / period) * Math.PI * 2 + phaseOffsets[i];
+      /* Increment phase by (dt / basePeriod) * 2π * speedFactor.
+         Both phase and rotation are pure accumulators — always moving
+         forward, never jumping. */
+      var phaseIncrement = (dt / basePeriods[i]) * Math.PI * 2 * speedFactor;
+      auroraPhase[i] += phaseIncrement;
+      var rotIncrement = (dt / basePeriods[i]) * rotateRates[i] * speedFactor;
+      auroraRot[i] += rotIncrement;
+
+      var phase = auroraPhase[i] + phaseOffsets[i];
       var rx = pathRadii[i][0], ry = pathRadii[i][1];
       var x = Math.cos(phase) * rx;
       var y = Math.sin(phase) * ry;
-      var rot = (elapsed / basePeriods[i]) * rotateSpeeds[i] * speedFactor;
+
       var el = document.querySelector('.aurora-' + (i+1));
-      if(el) el.style.transform = 'translate(' + x.toFixed(1) + 'px, ' + y.toFixed(1) + 'px) rotate(' + rot.toFixed(1) + 'deg)';
+      if(el) el.style.transform = 'translate(' + x.toFixed(1) + 'px, ' + y.toFixed(1) + 'px) rotate(' + auroraRot[i].toFixed(1) + 'deg)';
     }
 
     auroraRaf = requestAnimationFrame(auroraTick);
   }
 
   function startAuroraDriver(burst){
-    if(auroraStartTime === 0) auroraStartTime = performance.now();
+    auroraLastFrameTime = 0; /* reset so first frame uses 16ms default dt */
     if(burst) auroraBurstStartTime = performance.now();
     if(!auroraRaf) auroraRaf = requestAnimationFrame(auroraTick);
   }
 
   function stopAuroraDriver(){
     if(auroraRaf){ cancelAnimationFrame(auroraRaf); auroraRaf = null; }
-    auroraStartTime = 0;
+    auroraLastFrameTime = 0;
     auroraBurstStartTime = 0;
+    /* Reset accumulators so each new activation starts fresh */
+    auroraPhase = [0, 0, 0];
+    auroraRot   = [0, 0, 0];
     /* Reset transforms so layers don't snap on next activation */
     for(var i = 1; i <= 3; i++){
       var el = document.querySelector('.aurora-' + i);
