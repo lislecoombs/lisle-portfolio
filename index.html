@@ -528,30 +528,71 @@
   z-index:1; /* above canvas (z-auto) but below everything interactive */
   opacity:0;
   transition:opacity 1.2s ease;
-  /* screen blend mode: lightens dark background, perfect for dark-mode auroras */
+  /* screen blend mode lightens against the dark background */
   mix-blend-mode:screen;
-  /* huge blur creates the dreamy "melting" look from reference images */
-  filter:blur(80px);
-  /* multi-stop rainbow with palette-friendly tones — visible but tasteful */
-  background:linear-gradient(
-    135deg,
-    rgba(255, 100, 150, .35) 0%,    /* pink */
-    rgba(255, 180, 80,  .30) 14%,   /* warm orange */
-    rgba(255, 230, 110, .28) 28%,   /* yellow */
-    rgba(140, 220, 130, .32) 42%,   /* green */
-    rgba(120, 190, 240, .35) 56%,   /* sky blue */
-    rgba(160, 130, 230, .35) 70%,   /* lavender */
-    rgba(230, 130, 200, .35) 85%,   /* magenta */
-    rgba(255, 100, 150, .35) 100%   /* loop back to pink */
-  );
-  background-size:300% 300%;
+  /* heavy blur softens the layered radial gradients into aurora curtains */
+  filter:blur(100px);
+  /* Multiple radial gradients = soft blobs of color floating in different
+     positions. They overlap, so you see pink + green + blue + violet
+     simultaneously in different regions, with naturally darker gaps between.
+     Each layer animates at a different speed (see keyframes below) for an
+     organic shifting feel. */
+  background:
+    radial-gradient(ellipse 70% 50% at 20% 30%, rgba(255, 100, 180, .55), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 80% 25%, rgba(140, 220, 150, .5),  transparent 70%),
+    radial-gradient(ellipse 80% 50% at 50% 70%, rgba(140, 180, 250, .5),  transparent 70%),
+    radial-gradient(ellipse 50% 40% at 15% 80%, rgba(255, 200, 100, .45), transparent 70%),
+    radial-gradient(ellipse 60% 45% at 85% 75%, rgba(200, 130, 240, .5),  transparent 70%),
+    radial-gradient(ellipse 55% 35% at 45% 15%, rgba(255, 220, 120, .4),  transparent 70%);
+  background-size:200% 200%, 180% 180%, 220% 200%, 190% 190%, 210% 200%, 200% 180%;
+  background-position:0% 0%, 100% 0%, 50% 100%, 0% 100%, 100% 100%, 50% 0%;
 }
 .rainbow-active #rainbow-overlay{
   opacity:1;
-  animation:rainbowShift 22s linear infinite;
+  animation:
+    auroraShift1 26s ease-in-out infinite,
+    auroraShift2 32s ease-in-out infinite,
+    auroraShift3 38s ease-in-out infinite,
+    auroraShift4 29s ease-in-out infinite,
+    auroraShift5 34s ease-in-out infinite,
+    auroraShift6 40s ease-in-out infinite;
 }
 .rainbow-burst #rainbow-overlay{
-  animation:rainbowShift 5.5s linear infinite;
+  animation:
+    auroraShift1 6.5s ease-in-out infinite,
+    auroraShift2 8.0s ease-in-out infinite,
+    auroraShift3 9.5s ease-in-out infinite,
+    auroraShift4 7.2s ease-in-out infinite,
+    auroraShift5 8.5s ease-in-out infinite,
+    auroraShift6 10s ease-in-out infinite;
+}
+
+/* Each layer drifts in a different direction at a different speed.
+   The browser auto-interpolates the comma-separated background-position
+   values for each layer independently. */
+@keyframes auroraShift1{
+  0%,100%{background-position:0% 0%, 100% 0%, 50% 100%, 0% 100%, 100% 100%, 50% 0%;}
+  50%   {background-position:80% 50%, 100% 0%, 50% 100%, 0% 100%, 100% 100%, 50% 0%;}
+}
+@keyframes auroraShift2{
+  0%,100%{background-position:0% 0%, 100% 0%, 50% 100%, 0% 100%, 100% 100%, 50% 0%;}
+  50%   {background-position:0% 0%, 20% 60%, 50% 100%, 0% 100%, 100% 100%, 50% 0%;}
+}
+@keyframes auroraShift3{
+  0%,100%{background-position:0% 0%, 100% 0%, 50% 100%, 0% 100%, 100% 100%, 50% 0%;}
+  50%   {background-position:0% 0%, 100% 0%, 100% 30%, 0% 100%, 100% 100%, 50% 0%;}
+}
+@keyframes auroraShift4{
+  0%,100%{background-position:0% 0%, 100% 0%, 50% 100%, 0% 100%, 100% 100%, 50% 0%;}
+  50%   {background-position:0% 0%, 100% 0%, 50% 100%, 70% 30%, 100% 100%, 50% 0%;}
+}
+@keyframes auroraShift5{
+  0%,100%{background-position:0% 0%, 100% 0%, 50% 100%, 0% 100%, 100% 100%, 50% 0%;}
+  50%   {background-position:0% 0%, 100% 0%, 50% 100%, 0% 100%, 30% 50%, 50% 0%;}
+}
+@keyframes auroraShift6{
+  0%,100%{background-position:0% 0%, 100% 0%, 50% 100%, 0% 100%, 100% 100%, 50% 0%;}
+  50%   {background-position:0% 0%, 100% 0%, 50% 100%, 0% 100%, 100% 100%, 20% 80%;}
 }
 @keyframes rainbowShift{
   0%   {background-position:0%   50%;}
