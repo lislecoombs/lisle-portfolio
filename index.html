@@ -528,18 +528,23 @@
   z-index:1; /* above canvas (z-auto) but below everything interactive */
   opacity:0;
   transition:opacity 1.2s ease;
-  mix-blend-mode:soft-light;
+  /* screen blend mode: lightens dark background, perfect for dark-mode auroras */
+  mix-blend-mode:screen;
+  /* huge blur creates the dreamy "melting" look from reference images */
+  filter:blur(80px);
+  /* multi-stop rainbow with palette-friendly tones — visible but tasteful */
   background:linear-gradient(
     135deg,
-    rgba(122,158,126,.55) 0%,    /* sage */
-    rgba(196,151,58,.5)   18%,   /* terra */
-    rgba(212,184,150,.5)  35%,   /* wheat */
-    rgba(212,176,150,.5)  52%,   /* mushroom */
-    rgba(212,160,154,.5)  68%,   /* rose */
-    rgba(244,237,216,.45) 84%,   /* cream */
-    rgba(122,158,126,.55) 100%   /* loop back to sage */
+    rgba(255, 100, 150, .35) 0%,    /* pink */
+    rgba(255, 180, 80,  .30) 14%,   /* warm orange */
+    rgba(255, 230, 110, .28) 28%,   /* yellow */
+    rgba(140, 220, 130, .32) 42%,   /* green */
+    rgba(120, 190, 240, .35) 56%,   /* sky blue */
+    rgba(160, 130, 230, .35) 70%,   /* lavender */
+    rgba(230, 130, 200, .35) 85%,   /* magenta */
+    rgba(255, 100, 150, .35) 100%   /* loop back to pink */
   );
-  background-size:400% 400%;
+  background-size:300% 300%;
 }
 .rainbow-active #rainbow-overlay{
   opacity:1;
@@ -548,7 +553,6 @@
 .rainbow-burst #rainbow-overlay{
   animation:rainbowShift 5.5s linear infinite;
 }
-
 @keyframes rainbowShift{
   0%   {background-position:0%   50%;}
   50%  {background-position:100% 50%;}
@@ -1889,7 +1893,22 @@ var constellations=[
   }
 ];
 
-function resizeCv(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+function resizeCv(){
+  var oldW=W, oldH=H;
+  W=canvas.width=window.innerWidth;
+  H=canvas.height=window.innerHeight;
+  /* Redistribute existing stars proportionally so they fill the new canvas
+     size after a window resize. Without this, stars stay bunched where the
+     viewport was when they were first created. */
+  if(oldW>0 && oldH>0 && stars && stars.length){
+    var scaleX=W/oldW, scaleY=H/oldH;
+    stars.forEach(function(s){
+      s.x*=scaleX; s.y*=scaleY;
+      if(s.x<0||s.x>W) s.x=Math.random()*W;
+      if(s.y<0||s.y>H) s.y=Math.random()*H;
+    });
+  }
+}
 resizeCv();window.addEventListener('resize',resizeCv);
 function mkStar(){return {x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.6+.2,alpha:Math.random()*.5+.4,vx:(Math.random()-.5)*.04,vy:(Math.random()-.5)*.04,phase:Math.random()*Math.PI*2,speed:Math.random()*.025+.01,color:starColors[Math.floor(Math.random()*starColors.length)]};}
 for(var _i=0;_i<280;_i++)stars.push(mkStar());
@@ -3500,7 +3519,19 @@ var SpaceKitty = (function(){
   }
 
   /* ─── Rainbow mode (Phase 4) ─── */
-  var rainbowFirstActivated = false;
+  /* The "first-activation" flag persists in localStorage so the cheer/dance/messages
+     only ever play ONCE in the user's lifetime, not every fresh page load. */
+  var RAINBOW_FLAG_KEY = 'lisle_rainbow_seen_v1';
+  function loadRainbowSeen(){
+    try { return localStorage.getItem(RAINBOW_FLAG_KEY) === '1'; } catch(e){ return false; }
+  }
+  function saveRainbowSeen(seen){
+    try {
+      if(seen) localStorage.setItem(RAINBOW_FLAG_KEY, '1');
+      else localStorage.removeItem(RAINBOW_FLAG_KEY);
+    } catch(e){}
+  }
+  var rainbowFirstActivated = loadRainbowSeen();
   var rainbowBurstTimeout = null;
   var rainbowMsgTimeout = null;
   var rainbowDanceEndTimeout = null;
@@ -3568,6 +3599,8 @@ var SpaceKitty = (function(){
   }
 
   function toggleRainbow(){
+    /* Diagnostic — remove this console.log once you've verified the toggle is firing */
+    console.log('[rainbow] toggle called, currently on:', isRainbowOn(), '| firstActivated:', rainbowFirstActivated);
     if(isRainbowOn()){
       deactivateRainbowVisual();
       return;
@@ -3575,6 +3608,7 @@ var SpaceKitty = (function(){
     /* Turning ON */
     if(!rainbowFirstActivated){
       rainbowFirstActivated = true;
+      saveRainbowSeen(true);
       activateRainbowFirstTime();
     } else {
       /* Subsequent toggles: visual burst only, no sound/messages/dance */
