@@ -3123,6 +3123,13 @@ var SpaceKitty = (function(){
     opts = opts || {};
     var duration = opts.duration || 3500;
 
+    /* Safety: if the cat hasn't materialized yet (UFO still in flight),
+       don't show a bubble. Still record the message so hover-replay can show it later. */
+    if(!cat.classList.contains('sk-materialized')){
+      lastMessage = text;
+      return;
+    }
+
     clearBubbleState();
     bubble.style.width = '';
     bubble.style.height = '';
@@ -3217,14 +3224,14 @@ var SpaceKitty = (function(){
       void cat.offsetWidth;
       cat.classList.add('sk-pulse-continuous');
 
-      showBubble(SK_INTRO_1, { duration: 3500, skipPulse: true });
+      showBubble(firstEgg.message, { duration: 3500, skipPulse: true });
 
       introTimeouts.push(setTimeout(function(){
-        showBubble(SK_INTRO_2, { duration: 3500, skipPulse: true });
+        showBubble(SK_INTRO_1, { duration: 3500, skipPulse: true });
       }, 3600));
 
       introTimeouts.push(setTimeout(function(){
-        showBubble(firstEgg.message, { duration: 3500, skipPulse: true });
+        showBubble(SK_INTRO_2, { duration: 3500, skipPulse: true });
       }, 7200));
 
       introTimeouts.push(setTimeout(function(){
