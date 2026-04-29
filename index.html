@@ -528,32 +528,28 @@
   z-index:1; /* above canvas (z-auto) but below everything interactive */
   opacity:0;
   transition:opacity 1.5s ease;
-  /* screen blend mode lightens against the dark background */
   mix-blend-mode:screen;
-  /* heavy blur softens the layered gradients into aurora curtains */
-  filter:blur(90px);
-  /* SMALLER, MORE COMPACT BLOBS that overlap less. Each blob is more
-     localized, so you see distinct colors in distinct regions. Lower
-     opacity values prevent the overlapping wash that made everything pink.
-     Each blob is sized 100-150% of viewport (was 200%+) so it actually
-     looks like a discrete cloud, not a screen-wide tint. */
+  /* Reduced blur: 90px → 45px. Heavy blur was making positional changes
+     invisible because the blurred edges already extended across the whole
+     screen. With less blur, the blobs become discrete shifting shapes. */
+  filter:blur(45px);
   background:
-    radial-gradient(circle 50vw at 18% 25%, rgba(255, 90, 170, .42),  transparent 65%),
-    radial-gradient(circle 45vw at 78% 22%, rgba(110, 230, 150, .38), transparent 65%),
-    radial-gradient(circle 55vw at 55% 72%, rgba(110, 170, 255, .42), transparent 65%),
-    radial-gradient(circle 40vw at 12% 78%, rgba(255, 200, 90,  .35), transparent 65%),
-    radial-gradient(circle 48vw at 86% 80%, rgba(190, 110, 245, .40), transparent 65%),
-    radial-gradient(circle 42vw at 42% 12%, rgba(120, 240, 220, .35), transparent 65%);
+    radial-gradient(circle 38vw at 18% 25%, rgba(255, 90, 170, .42),  transparent 65%),
+    radial-gradient(circle 35vw at 78% 22%, rgba(110, 230, 150, .38), transparent 65%),
+    radial-gradient(circle 42vw at 55% 72%, rgba(110, 170, 255, .42), transparent 65%),
+    radial-gradient(circle 32vw at 12% 78%, rgba(255, 200, 90,  .35), transparent 65%),
+    radial-gradient(circle 38vw at 86% 80%, rgba(190, 110, 245, .40), transparent 65%),
+    radial-gradient(circle 34vw at 42% 12%, rgba(120, 240, 220, .35), transparent 65%);
 }
 .rainbow-active #rainbow-overlay{
   opacity:1;
-  /* One single keyframe drives all 6 layers via `background-position`.
-     Each cycle is fast enough to be visibly moving (~14-18s per loop)
-     but slow enough to feel ambient, not frantic. */
-  animation:auroraDrift 16s ease-in-out infinite;
+  /* Faster cycle (10s → was 16s) + linear timing (was ease-in-out) keeps
+     blobs in constant motion. Linear means the blobs move at steady speed
+     instead of slowing at the keyframes — much more visibly drifting. */
+  animation:auroraDrift 10s linear infinite;
 }
 .rainbow-burst #rainbow-overlay{
-  animation:auroraDrift 4.5s ease-in-out infinite;
+  animation:auroraDrift 3s linear infinite;
 }
 
 /* Aurora drift — each layer follows its own path through the viewport.
