@@ -3626,8 +3626,10 @@ var SpaceKitty = (function(){
         try { EggTracker.trigger(id); } catch(e){}
       }
     });
-    /* Reset first-activation flag so a fresh test always feels like the first time */
+    /* Reset first-activation flag (both in memory AND localStorage)
+       so a fresh test always feels like the first time */
     rainbowFirstActivated = false;
+    saveRainbowSeen(false);
     /* Make sure rainbow is currently OFF so toggle = ON */
     if(isRainbowOn()) deactivateRainbowVisual();
     /* Small delay so any pending bubbles from EggTracker.trigger settle first */
