@@ -534,12 +534,10 @@
 }
 .rainbow-active #rainbow-overlay{opacity:1;}
 
-/* Big blurry blobs that bleed into each other for a continuous aurora wash.
-   Larger blobs (45-55vw vs 26-32vw before) + heavier blur (90px vs 50px)
-   = no more "fireflies", colors melt together. */
+/* Big blurry blobs that bleed into each other for a continuous aurora wash. */
 .aurora-layer{
   position:absolute;
-  inset:-30%; /* extra oversize since blobs are bigger and travel further */
+  inset:-30%;
   filter:blur(90px);
   will-change:transform;
 }
@@ -563,57 +561,10 @@
     radial-gradient(circle 48vw at 85% 78%, rgba(190, 110, 245, .46), transparent 65%);
 }
 
-/* BASE LAYERS: always running, slow & sleepy. These never restart, so there's
-   never a "flash" when rainbow toggles or burst ends. */
-.rainbow-active .aurora-layer:not(.aurora-burst-layer){
-  animation-duration:38s, 46s, 54s; /* applied per-layer below */
-  animation-timing-function:linear;
-  animation-iteration-count:infinite;
-  animation-play-state:running;
-}
-.rainbow-active .aurora-1:not(.aurora-burst-layer){animation-name:auroraFloat1; animation-duration:38s;}
-.rainbow-active .aurora-2:not(.aurora-burst-layer){animation-name:auroraFloat2; animation-duration:46s;}
-.rainbow-active .aurora-3:not(.aurora-burst-layer){animation-name:auroraFloat3; animation-duration:54s;}
-
-/* BURST LAYERS: faster duplicates that fade in during the burst phase
-   and fade out smoothly when burst ends. The fade is what creates the
-   smooth "speed up → slow down" transition (instead of an animation
-   restart). The base layers underneath keep running unchanged. */
-.aurora-burst-layer{
-  opacity:0;
-  transition:opacity 4s ease-out; /* slow fade-out of the fast layer */
-}
-.rainbow-burst .aurora-burst-layer{
-  opacity:1;
-  transition:opacity .8s ease-in; /* quick fade-in when burst starts */
-}
-.rainbow-burst .aurora-1.aurora-burst-layer{animation:auroraFloat1 9s linear infinite;}
-.rainbow-burst .aurora-2.aurora-burst-layer{animation:auroraFloat2 11s linear infinite;}
-.rainbow-burst .aurora-3.aurora-burst-layer{animation:auroraFloat3 13s linear infinite;}
-
-/* Travel paths — 60-100px movement.
-   Smaller paths than before (was 100-200px) so motion feels lazy. */
-@keyframes auroraFloat1{
-  0%   {transform:translate(0,    0)   rotate(0deg);}
-  25%  {transform:translate(80px, 50px)  rotate(90deg);}
-  50%  {transform:translate(40px, 90px)  rotate(180deg);}
-  75%  {transform:translate(-60px,60px)  rotate(270deg);}
-  100% {transform:translate(0,    0)   rotate(360deg);}
-}
-@keyframes auroraFloat2{
-  0%   {transform:translate(0,    0)   rotate(0deg);}
-  25%  {transform:translate(-70px,40px)  rotate(-80deg);}
-  50%  {transform:translate(-100px,-50px) rotate(-180deg);}
-  75%  {transform:translate(40px,-70px)  rotate(-260deg);}
-  100% {transform:translate(0,    0)   rotate(-360deg);}
-}
-@keyframes auroraFloat3{
-  0%   {transform:translate(0,    0)   rotate(0deg);}
-  25%  {transform:translate(60px,-90px)  rotate(60deg);}
-  50%  {transform:translate(-50px,-60px) rotate(140deg);}
-  75%  {transform:translate(-90px,50px)  rotate(220deg);}
-  100% {transform:translate(0,    0)   rotate(360deg);}
-}
+/* No CSS animations — the JS aurora driver (in the SpaceKitty IIFE)
+   sets transforms each frame using requestAnimationFrame.
+   This avoids the frame-zero "flash" that happens when CSS animation
+   durations change mid-flight. */
 
 /* Kitty side-to-side dance — first-time activation only */
 @keyframes skKittyDance{
@@ -1242,14 +1193,9 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
 </button>
 <canvas id="starfield"></canvas>
 <div id="rainbow-overlay" aria-hidden="true">
-  <!-- Slow base layers — always visible when rainbow is on -->
   <div class="aurora-layer aurora-1"></div>
   <div class="aurora-layer aurora-2"></div>
   <div class="aurora-layer aurora-3"></div>
-  <!-- Fast burst layers — only visible during the burst phase, fade out smoothly -->
-  <div class="aurora-layer aurora-1 aurora-burst-layer"></div>
-  <div class="aurora-layer aurora-2 aurora-burst-layer"></div>
-  <div class="aurora-layer aurora-3 aurora-burst-layer"></div>
 </div>
 <div id="egg-badge">(o_O) <span id="egg-n">0</span> secrets found</div>
 <div id="konami-bg">
@@ -3605,9 +3551,82 @@ var SpaceKitty = (function(){
     return !!window.RAINBOW_MODE;
   }
 
+  /* Aurora animation driver (replaces CSS animations on aurora layers).
+     Uses requestAnimationFrame to set transforms each tick based on a
+     smoothly-interpolating speed factor. This avoids the "flash" that
+     CSS animation duration changes cause (because CSS restarts the
+     animation at frame 0 when duration changes). */
+  var auroraRaf = null;
+  var auroraStartTime = 0;
+  var auroraBurstStartTime = 0; /* when the current burst began (or 0 if none) */
+  var BURST_RAMP_MS = 12000; /* total time for fast→slow ramp; longer = smoother */
+
+  function auroraTick(){
+    if(!window.RAINBOW_MODE){ auroraRaf = null; return; }
+    var now = performance.now();
+    var elapsed = now - auroraStartTime;
+
+    /* Speed factor: 1.0 = slow steady, ~4.0 = fast burst.
+       Smoothly eases from 4.0 → 1.0 over BURST_RAMP_MS using a cubic ease. */
+    var speedFactor = 1.0;
+    if(auroraBurstStartTime > 0){
+      var burstElapsed = now - auroraBurstStartTime;
+      if(burstElapsed < BURST_RAMP_MS){
+        var t = burstElapsed / BURST_RAMP_MS; /* 0..1 */
+        var eased = 1 - Math.pow(t, 3); /* cubic ease-out: starts fast, slows */
+        speedFactor = 1.0 + 3.0 * eased;
+      } else {
+        auroraBurstStartTime = 0; /* burst phase done */
+      }
+    }
+
+    /* Each layer rotates around its own ellipse path.
+       phase = how far through the cycle we are, 0..2π.
+       Each layer has different base period + offset for variety. */
+    var basePeriods = [38000, 46000, 54000]; /* ms per cycle (slow steady) */
+    var pathRadii   = [[80,  90],  [100, 70], [90, 90]]; /* x,y radius of each layer's path */
+    var rotateSpeeds= [360, -360, 360]; /* deg per cycle */
+    var phaseOffsets= [0, Math.PI*2/3, Math.PI*4/3];
+
+    for(var i = 0; i < 3; i++){
+      var period = basePeriods[i] / speedFactor;
+      var phase = ((elapsed % period) / period) * Math.PI * 2 + phaseOffsets[i];
+      var rx = pathRadii[i][0], ry = pathRadii[i][1];
+      var x = Math.cos(phase) * rx;
+      var y = Math.sin(phase) * ry;
+      var rot = (elapsed / basePeriods[i]) * rotateSpeeds[i] * speedFactor;
+      var el = document.querySelector('.aurora-' + (i+1));
+      if(el) el.style.transform = 'translate(' + x.toFixed(1) + 'px, ' + y.toFixed(1) + 'px) rotate(' + rot.toFixed(1) + 'deg)';
+    }
+
+    auroraRaf = requestAnimationFrame(auroraTick);
+  }
+
+  function startAuroraDriver(burst){
+    if(auroraStartTime === 0) auroraStartTime = performance.now();
+    if(burst) auroraBurstStartTime = performance.now();
+    if(!auroraRaf) auroraRaf = requestAnimationFrame(auroraTick);
+  }
+
+  function stopAuroraDriver(){
+    if(auroraRaf){ cancelAnimationFrame(auroraRaf); auroraRaf = null; }
+    auroraStartTime = 0;
+    auroraBurstStartTime = 0;
+    /* Reset transforms so layers don't snap on next activation */
+    for(var i = 1; i <= 3; i++){
+      var el = document.querySelector('.aurora-' + i);
+      if(el) el.style.transform = '';
+    }
+  }
+
   function activateRainbowVisual(burst){
     window.RAINBOW_MODE = true;
     document.body.classList.add('rainbow-active');
+    startAuroraDriver(!!burst);
+    /* The .rainbow-burst class is no longer used for animation —
+       the JS driver handles speed via auroraBurstStartTime.
+       Keeping the class in case other CSS hooks into it later, but
+       it's optional now. */
     if(burst){
       document.body.classList.add('rainbow-burst');
       window.RAINBOW_BURST_UNTIL = Date.now() + 5500;
@@ -3622,6 +3641,7 @@ var SpaceKitty = (function(){
     window.RAINBOW_MODE = false;
     window.RAINBOW_BURST_UNTIL = 0;
     document.body.classList.remove('rainbow-active','rainbow-burst');
+    stopAuroraDriver();
     if(rainbowBurstTimeout){ clearTimeout(rainbowBurstTimeout); rainbowBurstTimeout = null; }
     /* If the dance/messages are in progress, stop them cleanly */
     if(rainbowMsgTimeout){ clearTimeout(rainbowMsgTimeout); rainbowMsgTimeout = null; }
