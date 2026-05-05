@@ -1959,6 +1959,7 @@ document.addEventListener('click',function(e){
   var STAR_BG_SELECTOR =
     'body, html, #starfield, #wrap, ' +
     'section, .inner, ' +                         /* generic section wrappers */
+    'nav, .nav-links, .nav-links li, ' +          /* empty space inside top nav (links are still blocked by <a> in blacklist) */
     '.hero-layout, .hero-left, .hero-right, ' +   /* hero structural columns */
     '#hero-title, .float-title, #portfolio-title, ' + /* gaps between floating letters */
     '.typewriter-wrap, ' +                        /* empty area beside typewriter */
