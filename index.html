@@ -47,6 +47,32 @@
   transform: rotate(0deg) scale(1.04) !important;
 }
 
+/* Wrapper for the void.shroom iframe — needed because we're using
+   CSS transform:scale to shrink the iframe content. The wrapper takes
+   up the FINAL scaled size in the layout, while the iframe inside is
+   rendered at full size then scaled down via transform.
+   
+   TO RESIZE: change the SCALE factor below, then update the wrapper
+   width/height to match (width = 200 * scale, height = 250 * scale).
+   Example values:
+     scale 0.5 → width 100, height 125
+     scale 0.6 → width 120, height 150  (CURRENT)
+     scale 0.7 → width 140, height 175
+     scale 0.8 → width 160, height 200
+*/
+.shroom-iframe-wrapper {
+  width: 120px;                     /* = 200 (iframe width) × 0.6 (scale) */
+  height: 150px;                    /* = 250 (iframe height) × 0.6 (scale) */
+  overflow: hidden;                 /* hides any overflow during the scale */
+}
+
+.shroom-iframe {
+  border: none;
+  display: block;
+  transform: scale(0.6);            /* shrinks the iframe content to 60% */
+  transform-origin: top left;       /* scales from the corner so it sits flush in the wrapper */
+}
+   
 /* Off-Platform webring: three GIFs that need to sit in a tight row (prev, main, next).
    line-height: 0 prevents the tiny gap browsers add below inline images. */
 .offplatform-row {
@@ -1746,18 +1772,20 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
     </div>
   </div>
 
-     <!-- Void.Shrooms Webring -->
-  <!-- Embedded as an iframe from void.shroom.ink — they host the widget,
-       we just display it. The frameborder="0" and CSS below remove the
-       default iframe border so it blends in. -->
+<!-- Void.Shrooms Webring -->
+  <!-- The iframe is rendered at its full 200x250 size, then visually shrunk
+       using CSS transform: scale() in the wrapper below. The wrapper has the
+       final scaled dimensions so the layout flows correctly. -->
   <div class="webring-item" style="transform: rotate(1deg);">
-    <iframe src="https://void.shroom.ink/widget/?slug=Lisle&hex=" 
-            height="150" 
-            width="200" 
-            scrolling="no" 
-            frameborder="0"
-            class="webring-iframe"
-            title="Void.Shrooms Webring"></iframe>
+    <div class="shroom-iframe-wrapper">
+      <iframe src="https://void.shroom.ink/widget/?slug=Lisle&hex=" 
+              height="250" 
+              width="200" 
+              scrolling="no" 
+              frameborder="0"
+              class="shroom-iframe"
+              title="Void.Shrooms Webring"></iframe>
+    </div>
   </div>
 
   <!-- Women of the Internet Webring -->
