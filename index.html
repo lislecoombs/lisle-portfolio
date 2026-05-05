@@ -23,12 +23,12 @@
 
 .webrings-row {
   display: flex;                    /* lay out webrings in a row */
-  flex-wrap: wrap;                  /* let them wrap to new lines if the row gets too wide */
+  flex-wrap: nowrap;                /* CHANGED: force everything onto one line — no more wrapping */
   justify-content: center;          /* center them horizontally */
   align-items: center;              /* line them up vertically */
-  gap: 35px;                        /* space BETWEEN each webring — increase for more breathing room */
+  gap: 18px;                        /* space BETWEEN each webring — increase for more breathing room */
   margin: 40px auto 60px;           /* top space, auto-center, bottom space */
-  max-width: 900px;                 /* keeps the row from stretching too wide on big screens */
+  max-width: 1100px;                 /* more room so all three fit comfortably (was 900px) */
   padding: 0 20px;
 }
 
