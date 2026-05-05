@@ -26,15 +26,16 @@
   flex-wrap: nowrap;                /* CHANGED: force everything onto one line — no more wrapping */
   justify-content: center;          /* center them horizontally */
   align-items: center;              /* line them up vertically */
-  gap: 18px;                        /* space BETWEEN each webring — increase for more breathing room */
+  gap: 50px;                        /* space BETWEEN each webring — increase for more breathing room */
   margin: 40px auto 60px;           /* top space, auto-center, bottom space */
-  max-width: 1100px;                 /* more room so all three fit comfortably (was 900px) */
+  max-width: 100%;                 /* let the container shrink-wrap to its contents */
   padding: 0 20px;
 }
 
 /* Each individual webring — the tilt is set inline per item (in the HTML)
    so each one can have its own scrapbook-style angle. */
 .webring-item {
+  flex: 0 0 auto;
   transition: transform 0.25s ease; /* smooth hover animation */
 }
 
