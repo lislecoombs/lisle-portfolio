@@ -1935,8 +1935,45 @@ document.addEventListener('click',function(e){
   /* did the click land on a registered sound-trigger element? */
   var onSoundEl=e.target.closest(SOUND_TRIGGER_SELECTORS);
 
-  /* constellation check — skip interactive elements as before */
-  if(!e.target.closest('a,button,input,textarea,select,label,iframe,.gallery-item,.fav-link,.cat-stack,#cat-stack,.ipod-screen,.tv-screen,#fish-gif,#guestbook-dog,#envelope-wrap,#tardis,.float-letter,#sk-cat,#sk-stage,#sk-journal')){
+  /* ═ CONSTELLATION CLICK GUARD ═
+     Constellations should only activate when the click lands on actual
+     empty background — places where the starfield is visibly behind nothing.
+     The whitelist below is the list of "transparent" structural elements
+     where stars are NOT occluded by content:
+       • body / html / the #starfield canvas itself / the outer #wrap
+       • <section> padding and .inner wrappers (no visible background)
+       • hero structural columns (.hero-layout, .hero-left, .hero-right)
+       • hero & portfolio title containers (the gaps between floating letters)
+       • .typewriter-wrap (empty area around the typewriter text)
+       • .divider (the ". . ." / "— — —" spacers between sections)
+
+     Anything NOT in this list — cards, the favorites board, embeds (Spotify,
+     YouTube, Goodreads, Letterboxd, iframes), the blog letter overlay, the
+     footer, photo stacks, all text/images/headings — blocks the sparkle
+     sound. This stops constellations from firing when users are trying to
+     click content that happens to overlap a constellation in viewport coords.
+
+     To allow constellation activation through a NEW transparent layout area
+     added later → add its tag/class/id to STAR_BG_SELECTOR below.
+     To block a new content element → do nothing (blocked by default). */
+  var STAR_BG_SELECTOR =
+    'body, html, #starfield, #wrap, ' +
+    'section, .inner, ' +                         /* generic section wrappers */
+    '.hero-layout, .hero-left, .hero-right, ' +   /* hero structural columns */
+    '#hero-title, .float-title, #portfolio-title, ' + /* gaps between floating letters */
+    '.typewriter-wrap, ' +                        /* empty area beside typewriter */
+    '.divider';                                   /* between-section spacers */
+
+  /* .matches() throws on non-Element targets; default to false on error. */
+  var clickOnStarBg = false;
+  try { clickOnStarBg = e.target.matches(STAR_BG_SELECTOR); } catch(_e){}
+
+  /* Constellation fires only if BOTH conditions hold:
+       1. clickOnStarBg — target is a transparent background element
+       2. existing blacklist passes — target isn't a known interactive thing
+     The blacklist is mostly redundant given the whitelist (interactive
+     elements wouldn't match the whitelist anyway), but kept as a safety net. */
+  if(clickOnStarBg && !e.target.closest('a,button,input,textarea,select,label,iframe,.gallery-item,.fav-link,.cat-stack,#cat-stack,.ipod-screen,.tv-screen,#fish-gif,#guestbook-dog,#envelope-wrap,#tardis,.float-letter,#sk-cat,#sk-stage,#sk-journal')){
     var mx=e.clientX,my=e.clientY;
     var hitConstellation=false;
     constellations.forEach(function(c){
