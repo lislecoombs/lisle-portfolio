@@ -7,7 +7,59 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;1,400&family=Caveat:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
+<!-- Onionring stylesheet — needed for the Apple Lovers and Women of the Internet webrings -->
+<link rel="stylesheet" href="https://poempuppy.neocities.org/webring/onionring.css">
 <style>
+/* ============================================
+   WEBRINGS ROW
+   A staggered horizontal row of webring widgets
+   that sits under the links/socials card.
+   
+   TO ADD A NEW WEBRING:
+   Copy one of the .webring-item blocks in the HTML
+   and adjust the rotate() angle in its inline style
+   so it tilts a little differently from its neighbors.
+   ============================================ */
+
+.webrings-row {
+  display: flex;                    /* lay out webrings in a row */
+  flex-wrap: wrap;                  /* let them wrap to new lines if the row gets too wide */
+  justify-content: center;          /* center them horizontally */
+  align-items: center;              /* line them up vertically */
+  gap: 35px;                        /* space BETWEEN each webring — increase for more breathing room */
+  margin: 40px auto 60px;           /* top space, auto-center, bottom space */
+  max-width: 900px;                 /* keeps the row from stretching too wide on big screens */
+  padding: 0 20px;
+}
+
+/* Each individual webring — the tilt is set inline per item (in the HTML)
+   so each one can have its own scrapbook-style angle. */
+.webring-item {
+  transition: transform 0.25s ease; /* smooth hover animation */
+}
+
+/* Hover: straighten the card and lift it slightly, like picking it up off a scrapbook page.
+   The !important is needed to override the inline rotate() set on each item. */
+.webring-item:hover {
+  transform: rotate(0deg) scale(1.04) !important;
+}
+
+/* Off-Platform webring: three GIFs that need to sit in a tight row (prev, main, next).
+   line-height: 0 prevents the tiny gap browsers add below inline images. */
+.offplatform-row {
+  display: flex;
+  align-items: center;
+  line-height: 0;
+}
+
+.offplatform-row a {
+  display: inline-block;
+}
+
+.offplatform-row img {
+  display: block;                   /* removes whitespace-gap between the three GIFs */
+}
+  
 /* ── Guestbook Form ── */
 #gb-form {
   display: flex;
@@ -1659,6 +1711,48 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
         <a href="https://www.instagram.com/lislecoombs/" class="contact-link" target="_blank">instagram</a>
       </div>
     </div>
+  <!-- WEBRINGS ROW
+     Sits under the links card. Each .webring-item is one webring,
+     tilted a different angle for that scattered scrapbook feel.
+     To add another webring later, just copy one of the .webring-item
+     blocks below and change the rotation angle. -->
+<div class="webrings-row">
+
+  <!-- Off-Platform Webring -->
+  <!-- Three GIFs in a row: previous site, main webring link, next site. -->
+  <div class="webring-item" style="transform: rotate(-2.5deg);">
+    <div class="offplatform-row">
+      <a href="https://sakk.ie/off-platform?action=previous">
+        <img src="webrings/offplatform-left.gif" alt="Previous site in Off-Platform Webring">
+      </a>
+      <a href="https://sakk.ie/off-platform/">
+        <img src="webrings/offplatform-main.gif" alt="Off-Platform Webring" title="Off-Platform Webring">
+      </a>
+      <a href="https://sakk.ie/off-platform?action=next">
+        <img src="webrings/offplatform-right.gif" alt="Next site in Off-Platform Webring">
+      </a>
+    </div>
+  </div>
+
+  <!-- Apple Lovers Webring (green apple variant) -->
+  <!-- The two scripts inject the widget into the #apple-webring div. -->
+  <div class="webring-item" style="transform: rotate(2deg);">
+    <div id="apple-webring" data-apple="green">
+      <script type="text/javascript" src="https://poempuppy.neocities.org/webring/onionring-variables.js"></script>
+      <script type="text/javascript" src="https://poempuppy.neocities.org/webring/onionring-widget.js"></script>
+    </div>
+  </div>
+
+  <!-- Women of the Internet Webring -->
+  <!-- Same onionring system as Apple Lovers but injected into #women-web. -->
+  <div class="webring-item" style="transform: rotate(-1.5deg);">
+    <div id="women-web">
+      <script type="text/javascript" src="https://womenoftheinternet.neocities.org/files/onionring-variables.js"></script>
+      <script type="text/javascript" src="https://womenoftheinternet.neocities.org/files/onionring-widget.js"></script>
+    </div>
+  </div>
+
+</div>
   </div>
 </section>
 <footer id="site-footer">
