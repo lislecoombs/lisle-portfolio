@@ -2998,38 +2998,48 @@ if(tardisFirstAppear){
      it just enters silently. */
   tardisFirstAppear=false;
 
-  /* ── GUARD 1: Is the TARDIS itself actually in the viewport? ──
-     We check the TARDIS element's real bounding rect (not the hero
-     section). The hero is ~100vh tall, so checking it was too lenient:
-     the TARDIS sits near the top of the hero, so scrolling down by
-     ~200px hides the TARDIS while the hero is still "visible".
-     Note: we only care about VERTICAL visibility — the TARDIS starts
-     at left:-120px and slides in from the left, so horizontal
-     position doesn't matter for the entrance sound. */
-  var tardisRect = el.getBoundingClientRect();
-  var tardisVisible = tardisRect.height > 0 &&
-                      tardisRect.bottom > 0 &&
-                      tardisRect.top < window.innerHeight;
+  /* Delay the sound by 1 second so it lines up with the TARDIS
+     becoming visually present on screen — the TARDIS starts off-screen
+     at left:-120px and slides in slowly, so playing the sound the
+     instant appear() fires felt premature.
+     Tweak the 1000 (in milliseconds) below to delay more or less:
+     500 = half a second, 1500 = 1.5 seconds, etc.
+     The three guards are evaluated INSIDE the setTimeout (i.e. at the
+     moment the sound would play, not at appear() time) so that if the
+     user scrolls away, opens the journal, or triggers the UFO sound
+     during the 1-second wait, the entrance sound still gets suppressed
+     correctly. */
+  setTimeout(function(){
+    /* ── GUARD 1: Is the TARDIS itself actually in the viewport? ──
+       Checked here at PLAY time so scrolling during the 1s wait
+       correctly suppresses the sound. We only care about VERTICAL
+       visibility — the TARDIS slides in horizontally from off-screen
+       left, so horizontal position doesn't matter. */
+    var tardisRect = el.getBoundingClientRect();
+    var tardisVisible = tardisRect.height > 0 &&
+                        tardisRect.bottom > 0 &&
+                        tardisRect.top < window.innerHeight;
 
-  /* ── GUARD 2: Is the Space Kitty journal modal open? ──
-     If yes, the journal covers the page and the user can't see
-     the TARDIS, so the sound would be confusing. */
-  var journal = document.getElementById('sk-journal');
-  var journalOpen = journal && journal.classList.contains('open');
+    /* ── GUARD 2: Is the Space Kitty journal modal open? ──
+       If yes, the journal covers the page and the user can't see
+       the TARDIS, so the sound would be confusing. */
+    var journal = document.getElementById('sk-journal');
+    var journalOpen = journal && journal.classList.contains('open');
 
-  /* ── GUARD 3: Is the UFO entrance sound currently playing? ──
-     UFO + TARDIS sounds overlapping is jarring. The UFO audio
-     element lives in the HTML as <audio id="sk-ufo-sound">.
-     A sound is "playing" if it's not paused, hasn't ended, and
-     has actually started (currentTime > 0). */
-  var ufoSnd = document.getElementById('sk-ufo-sound');
-  var ufoPlaying = ufoSnd && !ufoSnd.paused && !ufoSnd.ended && ufoSnd.currentTime > 0;
+    /* ── GUARD 3: Is the UFO entrance sound currently playing? ──
+       UFO + TARDIS sounds overlapping is jarring. The UFO audio
+       element lives in the HTML as <audio id="sk-ufo-sound">.
+       A sound is "playing" if it's not paused, hasn't ended, and
+       has actually started (currentTime > 0). */
+    var ufoSnd = document.getElementById('sk-ufo-sound');
+    var ufoPlaying = ufoSnd && !ufoSnd.paused && !ufoSnd.ended && ufoSnd.currentTime > 0;
 
- /* Only play if ALL three guards pass. */
-  if(tardisVisible && !journalOpen && !ufoPlaying){
-    sndEnter.currentTime=0;
-    sndEnter.play().catch(function(err){console.warn('TARDIS audio failed:',err);});
-  }
+    /* Only play if ALL three guards pass. */
+    if(tardisVisible && !journalOpen && !ufoPlaying){
+      sndEnter.currentTime=0;
+      sndEnter.play().catch(function(err){console.warn('TARDIS audio failed:',err);});
+    }
+  }, 1000);
 }
     animate();
   }
