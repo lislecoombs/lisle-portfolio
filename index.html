@@ -339,7 +339,7 @@
   .float-title{display:flex;flex-wrap:wrap;}
   .float-title.line1{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(4rem,8vw,7rem);color:var(--parchment);line-height:1.0;justify-content:flex-end;}
   .float-title.line2{font-family:'Playfair Display',serif;font-style:normal;font-weight:700;font-size:clamp(2.4rem,5vw,4.4rem);color:var(--wheat);line-height:1.0;justify-content:flex-end;margin-top:4px;}
-  .portfolio-float{display:flex;justify-content:center;flex-wrap:wrap;font-family:'Playfair Display',serif;font-weight:700;font-size:clamp(2.8rem,5.5vw,5rem);color:var(--parchment);line-height:1;margin-bottom:8px;}
+  .portfolio-float{display:flex;justify-content:center;flex-wrap:nowrap;font-family:'Playfair Display',serif;font-weight:700;font-size:clamp(2.8rem,5.5vw,5rem);color:var(--parchment);line-height:1;margin-bottom:8px;}
   .float-letter{display:inline-block;animation:letterBob var(--dur,4s) ease-in-out infinite;animation-delay:var(--d,0s);transition:transform .18s ease,color .18s ease,text-shadow .18s ease;cursor:url('/cursors/pointer.png') 18 10,pointer!important;}
   a .float-letter{cursor:url('/cursors/pointer.png') 18 10,pointer!important;}
   .float-letter:hover{transform:translateY(-10px) scale(1.15) rotate(calc(var(--tilt,2) * 1deg))!important;color:var(--rose)!important;text-shadow:0 0 20px rgba(201,132,122,.5);animation-play-state:paused;}
@@ -841,10 +841,16 @@
   -webkit-user-drag:none;
 }
 .sk-cover.lifted{
-  transform:scale(1.03) translateY(-12px);
+  /* scale + lift, with explicit rotateY(0deg) so the next transition
+     (to .opened) interpolates ONLY the rotateY value */
+  transform:scale(1.03) translateY(-12px) rotateY(0deg);
 }
 .sk-cover.opened{
-  transform:rotateY(-180deg);
+  /* Keeps the lifted scale + translate; only rotateY changes from
+     .lifted to here, which gives a clean 180-degree flip animation
+     (instead of a 2D-to-3D matrix blend that can look like a fade
+     on machines with weaker GPU acceleration). */
+  transform:scale(1.03) translateY(-12px) rotateY(-180deg);
   transition:transform .8s cubic-bezier(.42,0,.58,1);
 }
 .sk-cover.hidden{
@@ -1019,7 +1025,7 @@
   #sk-ufo{width:110px;bottom:240px;right:18px;}
   #sk-beam{width:100px;height:300px;right:23px;}
   #sk-cat{width:75px;bottom:18px;right:35px;}
-  #sk-bubble{bottom:130px;right:30px;font-size:1.2rem;max-width:200px;}
+  #sk-bubble{bottom:130px;right:30px;font-size:1.2rem;max-width:240px;}
   #sk-journal{padding:20px 20px 200px 20px;}
   .sk-stamp-label{font-size:.56rem;}
   .sk-stamp-count{font-size:.9rem;}
@@ -3773,13 +3779,16 @@ var SpaceKitty = (function(){
     }
 
     requestAnimationFrame(function(){
-      /* offsetWidth/offsetHeight ignore CSS transforms, so we get the
-         bubble's natural layout size even while it's mid-scale animation.
-         (getBoundingClientRect returns the SCALED size, which would be near-0.) */
+      /* Lock the bubble's WIDTH only — height was being locked too
+         aggressively and clipping multi-line messages like "whats cooking??".
+         (Height got measured before the font finished loading sometimes,
+         so it locked at a one-line measurement even when the text wrapped
+         to two lines.)
+         offsetWidth ignores CSS transforms, so we get the bubble's natural
+         layout width even mid-scale-animation. Height is left unlocked so
+         the bubble grows naturally to fit wrapped text. */
       var w = bubble.offsetWidth;
-      var h = bubble.offsetHeight;
       bubble.style.width = w + 'px';
-      bubble.style.height = h + 'px';
 
       entries.forEach(function(e){ e.span.textContent = randomAlien(); });
 
