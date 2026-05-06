@@ -3597,6 +3597,12 @@ var EggTracker = (function(){
     if(window.SpaceKitty && SpaceKitty.isReady()){
       if(isFirstEverEgg){
         SpaceKitty.playFirstTime(eggId);
+      } else if(egg.isMetaAll && SpaceKitty.celebrateAllEggs){
+        /* Meta "all-eggs" capstone: skip the normal showEggMessage path
+           and run the full rainbow celebration. celebrateAllEggs() shows
+           the all-eggs message itself + plays sound + starts dance +
+           triggers visual rainbow + schedules the follow-up hint. */
+        SpaceKitty.celebrateAllEggs();
       } else {
         SpaceKitty.showEggMessage(eggId);
       }
@@ -4010,6 +4016,38 @@ var SpaceKitty = (function(){
       cat.classList.add('sk-idle');
       rainbowDanceEndTimeout = null;
     }, 8400);
+  }
+
+  /* ─── celebrateAllEggs ──────────────────────────────────────────────
+     Public entry-point called from EggTracker.trigger() when the meta
+     'all-eggs' egg fires (i.e. the user has now found all 20 real eggs).
+     Runs the full first-time celebration: aurora burst + cheer sound +
+     all-eggs message + kitty dance + follow-up "toggle in journal" hint.
+
+     Distinct from toggleRainbow() because:
+       - It always runs the celebration (no toggle-off branch)
+       - It IS the first time, so we set the flag ourselves and bypass
+         the "is this first-time?" check inside toggleRainbow.
+     ──────────────────────────────────────────────────────────────── */
+  function celebrateAllEggs(){
+    /* Update the idle-message timestamp so the kitty doesn't immediately
+       try to show a hint after the celebration ends. */
+    lastEggFoundTime = Date.now();
+
+    /* Mark first-time as done so future sticker clicks just do a quiet
+       visual burst rather than re-firing the full cheer/dance/messages. */
+    rainbowFirstActivated = true;
+    saveRainbowSeen(true);
+
+    /* Defensive: if rainbow somehow got turned on before this point
+       (e.g. via console), reset to a clean state so the celebration
+       fires properly. */
+    if(isRainbowOn()) deactivateRainbowVisual();
+
+    /* Run the full celebration. activateRainbowFirstTime() handles the
+       all-eggs message bubble itself, so the calling code in
+       EggTracker.trigger() does NOT also call showEggMessage('all-eggs'). */
+    activateRainbowFirstTime();
   }
 
   function toggleRainbow(){
@@ -4484,7 +4522,8 @@ var SpaceKitty = (function(){
     closeJournal: closeJournal,
     placeKittyImmediately: placeKittyImmediately,
     toggleRainbow: toggleRainbow,
-    testRainbow: testRainbow
+    testRainbow: testRainbow,
+    celebrateAllEggs: celebrateAllEggs  /* called by EggTracker.trigger() when meta egg fires */
   };
 })();
 window.SpaceKitty = SpaceKitty;
