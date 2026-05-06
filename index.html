@@ -2969,7 +2969,10 @@ jojoEl.addEventListener('mouseenter', function(){
 (function(){
   var el=document.getElementById('tardis');
   if(!el) return;
-  var sndEnter=mkAudio('sounds/TARDIS-enter.mp3',.5);
+  /* TARDIS entrance whoosh — kept quiet so it doesn't startle.
+     Tweak the second arg (0.0–1.0) to adjust loudness:
+     .25 = quiet, .35 = medium, .5 = original loud. */
+  var sndEnter=mkAudio('sounds/TARDIS-enter.mp3',.25);
   var sndShake=mkAudio('sounds/doctor-shake.mp3',.8);
   var sndDoctors=[];
   for(var i=1;i<=6;i++) sndDoctors.push(mkAudio('sounds/doctor'+i+'.mp3',.8));
@@ -2989,6 +2992,45 @@ jojoEl.addEventListener('mouseenter', function(){
     el.style.opacity='1';el.style.pointerEvents='auto';
     docClickIdx=0;
 if(tardisFirstAppear){
+  /* Flip the flag immediately so the entrance sound only ever plays
+     ONCE per session, regardless of whether the guards below pass.
+     If conditions aren't right, the TARDIS still appears visually —
+     it just enters silently. */
+  tardisFirstAppear=false;
+
+  /* ── GUARD 1: Is the TARDIS itself actually in the viewport? ──
+     We check the TARDIS element's real bounding rect (not the hero
+     section). The hero is ~100vh tall, so checking it was too lenient:
+     the TARDIS sits near the top of the hero, so scrolling down by
+     ~200px hides the TARDIS while the hero is still "visible".
+     Note: we only care about VERTICAL visibility — the TARDIS starts
+     at left:-120px and slides in from the left, so horizontal
+     position doesn't matter for the entrance sound. */
+  var tardisRect = el.getBoundingClientRect();
+  var tardisVisible = tardisRect.height > 0 &&
+                      tardisRect.bottom > 0 &&
+                      tardisRect.top < window.innerHeight;
+
+  /* ── GUARD 2: Is the Space Kitty journal modal open? ──
+     If yes, the journal covers the page and the user can't see
+     the TARDIS, so the sound would be confusing. */
+  var journal = document.getElementById('sk-journal');
+  var journalOpen = journal && journal.classList.contains('open');
+
+  /* ── GUARD 3: Is the UFO entrance sound currently playing? ──
+     UFO + TARDIS sounds overlapping is jarring. The UFO audio
+     element lives in the HTML as <audio id="sk-ufo-sound">.
+     A sound is "playing" if it's not paused, hasn't ended, and
+     has actually started (currentTime > 0). */
+  var ufoSnd = document.getElementById('sk-ufo-sound');
+  var ufoPlaying = ufoSnd && !ufoSnd.paused && !ufoSnd.ended && ufoSnd.currentTime > 0;
+
+  /* Only play if ALL three guards pass. */
+  if(tardisVisible && !journalOpen && !ufoPlaying){
+    sndEnter.currentTime=0;
+    sndEnter.play().catch(function(err){console.warn('TARDIS audio failed:',err);});
+  }
+}
   tardisFirstAppear=false;
   var heroSection=document.getElementById('hero');
   var heroRect=heroSection?heroSection.getBoundingClientRect():null;
