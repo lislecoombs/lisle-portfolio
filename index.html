@@ -4053,6 +4053,9 @@ var SpaceKitty = (function(){
   function playUFOEntrance(callback){
     clearPhaseTimeouts();
     clearIntroTimeouts();
+    /* Defensive cleanup: clear any leftover state from a previous run.
+       'sk-reckless' is no longer added but stays in the remove list as a safety
+       net in case any stale class lingers from a prior version. */
     ufo.classList.remove('sk-entered','sk-reckless','sk-bobbing','sk-leaving');
     beam.classList.remove('sk-active','sk-retracting');
     cat.classList.remove('sk-materialized','sk-idle','sk-pulse-once','sk-pulse-continuous');
@@ -4061,27 +4064,43 @@ var SpaceKitty = (function(){
 
     try { ufoSound.currentTime = 0; ufoSound.play().catch(function(){}); } catch(e){}
 
+    /* ─── ENTRANCE & DROP-OFF SEQUENCE ───────────────────────────────────
+       The UFO slides in from off-screen right with a small spring settle
+       (CSS transition: 1.3s, cubic-bezier(.34,1.4,.64,1) on #sk-ufo).
+       Then it bobs in place while dropping the kitty, and flies off right.
+       Tweak the millisecond values below to adjust pacing.
+       ────────────────────────────────────────────────────────────────── */
+
+    /* 50ms: trigger the slide-in (1.3s CSS transition, springy bezier) */
     phaseTimeouts.push(setTimeout(function(){ ufo.classList.add('sk-entered'); }, 50));
-    phaseTimeouts.push(setTimeout(function(){ ufo.classList.add('sk-reckless'); }, 1350));
-    phaseTimeouts.push(setTimeout(function(){
-      ufo.classList.remove('sk-reckless');
-      ufo.classList.add('sk-bobbing');
-    }, 3350));
-    phaseTimeouts.push(setTimeout(function(){ beam.classList.add('sk-active'); }, 3550));
-    phaseTimeouts.push(setTimeout(function(){ cat.classList.add('sk-materialized'); }, 4250));
+
+    /* 1350ms: entrance just finished — start gentle bobbing in place */
+    phaseTimeouts.push(setTimeout(function(){ ufo.classList.add('sk-bobbing'); }, 1350));
+
+    /* 1550ms: beam fires down (200ms after bobbing starts) */
+    phaseTimeouts.push(setTimeout(function(){ beam.classList.add('sk-active'); }, 1550));
+
+    /* 2250ms: kitty materializes inside the beam */
+    phaseTimeouts.push(setTimeout(function(){ cat.classList.add('sk-materialized'); }, 2250));
+
+    /* 3250ms: beam retracts, kitty starts its idle float */
     phaseTimeouts.push(setTimeout(function(){
       beam.classList.remove('sk-active');
       beam.classList.add('sk-retracting');
       cat.classList.add('sk-idle');
-    }, 5250));
+    }, 3250));
+
+    /* 3950ms: UFO stops bobbing and zooms off to the right (1.5s leave anim) */
     phaseTimeouts.push(setTimeout(function(){
       ufo.classList.remove('sk-bobbing');
       ufo.classList.add('sk-leaving');
-    }, 5950));
+    }, 3950));
+
+    /* 5500ms: cleanup — UFO is now off-screen, fire the callback */
     phaseTimeouts.push(setTimeout(function(){
       ufo.classList.remove('sk-visible','sk-entered','sk-leaving');
       if(callback) callback();
-    }, 7500));
+    }, 5500));
   }
 
   function playFirstTime(firstEggId){
