@@ -3025,17 +3025,8 @@ if(tardisFirstAppear){
   var ufoSnd = document.getElementById('sk-ufo-sound');
   var ufoPlaying = ufoSnd && !ufoSnd.paused && !ufoSnd.ended && ufoSnd.currentTime > 0;
 
-  /* Only play if ALL three guards pass. */
+ /* Only play if ALL three guards pass. */
   if(tardisVisible && !journalOpen && !ufoPlaying){
-    sndEnter.currentTime=0;
-    sndEnter.play().catch(function(err){console.warn('TARDIS audio failed:',err);});
-  }
-}
-  tardisFirstAppear=false;
-  var heroSection=document.getElementById('hero');
-  var heroRect=heroSection?heroSection.getBoundingClientRect():null;
-  var heroVisible=heroRect&&heroRect.top<window.innerHeight&&heroRect.bottom>0;
-  if(heroVisible){
     sndEnter.currentTime=0;
     sndEnter.play().catch(function(err){console.warn('TARDIS audio failed:',err);});
   }
