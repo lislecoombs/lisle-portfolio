@@ -340,9 +340,15 @@
   .float-title.line1{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(4rem,8vw,7rem);color:var(--parchment);line-height:1.0;justify-content:flex-end;}
   .float-title.line2{font-family:'Playfair Display',serif;font-style:normal;font-weight:700;font-size:clamp(2.4rem,5vw,4.4rem);color:var(--wheat);line-height:1.0;justify-content:flex-end;margin-top:4px;}
   .portfolio-float{display:flex;justify-content:center;flex-wrap:nowrap;font-family:'Playfair Display',serif;font-weight:700;font-size:clamp(2.8rem,5.5vw,5rem);color:var(--parchment);line-height:1;margin-bottom:8px;}
-  .float-letter{display:inline-block;animation:letterBob var(--dur,4s) ease-in-out infinite;animation-delay:var(--d,0s);transition:transform .18s ease,color .18s ease,text-shadow .18s ease;cursor:url('/cursors/pointer.png') 18 10,pointer!important;}
+  /* position:relative + z-index:1 establishes a stacking context for each letter
+     so the :hover z-index bump below can lift the hovered letter above its
+     neighbors. Without position:relative, z-index has no effect on inline-block. */
+  .float-letter{position:relative;z-index:1;display:inline-block;animation:letterBob var(--dur,4s) ease-in-out infinite;animation-delay:var(--d,0s);transition:transform .18s ease,color .18s ease,text-shadow .18s ease;cursor:url('/cursors/pointer.png') 18 10,pointer!important;}
   a .float-letter{cursor:url('/cursors/pointer.png') 18 10,pointer!important;}
-  .float-letter:hover{transform:translateY(-10px) scale(1.15) rotate(calc(var(--tilt,2) * 1deg))!important;color:var(--rose)!important;text-shadow:0 0 20px rgba(201,132,122,.5);animation-play-state:paused;}
+  /* z-index:10 on hover lifts the hovered letter above its neighbors so the
+     scaled-up hover state stays fully clickable instead of being covered by
+     the next letter (which paints on top of it without this rule). */
+  .float-letter:hover{z-index:10;transform:translateY(-10px) scale(1.15) rotate(calc(var(--tilt,2) * 1deg))!important;color:var(--rose)!important;text-shadow:0 0 20px rgba(201,132,122,.5);animation-play-state:paused;}
   .portfolio-float .float-letter:hover{color:var(--wheat)!important;text-shadow:0 0 18px rgba(196,151,58,.5);}
   .float-letter.space{display:inline-block;width:.28em;}
   @keyframes letterBob{0%,100%{transform:translateY(0) translateX(0) rotate(0deg);}33%{transform:translateY(calc(var(--amp,-8) * 1px)) translateX(calc(var(--hamp,4) * 1px)) rotate(calc(var(--rot,1) * .5deg));}66%{transform:translateY(calc(var(--amp,-8) * -.6px)) translateX(calc(var(--hamp,4) * -.7px)) rotate(calc(var(--rot,1) * -.3deg));}}
