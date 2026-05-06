@@ -147,14 +147,84 @@
 
 /* ── Guestbook Entries ── */
 /* Guestbook side-panel layout */
+/* ── Guestbook side-panel layout ── */
 .guestbook-row{display:flex;align-items:stretch;gap:36px;flex-wrap:wrap;}
 .guestbook-form-card{flex:1 1 420px;min-width:0;}
-.guestbook-side{flex:0 0 280px;background:rgba(244,237,216,.04);border:1px solid rgba(244,237,216,.1);border-radius:3px;padding:26px 16px 20px;position:relative;transform:rotate(2deg);margin-top:22px;display:flex;flex-direction:column;backdrop-filter:blur(3px);}
-.guestbook-side-header{text-align:center;font-family:'Caveat',cursive;font-size:1.2rem;color:var(--terra);margin-bottom:12px;letter-spacing:1px;}
-#gb-entries{flex:1;min-height:0;overflow-y:auto;max-width:none;margin:0;padding-right:6px;}
-#gb-entries::-webkit-scrollbar{width:5px;}
-#gb-entries::-webkit-scrollbar-track{background:transparent;}
-#gb-entries::-webkit-scrollbar-thumb{background:rgba(212,176,150,.3);border-radius:3px;}
+
+/* Side panel container.
+   The HEIGHT value is what controls how many chats are visible at once.
+   - 640px ≈ 2-3 chats (current default, good middle ground)
+   - 560px ≈ 2 chats (more compact)
+   - 720px ≈ 3-4 chats (taller)
+   The form-card on the left auto-stretches to match this height
+   thanks to align-items:stretch on .guestbook-row above. */
+.guestbook-side{
+  flex:0 0 280px;
+  height:640px;                                          /* ← adjust to show more/fewer chats */
+  background:rgba(244,237,216,.04);
+  border:1px solid rgba(244,237,216,.1);
+  border-radius:3px;
+  padding:26px 16px 20px;
+  position:relative;
+  transform:rotate(2deg);
+  margin-top:22px;
+  display:flex;
+  flex-direction:column;
+  backdrop-filter:blur(3px);
+}
+
+/* "visitor notes" header. flex-shrink:0 keeps it from collapsing
+   when the entries below need to scroll. */
+.guestbook-side-header{
+  text-align:center;
+  font-family:'Caveat',cursive;
+  font-size:1.2rem;
+  color:var(--terra);
+  margin-bottom:12px;
+  letter-spacing:1px;
+  flex-shrink:0;
+}
+
+/* Scrollable entries area.
+   flex:1 + min-height:0 makes it fill the remaining space inside
+   .guestbook-side and scroll vertically when entries overflow. */
+#gb-entries{
+  flex:1;
+  min-height:0;
+  overflow-y:auto;
+  max-width:none;
+  margin:0;
+  padding-right:10px;                                    /* room so scrollbar doesn't sit on top of cards */
+  /* Firefox scrollbar (only "thin"/"auto"/"none" + 2 colors are supported) */
+  scrollbar-width:thin;
+  scrollbar-color:rgba(158,138,114,.55) transparent;    /* thumb color | track color */
+}
+
+/* ── Custom scrollbar for Chrome / Safari (Webkit) ──
+   Firefox uses the rules above (scrollbar-width / scrollbar-color)
+   and ignores everything below. */
+#gb-entries::-webkit-scrollbar{
+  width:8px;                                             /* scrollbar thickness */
+}
+#gb-entries::-webkit-scrollbar-track{
+  background:rgba(244,237,216,.03);                      /* very faint cream track */
+  border-radius:4px;
+  margin:4px 0;                                          /* small inset at top/bottom */
+}
+#gb-entries::-webkit-scrollbar-thumb{
+  background:linear-gradient(to bottom,
+    rgba(212,176,150,.55),
+    rgba(158,138,114,.65));                              /* mushroom → wheat gradient */
+  border-radius:4px;
+  border:1px solid rgba(244,237,216,.08);
+  transition:background .25s;
+  cursor:url('/cursors/pointer.png') 18 10,pointer;     /* Chrome/Safari only — Firefox can't customize scrollbar cursor */
+}
+#gb-entries::-webkit-scrollbar-thumb:hover{
+  background:linear-gradient(to bottom,
+    rgba(212,176,150,.8),
+    rgba(190,160,130,.9));                               /* brighter on hover */
+}
 .guestbook-side .gb-entry.card{padding:11px 13px;backdrop-filter:none;background:rgba(244,237,216,.045);border-color:rgba(122,158,126,.18);}
 .guestbook-side .gb-entry .card-tape{width:36px;height:12px;top:-6px;left:18px;}
 .guestbook-side .gb-entry-header{flex-direction:column;align-items:flex-start;gap:4px;margin-bottom:6px;}
