@@ -3362,7 +3362,7 @@ if(tardisFirstAppear){
   async function loadEntries() {
     const { data } = await client
       .from('guestbook')
-      .select('name, location, message, created_at, reply')
+      .select('name, website, location, message, created_at, reply')
       .order('created_at', { ascending: false });
 
     const container = document.getElementById('gb-entries');
