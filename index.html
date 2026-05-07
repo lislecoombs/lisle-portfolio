@@ -871,10 +871,68 @@
   color: #4a7a4a;
   font-style: italic;
 }
-@keyframes dogJump{0%{transform:translateY(0)}30%{transform:translateY(-18px)}60%{transform:translateY(-8px)}80%{transform:translateY(-14px)}100%{transform:translateY(0)}}
-@keyframes dogSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-.dog-jump{animation:dogJump .5s ease-out forwards!important;}
-.dog-spin{animation:dogSpin .7s cubic-bezier(.34,1.56,.64,1) forwards!important;}
+
+/* ============================================================
+   DOG ANIMATIONS - retro 2-frame style
+   ============================================================
+   Old web GIFs didn't tween between positions - they snapped
+   between discrete frames. We mimic that two ways below: the
+   JUMP uses hard percentage breaks (0-49.99% = down, 50-99.99%
+   = up) so the browser has nothing to interpolate. The SPIN
+   uses the steps() timing function to chop a smooth 360deg
+   rotation into 8 discrete snaps.
+
+- Want the dog to jump HIGHER? Change -14px to -20px or -24px.
+- Want the jump to be SLOWER? Change .35s to .5s.
+- Want the dog to hold the UP position LONGER? Change 50% to 30%
+  (snap up earlier, hold the up frame for more of the duration).
+- Want the spin chunkier? Change steps(8) to steps(4) - bigger
+  rotation per step (90 degrees each) feels even more retro.
+- Want the spin smoother? Change steps(8) to steps(12) or 16.
+   
+   ============================================================ */
+ 
+/* === JUMP: 2 frames - up, then down ===
+   Old web GIFs didn't tween between positions. We replicate that
+   here by using HARD percentage breaks in the keyframes: the dog
+   stays at one position until a specific moment, then INSTANTLY
+   snaps to the next position.
+ 
+   - 0% to 49.99%: at rest (Y=0)
+   - 50% to 99.99%: jumped up (Y=-14)
+   - 100%: back at rest
+ 
+   Because the same value is held for a range of percentages, the
+   browser has nothing to interpolate - the dog literally teleports
+   between the two positions. */
+@keyframes dogJump {
+  0%, 49.99%   { transform: translateY(0); }
+  50%, 99.99%  { transform: translateY(-14px); }
+  100%         { transform: translateY(0); }
+}
+ 
+/* === SPIN: 8 discrete rotation steps ===
+   For the spin, we CAN use steps() because the keyframes are just
+   start (0deg) and end (360deg) - steps() chops that linear range
+   into 8 chunks, giving 45deg per snap. */
+@keyframes dogSpin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+ 
+/* The jump uses LINEAR timing because the snap happens via the
+   keyframe percentages above, not via a timing function. */
+.dog-jump {
+  animation: dogJump .35s linear forwards !important;
+}
+ 
+/* steps(8, end) on the spin = 8 discrete positions, each held for
+   100ms before snapping to the next. The "end" keyword means the
+   final rotation (360deg = same as 0deg) is the last frame held. */
+.dog-spin {
+  animation: dogSpin .8s steps(8, end) forwards !important;
+}
+   
   /* ── ENVELOPE STICKER ── */
 @keyframes envShakeLoop{0%,82%,100%{transform:rotate(-7deg)}84%{transform:rotate(-13deg)}86%{transform:rotate(-1deg)}88%{transform:rotate(-12deg)}90%{transform:rotate(-3deg)}92%{transform:rotate(-10deg)}94%{transform:rotate(-7deg)}96%{transform:rotate(-9deg)}98%{transform:rotate(-7deg)}}
   #tardis{position:absolute;width:70px;cursor:url('/cursors/pointer.png') 18 10,pointer;opacity:0;pointer-events:none;z-index:10;transition:opacity 1.5s;mix-blend-mode:screen;filter:drop-shadow(0 0 8px rgba(100,150,255,.4));left:-9999px;top:-9999px;animation:tardisLean 4s ease-in-out infinite;}
