@@ -165,20 +165,23 @@
    - 720px ≈ 3-4 chats (taller)
    flex-basis on the form is reduced from 420px → 340px to delay the
    point where the columns wrap to two rows on narrower screens. */
-.guestbook-row{
-  display:flex;
-  align-items:stretch;
-  gap:56px;
-  flex-wrap:wrap;
-  height:640px;                                          /* ← adjust to show more/fewer chats */
-}
-.guestbook-form-card{flex:1 1 340px;min-width:0;}
+   
+/* Row containing form-card (left) and visitor notes panel (right).
+   align-items:stretch makes the form-card auto-match the side panel's
+   height (the side panel sets its own fixed height below). */
+.guestbook-row{display:flex;align-items:stretch;gap:56px;flex-wrap:wrap;}
+.guestbook-form-card{flex:1 1 420px;min-width:0;}
 
 /* Side panel container.
-   No height set here — it inherits the row's height via align-items:stretch.
-   That's what guarantees the form-card and this panel are always the same height. */
+   The HEIGHT value controls how many chats are visible at once and is
+   what makes the entries scrollable. The form-card on the left auto-matches
+   this height via align-items:stretch on .guestbook-row above.
+   - 640px ≈ 2-3 chats (current default)
+   - 560px ≈ 2 chats (more compact)
+   - 720px ≈ 3-4 chats (taller) */
 .guestbook-side{
   flex:0 0 280px;
+  height:640px;                                          /* ← adjust to show more/fewer chats */
   background:rgba(244,237,216,.04);
   border:1px solid rgba(244,237,216,.1);
   border-radius:3px;
@@ -254,12 +257,14 @@
 .guestbook-side .gb-empty{font-size:.9rem;padding:16px 0;}
 .gb-reply{margin-top:8px;padding:7px 10px 7px 12px;border-left:2px solid rgba(122,158,126,.45);background:rgba(122,158,126,.06);border-radius:0 3px 3px 0;font-size:.8rem;color:var(--sage);font-style:italic;line-height:1.45;}
 .gb-reply::before{content:'↳ Lisle says: ';font-family:'Caveat',cursive;color:var(--sage);font-style:normal;font-weight:bold;margin-right:3px;font-size:.95rem;}
-/* Stack columns vertically on narrow screens (under 900px wide).
-   height:auto is critical — the fixed row height set above would
-   squish things in stacked mode, so we let the row size naturally. */
-@media(max-width:899px){
-  .guestbook-row{flex-direction:column;height:auto;}
-  .guestbook-side{flex-basis:auto;width:100%;transform:rotate(-1deg);margin-top:30px;height:640px;}
+/* Stack columns vertically on narrower screens.
+   Bumped breakpoint from 899px → 1100px so the layout switches to single
+   column EARLY, before the two columns ever get visually crowded enough
+   to cause the rotated panel to leak into the form area. If you ever
+   notice the spillover bug returning, increase 1100px further. */
+@media(max-width:1100px){
+  .guestbook-row{flex-direction:column;}
+  .guestbook-side{flex-basis:auto;width:100%;transform:rotate(-1deg);margin-top:30px;}
 }
 
 .gb-entry {
