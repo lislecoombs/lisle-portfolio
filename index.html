@@ -105,6 +105,16 @@
   margin: 1rem auto;
 }
 
+.gb-site {
+  color: var(--sage, #7a9e7e);
+  font-size: 0.78rem;
+  text-decoration: none;
+  font-style: italic;
+}
+.gb-site:hover {
+  text-decoration: underline;
+}
+   
 #gb-form input,
 #gb-form textarea {
   background: #0e1409;
@@ -1812,9 +1822,12 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
           </div>
           <div class="form-field">
             <label for="g-email">email (optional)</label>
-            <input type="email" id="g-email" name="email" placeholder="if you&#39;d like a longer reply" />
-            <span class="form-note" style="margin-top:2px;">only visible to me ◡̈</span>
+            <input type="email" id="g-email" name="email" placeholder="if you'd like a longer reply — this will only visible to me :)" />
           </div>
+           <div class="form-field">
+           <label for="g-site">your site (optional)</label>
+           <input type="url" id="g-site" name="website" placeholder="https://ur-EPIC-site.com" />
+         </div>
           <div class="cf-turnstile" data-sitekey="0x4AAAAAADDQQImWYXyQgwiQ" data-theme="dark"></div>
           <button type="submit" class="form-submit">leave a note --&gt;</button>
           <p id="gb-status" class="form-note"></p>
@@ -3364,6 +3377,7 @@ if(tardisFirstAppear){
         <div class="gb-entry-header">
           <span class="gb-name">${escapeHTML(entry.name)}</span>
           ${entry.location ? `<span class="gb-location">✈ ${escapeHTML(entry.location)}</span>` : ''}
+          ${entry.website ? `<a class="gb-site" href="${escapeHTML(entry.website)}" target="_blank" rel="noopener">⟶ ${escapeHTML(entry.website.replace(/^https?:\/\//, ''))}</a>` : ''}
           <span class="gb-date">${formatDate(entry.created_at)}</span>
         </div>
         <p class="gb-message">${escapeHTML(entry.message)}</p>
@@ -3386,12 +3400,13 @@ if(tardisFirstAppear){
     const location = document.getElementById('g-location').value.trim();
     const message = document.getElementById('g-msg').value.trim();
     const email = document.getElementById('g-email').value.trim();
+    const website = document.getElementById('g-site').value.trim();
 
     status.textContent = 'sending...';
 
     const { error } = await client.from('guestbook').insert([{
-      name, location, message, email: email || null
-    }]);
+  name, location, message, email: email || null, website: website || null
+}]);
 
     if (error) {
       status.textContent = 'something went wrong — try again! (╥_╥)';
