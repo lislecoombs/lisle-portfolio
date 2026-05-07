@@ -96,6 +96,551 @@
   display: block;                   /* removes whitespace-gap between the three GIFs */
 }
   
+
+/* ============================================================
+   GUESTBOOK CRT MONITOR + SYSTEM 7 WINDOWS
+   ============================================================
+   Wraps the guestbook form + entries inside a retro CRT monitor
+   shell with two stacked Mac System 7 windows on its "desktop".
+ 
+   Apple rainbow accent colors (used in the form window's title bar
+   and the optional thin top stripe). All scoped to #guestbook so
+   nothing else on the site is affected.
+   ============================================================ */
+ 
+/* Apple rainbow stripe colors (only used inside #guestbook) */
+#guestbook {
+  --apple-green:  #5cb85c;
+  --apple-yellow: #f0d343;
+  --apple-orange: #ee9933;
+  --apple-red:    #d3454e;
+  --apple-purple: #9d4cb1;
+  --apple-blue:   #4f87c4;
+}
+ 
+/* === CRT Monitor outer plastic case === */
+.crt-monitor {
+  background: linear-gradient(170deg, #d8c8a4 0%, #c4b48d 50%, #b8a884 100%);
+  border-radius: 22px 22px 14px 14px;
+  padding: 24px 24px 0;
+  /* Plastic-shell highlights using inset shadows. The outer drop shadow
+     gives the monitor weight on the page. */
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,0.4),
+    inset 0 -2px 0 rgba(0,0,0,0.2),
+    inset 4px 0 8px rgba(0,0,0,0.1),
+    inset -4px 0 8px rgba(0,0,0,0.1),
+    0 18px 40px rgba(0,0,0,0.45);
+  position: relative;
+  /* max-width keeps the monitor from spanning the whole 1080px section
+     - tweaks the proportions to look more like a monitor and less like
+     a wall TV. Increase if you want more breathing room inside. */
+  max-width: 1000px;
+  margin: 0 auto;
+}
+ 
+/* === The CRT screen (black bezel) === */
+.crt-screen {
+  background: #0c0c0c;
+  border-radius: 8px;
+  padding: 8px;
+  /* Inset shadow inside the screen for that "deep tube" feel */
+  box-shadow:
+    inset 0 0 0 2px #000,
+    inset 0 4px 12px rgba(0,0,0,0.6);
+  position: relative;
+}
+ 
+/* === The "desktop" inside the screen ===
+   This is the visible work surface where the windows sit. Subtle hatched
+   pattern matches the original Mac desktop look.
+   IMPORTANT: We piggy-back on .guestbook-row's existing flexbox here.
+   Both .crt-desktop AND .guestbook-row classes are on the same div, so
+   the existing align-items:stretch and gap:56px and the responsive
+   collapse at max-width:1100px all still work. */
+.crt-desktop {
+  background: #aaa3a0;
+  background-image: repeating-linear-gradient(45deg,
+    rgba(0,0,0,0.12) 0px,
+    rgba(0,0,0,0.12) 1px,
+    transparent 1px,
+    transparent 3px);
+  padding: 28px 24px;
+  border-radius: 4px;
+  /* Override the existing 56px gap inside the screen - feels too airy in
+     the tight monitor space. Tweak if you want them further apart. */
+  gap: 24px;
+}
+ 
+/* === CRT footer (under the screen) === */
+.crt-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 8px;
+  margin: 0 -8px;
+}
+ 
+.crt-footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+ 
+/* Apple logo placeholder. Replace with <img src="images/apple-rainbow.png"> */
+.crt-apple-logo {
+  width: 22px;
+  height: 26px;
+  border: 1px dashed rgba(0,0,0,0.35);
+  background: rgba(0,0,0,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Courier New', monospace;
+  font-size: 8px;
+  color: rgba(0,0,0,0.5);
+  text-align: center;
+  line-height: 1;
+}
+ 
+.crt-footer-label {
+  font-family: 'Lora', serif;
+  font-size: 12px;
+  color: rgba(0,0,0,0.55);
+  letter-spacing: 1px;
+  font-style: italic;
+}
+ 
+/* Tiny green power LED indicator */
+.crt-led {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #5fc55f;
+  box-shadow: 0 0 6px rgba(95,197,95,0.7);
+}
+ 
+ 
+/* ============================================================
+   SYSTEM 7 WINDOWS
+   ============================================================ */
+ 
+/* Both windows share .sys7-window. The form-card and side panel each
+   ALSO keep their existing classes (.guestbook-form-card,
+   .guestbook-side) so the existing responsive layout still works. */
+.sys7-window {
+  background: var(--cream);
+  border: 1px solid #000;
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  color: #000;
+  /* Subtle offset shadow gives that 90s "window has weight" feeling */
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.4);
+  position: relative;
+  /* Reset the side panel's existing rotate(2deg) and backdrop-blur */
+  transform: none;
+  backdrop-filter: none;
+  background-color: var(--cream);  /* override .guestbook-side's bg */
+  border-radius: 0;
+  padding: 0;  /* override .guestbook-side's 26px padding */
+}
+ 
+/* === Title bar with classic horizontal stripes === */
+.sys7-titlebar {
+  height: 19px;
+  /* The iconic black hatched stripes - 1px black + 2px cream, repeating */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    #000 0,
+    #000 1px,
+    var(--cream) 1px,
+    var(--cream) 3px
+  );
+  border-bottom: 1px solid #000;
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+  position: relative;
+}
+ 
+/* === RAINBOW variant - replaces black stripes with Apple rainbow ===
+   Used on the form window only (the "active" highlighted window).
+   6 stripes, 3px each = 18px (just under the 19px bar height). */
+.sys7-titlebar.rainbow {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--apple-green) 0px, var(--apple-green) 3px,
+    var(--apple-yellow) 3px, var(--apple-yellow) 6px,
+    var(--apple-orange) 6px, var(--apple-orange) 9px,
+    var(--apple-red) 9px, var(--apple-red) 12px,
+    var(--apple-purple) 12px, var(--apple-purple) 15px,
+    var(--apple-blue) 15px, var(--apple-blue) 18px
+  );
+}
+ 
+/* Close box (top-left square) */
+.sys7-close-box {
+  width: 11px;
+  height: 11px;
+  background: var(--cream);
+  border: 1px solid #000;
+  flex-shrink: 0;
+  cursor: url('/cursors/pointer.png') 18 10, pointer;
+}
+ 
+/* Zoom box (top-right square with smaller square inside) */
+.sys7-zoom-box {
+  width: 11px;
+  height: 11px;
+  background: var(--cream);
+  border: 1px solid #000;
+  margin-left: auto;
+  position: relative;
+  flex-shrink: 0;
+  cursor: url('/cursors/pointer.png') 18 10, pointer;
+}
+.sys7-zoom-box::after {
+  content: '';
+  position: absolute;
+  top: 1px; left: 1px;
+  right: 4px; bottom: 4px;
+  border: 1px solid #000;
+}
+ 
+/* Window title (centered, on a cream patch that breaks the stripes) */
+.sys7-title {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--cream);
+  padding: 0 12px;
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  color: #000;
+}
+ 
+/* Metadata strip under the title bar ("X items, Y K available" line) */
+.sys7-meta {
+  border-bottom: 1px solid #000;
+  padding: 4px 12px;
+  font-size: 11px;
+  display: flex;
+  justify-content: space-between;
+  background: var(--cream);
+  color: #000;
+  font-family: 'Monaco', 'Courier New', monospace;
+}
+ 
+/* Main content area inside the window */
+.sys7-content {
+  padding: 18px 20px;
+  background: var(--cream);
+  color: #000;
+}
+ 
+/* === Form styling INSIDE System 7 windows ===
+   These override the existing .form-field/.form-row/.form-submit etc.
+   styles WHEN they're inside a .sys7-content. Outside the guestbook,
+   the original styles are untouched. */
+ 
+#guestbook .sys7-content .guestbook-form { gap: 12px; }
+ 
+#guestbook .sys7-content .form-row {
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+ 
+#guestbook .sys7-content .form-field { gap: 4px; }
+ 
+#guestbook .sys7-content .form-field label {
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: lowercase;  /* System 7 was lowercase-friendly */
+  letter-spacing: 0.3px;
+  color: #000;
+}
+ 
+#guestbook .sys7-content .form-field input,
+#guestbook .sys7-content .form-field textarea {
+  background: #fff;
+  border: 1px solid #000;
+  border-radius: 0;
+  padding: 6px 8px;
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  color: #000;
+  /* Subtle inner shadow for the inset look */
+  box-shadow: inset 1px 1px 0 rgba(0,0,0,0.1);
+  transition: none;
+}
+#guestbook .sys7-content .form-field input:focus,
+#guestbook .sys7-content .form-field textarea:focus {
+  outline: 2px solid #000;
+  outline-offset: -2px;
+  border-color: #000;
+}
+#guestbook .sys7-content .form-field textarea {
+  height: auto;
+  min-height: 80px;
+  resize: vertical;
+}
+ 
+/* Submit button - chunky rounded Mac OK button */
+#guestbook .sys7-content .form-submit {
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: bold;
+  color: #000;
+  background: var(--cream);
+  border: 1px solid #000;
+  border-radius: 8px;
+  padding: 6px 24px;
+  letter-spacing: 0.3px;
+  /* Hard 1px shadow that disappears on press */
+  box-shadow: 1px 1px 0 #000;
+  text-transform: lowercase;
+  align-self: flex-end;
+  transition: none;
+}
+#guestbook .sys7-content .form-submit:hover {
+  background: var(--wheat);
+  color: #000;
+  border-color: #000;
+  transform: none;
+  box-shadow: 1px 1px 0 #000;
+}
+#guestbook .sys7-content .form-submit:active {
+  box-shadow: none;
+  transform: translate(1px, 1px);
+}
+ 
+/* Status text under the submit button */
+#guestbook .sys7-content .form-note,
+#guestbook .sys7-content #gb-status {
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 11px;
+  font-style: italic;
+  color: #000;
+  opacity: 0.7;
+  text-align: right;
+}
+ 
+/* Cloudflare Turnstile widget tweak - sits flush with the form */
+#guestbook .sys7-content .cf-turnstile {
+  margin: 4px 0;
+}
+ 
+ 
+/* ============================================================
+   ENTRIES STYLING (inside the System 7 entries window)
+   ============================================================
+   loadEntries() in your JS still emits .gb-entry, .gb-name,
+   .gb-location, .gb-date, .gb-message, .gb-reply, .gb-divider.
+   These rules override the bright-green styles for that markup
+   ONLY when inside the System 7 window.
+   ============================================================ */
+ 
+/* Make the entries container fill the System 7 content area properly.
+   The .guestbook-side keeps its display:flex/flex-direction:column from
+   the existing CSS (Change 3 didn't remove those), so the title bar +
+   meta + this content area all stack vertically and the content area
+   uses flex:1 to fill remaining space below the title bar and meta.
+   Your existing #gb-entries rules still apply (scrollable, custom
+   scrollbar, etc). */
+.sys7-entries-content {
+  padding: 12px 16px;
+  flex: 1;             /* fill remaining height after title bar + meta */
+  min-height: 0;       /* required for flex children to actually scroll */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.sys7-entries-content #gb-entries {
+  flex: 1;
+  min-height: 0;
+}
+ 
+/* === Override the existing .gb-entry styling, scoped to System 7 === */
+ 
+#guestbook .sys7-content .gb-entry,
+#guestbook .sys7-content .gb-entry.card {
+  background: rgba(0,0,0,0.03);
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 0;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  backdrop-filter: none;
+  position: relative;
+}
+ 
+/* Hide the card-tape on entries inside System 7 - no more scrapbook tape */
+#guestbook .sys7-content .gb-entry .card-tape {
+  display: none;
+}
+ 
+#guestbook .sys7-content .gb-entry-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 6px;
+}
+ 
+/* Visitor name - bold dark sage so it pops on the cream */
+#guestbook .sys7-content .gb-name {
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: bold;
+  color: #2d4a2f;  /* darker sage */
+}
+ 
+/* Location - smaller, italic, with the airplane prefix from JS template */
+#guestbook .sys7-content .gb-location {
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 10px;
+  color: #5a5a5a;
+  font-style: italic;
+}
+ 
+/* Optional website link */
+#guestbook .sys7-content .gb-site {
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 10px;
+  color: var(--terra);
+  font-style: italic;
+}
+#guestbook .sys7-content .gb-site:hover {
+  color: var(--rose);
+  text-decoration: underline;
+}
+ 
+/* Date */
+#guestbook .sys7-content .gb-date {
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 10px;
+  color: #888;
+  margin-left: 0;
+}
+ 
+/* The actual message body - the visual focal point of each entry */
+#guestbook .sys7-content .gb-message {
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #1a1a1a;
+  padding-left: 8px;
+  border-left: 2px solid var(--terra);
+  margin: 2px 0 0 1px;
+}
+ 
+/* "Lisle says:" reply block under entries that have a reply */
+#guestbook .sys7-content .gb-reply {
+  margin: 8px 0 0 10px;
+  padding: 5px 8px;
+  background: rgba(122,158,126,0.12);
+  border-left: 2px solid #4a6b4d;
+  border-radius: 0;
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 10px;
+  font-style: italic;
+  color: #2d4a2f;
+  line-height: 1.4;
+}
+#guestbook .sys7-content .gb-reply::before {
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 10px;
+  color: #4a6b4d;
+}
+ 
+/* Divider between entries - subtle dashed line, no decorative chars */
+#guestbook .sys7-content .gb-divider {
+  text-align: center;
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 10px;
+  color: rgba(0,0,0,0.25);
+  margin: 4px 0;
+  letter-spacing: 2px;
+}
+ 
+/* "no entries yet" placeholder */
+#guestbook .sys7-content .gb-empty {
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 11px;
+  color: #666;
+  text-align: center;
+  padding: 20px 10px;
+  font-style: italic;
+}
+ 
+/* === Custom scrollbar inside the entries window ===
+   Your existing #gb-entries scrollbar rules are still active, but
+   the colors no longer fit the cream System 7 aesthetic. Override
+   them here. */
+#guestbook .sys7-entries-content #gb-entries {
+  scrollbar-color: rgba(0,0,0,0.35) transparent;
+}
+#guestbook .sys7-entries-content #gb-entries::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.04);
+}
+#guestbook .sys7-entries-content #gb-entries::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.4));
+  border: 1px solid rgba(0,0,0,0.15);
+}
+#guestbook .sys7-entries-content #gb-entries::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, rgba(0,0,0,0.45), rgba(0,0,0,0.55));
+}
+ 
+ 
+/* ============================================================
+   RESPONSIVE - matches your existing 1100px breakpoint
+   ============================================================
+   Your existing @media(max-width:1100px) rule already collapses
+   .guestbook-row to a single column. Since both windows still
+   have .guestbook-form-card / .guestbook-side classes, that rule
+   still applies. We just need to undo a couple of properties that
+   conflict with System 7. */
+ 
+@media (max-width: 1100px) {
+  #guestbook .sys7-window {
+    /* The existing rule sets transform:rotate(-1deg) on .guestbook-side
+       in mobile view - undo it for System 7 */
+    transform: none;
+  }
+}
+ 
+/* On really narrow screens, shrink the CRT padding so it doesn't eat
+   too much space. Matches your existing @media(max-width:900px) where
+   guestbook padding drops to 70px 24px. */
+@media (max-width: 900px) {
+  .crt-monitor {
+    padding: 16px 16px 0;
+    border-radius: 14px 14px 10px 10px;
+  }
+  .crt-desktop {
+    padding: 16px 12px;
+    gap: 16px;
+  }
+  .sys7-content {
+    padding: 14px 14px;
+  }
+  .sys7-entries-content {
+    padding: 10px 12px;
+  }
+}
+ 
+ 
+/* ============================================================
+   END GUESTBOOK SYSTEM 7 STYLES
+   The original ── Guestbook Form ── orphan block follows below.
+   It targets #gb-form (note the dash) which doesn't exist on the page,
+   so those rules don't actually apply to anything. Leaving them alone.
+   ============================================================ */
+ 
 /* ── Guestbook Form ── */
 #gb-form {
   display: flex;
@@ -190,18 +735,14 @@
    - 560px ≈ 2 chats (more compact)
    - 720px ≈ 3-4 chats (taller) */
 .guestbook-side{
-  flex:0 0 280px;
+  flex:0 0 320px;                                        /* slightly wider to fit the System 7 window comfortably */
   height:640px;                                          /* ← adjust to show more/fewer chats */
-  background:rgba(244,237,216,.04);
-  border:1px solid rgba(244,237,216,.1);
-  border-radius:3px;
-  padding:26px 16px 20px;
   position:relative;
-  transform:rotate(2deg);
-  margin-top:22px;
+  margin-top:0;                                          /* sits flush at top of the desktop area */
   display:flex;
   flex-direction:column;
-  backdrop-filter:blur(3px);
+  /* Background, border, padding, transform, and backdrop-filter are now
+     handled by the .sys7-window class on this same element. */
 }
 
 /* "visitor notes" header. flex-shrink:0 keeps it from collapsing
@@ -1797,50 +2338,139 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
 </div>
 <section id="guestbook">
   <div class="inner">
+ 
+    <!-- Section heading stays OUTSIDE the CRT monitor frame so the title
+         and subtitle still read as part of the page (not the "screen"). -->
     <div class="reveal" style="text-align:center;margin-bottom:40px;">
       <span class="section-tag">--&gt; leave a note</span>
       <h2 class="section-title"> °❀⋆.ೃ࿔*:･ Guestbook  ❀⋆.ೃ࿔*:･ </h2>
       <p style="font-family:'Lora',serif;font-style:italic;font-size:.95rem;color:var(--mushroom);margin-top:-16px;">Always happy to chat -- this is the best way to reach me </p>
     </div>
-    <div class="guestbook-row reveal">
-      <div class="card guestbook-form-card">
-        <div class="card-tape"></div>
-        <form class="guestbook-form" id="guestbook-form">
-          <div class="form-row">
-            <div class="form-field">
-              <label for="g-name">your name</label>
-              <input type="text" id="g-name" name="name" placeholder="what should I call you?" required />
+ 
+    <!-- ============================================================
+         CRT MONITOR FRAME
+         The cream plastic shell that wraps both System 7 windows.
+         Footer underneath has the Apple logo + "Macintosh" label.
+         ============================================================ -->
+    <div class="crt-monitor reveal">
+ 
+      <!-- The black-bezeled inset screen -->
+      <div class="crt-screen">
+ 
+        <!-- The hatched "desktop" surface where the windows sit.
+             This div uses the EXISTING .guestbook-row flexbox so the form
+             and entries windows sit side-by-side and naturally stack
+             vertically on narrow screens (the @media(max-width:1100px)
+             rule handles that automatically). -->
+        <div class="crt-desktop guestbook-row">
+ 
+          <!-- ════════════════════════════════════════════════
+               WINDOW 1: SIGN GUESTBOOK (the form)
+               Has the RAINBOW title bar to mark it as "active".
+               ════════════════════════════════════════════════ -->
+          <div class="sys7-window guestbook-form-card" id="sys7-window-form">
+ 
+            <!-- Rainbow Apple stripes title bar -->
+            <div class="sys7-titlebar rainbow">
+              <div class="sys7-close-box"></div>
+              <div class="sys7-title">sign guestbook</div>
+              <div class="sys7-zoom-box"></div>
             </div>
-            <div class="form-field">
-              <label for="g-location">where are you from? (optional)</label>
-              <input type="text" id="g-location" name="location" placeholder="city, country..." />
+ 
+            <!-- "x fields" metadata strip under the title bar -->
+            <div class="sys7-meta">
+              <span>leave a note for lisle</span>
+              <span>5 fields</span>
             </div>
+ 
+            <!-- Form content - all IDs and form structure UNCHANGED so
+                 your existing Supabase + Turnstile + EggTracker JS works
+                 exactly as before. Only wrapper class names changed. -->
+            <div class="sys7-content">
+              <form class="guestbook-form" id="guestbook-form">
+                <div class="form-row">
+                  <div class="form-field">
+                    <label for="g-name">your name</label>
+                    <input type="text" id="g-name" name="name" placeholder="what should I call you?" required />
+                  </div>
+                  <div class="form-field">
+                    <label for="g-location">where are you from? (optional)</label>
+                    <input type="text" id="g-location" name="location" placeholder="city, country..." />
+                  </div>
+                </div>
+                <div class="form-field">
+                  <label for="g-msg">your message</label>
+                  <textarea id="g-msg" name="message" placeholder="say anything ..." required></textarea>
+                </div>
+                <div class="form-field">
+                  <label for="g-email">email (optional)</label>
+                  <input type="email" id="g-email" name="email" placeholder="if you'd like a longer reply — this will only be visible to me :)" />
+                </div>
+                <div class="form-field">
+                  <label for="g-site">your site (optional)</label>
+                  <input type="url" id="g-site" name="website" placeholder="https://ur-EPIC-site.com" />
+                </div>
+                <div class="cf-turnstile" data-sitekey="0x4AAAAAADDQQImWYXyQgwiQ" data-theme="dark"></div>
+                <button type="submit" class="form-submit">leave a note --&gt;</button>
+                <p id="gb-status" class="form-note"></p>
+              </form>
+ 
+              <!-- Undertale dog stays where it was - inside the form window.
+                   Click handler in your JS targets #guestbook-dog by ID,
+                   so this still works the same. -->
+              <div style="text-align:right;margin-top:12px;">
+                <img id="guestbook-dog" src="images/undertale-deltarune.gif" alt="" data-tip="click me!" style="width:70px;image-rendering:pixelated;opacity:.65;animation:drift 5s ease-in-out infinite;cursor:url('/cursors/pointer.png') 18 10,pointer;" />
+              </div>
+            </div>
+ 
           </div>
-          <div class="form-field">
-            <label for="g-msg">your message</label>
-            <textarea id="g-msg" name="message" placeholder="say anything ..." required></textarea>
-          </div>
-          <div class="form-field">
-            <label for="g-email">email (optional)</label>
-            <input type="email" id="g-email" name="email" placeholder="if you'd like a longer reply — this will only be visible to me :)" />
-          </div>
-           <div class="form-field">
-           <label for="g-site">your site (optional)</label>
-           <input type="url" id="g-site" name="website" placeholder="https://ur-EPIC-site.com" />
-         </div>
-          <div class="cf-turnstile" data-sitekey="0x4AAAAAADDQQImWYXyQgwiQ" data-theme="dark"></div>
-          <button type="submit" class="form-submit">leave a note --&gt;</button>
-          <p id="gb-status" class="form-note"></p>
-        </form>
-        <div style="text-align:right;margin-top:12px;">
-          <img id="guestbook-dog" src="images/undertale-deltarune.gif" alt="" data-tip="click me!" style="width:70px;image-rendering:pixelated;opacity:.65;animation:drift 5s ease-in-out infinite;cursor:url('/cursors/pointer.png') 18 10,pointer;" />
+ 
+          <!-- ════════════════════════════════════════════════
+               WINDOW 2: VISITOR NOTES (the entries)
+               Standard black-hatched System 7 title bar.
+               #gb-entries is preserved EXACTLY so loadEntries()
+               in your JS keeps working without any changes.
+               ════════════════════════════════════════════════ -->
+          <aside class="sys7-window guestbook-side" id="sys7-window-entries">
+ 
+            <div class="sys7-titlebar">
+              <div class="sys7-close-box"></div>
+              <div class="sys7-title">visitor notes</div>
+              <div class="sys7-zoom-box"></div>
+            </div>
+ 
+            <div class="sys7-meta">
+              <span>recent entries</span>
+              <span>live updates</span>
+            </div>
+ 
+            <!-- The entries area. #gb-entries is the SAME ID as before -
+                 your loadEntries() JS targets this and renders entries
+                 inside it. No JS changes needed. -->
+            <div class="sys7-content sys7-entries-content">
+              <div id="gb-entries"></div>
+            </div>
+ 
+          </aside>
+ 
         </div>
       </div>
-      <aside class="guestbook-side">
-        <div class="card-tape" style="left:50%;transform:translateX(-50%) rotate(-3deg);"></div>
-        <div class="guestbook-side-header">visitor notes</div>
-        <div id="gb-entries"></div>
-      </aside>
+ 
+      <!-- ============================================================
+           CRT MONITOR FOOTER (under the screen)
+           Has the rainbow Apple logo placeholder + "Macintosh" label
+           on the left, and a small green power LED on the right.
+           Replace the [logo] placeholder with a real apple PNG when
+           you have one (recommended size ~22x26px).
+           ============================================================ -->
+      <div class="crt-footer">
+        <div class="crt-footer-logo">
+          <div class="crt-apple-logo">[logo]</div>
+          <div class="crt-footer-label">Macintosh</div>
+        </div>
+        <div class="crt-led" title="power"></div>
+      </div>
+ 
     </div>
   </div>
 </section>
