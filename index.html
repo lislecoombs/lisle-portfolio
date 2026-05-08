@@ -597,6 +597,154 @@
  
  
 /* ============================================================
+   SYSTEM 7 CUSTOM SCROLLBAR
+   ============================================================
+   Replaces the native browser scrollbar with a decorative-but-
+   functional System 7 style scrollbar. JS at the bottom of the
+   file handles thumb sizing, scroll-on-arrow-click, and drag.
+ 
+   STRUCTURE:
+   .sys7-entries-content (display:flex)
+     ├── #gb-entries (the scrollable content - native bar hidden)
+     └── .sys7-scrollbar (the decorative bar)
+           ├── #gb-scroll-up (arrow button)
+           ├── #gb-scroll-track (the rail with the diagonal pattern)
+           │     └── #gb-scroll-thumb (the draggable handle)
+           └── #gb-scroll-down (arrow button)
+   ============================================================ */
+ 
+/* Override the entries content area to be a flex row so the
+   scrollbar sits beside the entries instead of below them. */
+.sys7-entries-content {
+  flex-direction: row;
+  padding-right: 0;  /* the scrollbar takes the right edge now */
+}
+ 
+/* The scrollable entries div needs to flex-grow to fill the space
+   left of the scrollbar. */
+.sys7-entries-content #gb-entries {
+  flex: 1;
+  min-width: 0;        /* prevents flex overflow */
+  padding-right: 8px;  /* small gutter between content and scrollbar */
+}
+ 
+/* Hide the native browser scrollbar.
+   Firefox uses scrollbar-width:none. Webkit needs the pseudo-element.
+   Specificity is bumped (#guestbook .sys7-window #gb-entries) to win
+   over the existing scrollbar styles in your CSS. */
+#guestbook .sys7-window #gb-entries {
+  scrollbar-width: none;  /* Firefox */
+}
+#guestbook .sys7-window #gb-entries::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;          /* Chrome/Safari */
+}
+ 
+/* === The decorative scrollbar column === */
+.sys7-scrollbar {
+  width: 16px;
+  flex-shrink: 0;          /* never let flex squish the scrollbar narrower */
+  border-left: 1px solid #000;
+  background: var(--cream);
+  display: flex;
+  flex-direction: column;
+  /* Pull up/down past the .sys7-entries-content's vertical padding (12px)
+     so the scrollbar spans the full height of the content area, flush
+     with the window's top (meta strip border) and bottom edge.
+     No horizontal margin needed since we set padding-right:0 above. */
+  margin-top: -12px;
+  margin-bottom: -12px;
+}
+ 
+/* Up/down arrow buttons at the top and bottom of the scrollbar */
+.sys7-scroll-arrow {
+  /* Reset button defaults */
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+  border-radius: 0;        /* Safari sometimes adds radius to buttons */
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 9px;
+  color: #000;
+  /* System 7 button styling */
+  height: 16px;
+  background: var(--cream);
+  border: none;
+  border-bottom: 1px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: url('/cursors/pointer.png') 18 10, pointer;
+  flex-shrink: 0;
+}
+.sys7-scroll-arrow:active {
+  /* Pressed state - inverted colors for that tactile feel */
+  background: #000;
+  color: var(--cream);
+}
+/* Disabled state - when content doesn't overflow, arrows become inert */
+.sys7-scroll-arrow:disabled {
+  opacity: 0.35;
+  cursor: url('/cursors/default.png') 8 10, default;
+}
+ 
+/* The down arrow has its border on top instead of bottom (flipped) */
+#gb-scroll-down {
+  border-bottom: none;
+  border-top: 1px solid #000;
+  margin-top: auto;        /* pushes it to the bottom of the scrollbar */
+}
+ 
+/* The track - the rail between the two arrows */
+.sys7-scroll-track {
+  flex: 1;
+  position: relative;
+  /* Classic System 7 diagonal hatched pattern */
+  background-image:
+    linear-gradient(45deg,
+      transparent 46%,
+      rgba(0,0,0,0.18) 46%,
+      rgba(0,0,0,0.18) 54%,
+      transparent 54%);
+  background-size: 4px 4px;
+  background-color: var(--cream);
+  /* Track itself is not clickable since Lisle wants arrows + drag only */
+  cursor: url('/cursors/default.png') 8 10, default;
+  overflow: hidden;        /* keeps the thumb visually inside the track */
+}
+ 
+/* The thumb - the draggable handle.
+   Position is set via JS (top + height in pixels).
+   Note: Lisle's site uses a global cursor system on html * with
+   !important, so the cursor rules below act as fallbacks - the
+   actual cursor shown will be determined by the global system. */
+.sys7-scroll-thumb {
+  position: absolute;
+  left: 2px;
+  right: 2px;              /* small inset on left and right */
+  top: 0;
+  height: 60px;            /* default height before JS calculates real value */
+  background: var(--cream);
+  border: 1px solid #000;
+  cursor: url('/cursors/move.png') 12 12, grab;
+  /* Don't let the thumb's own click events bubble accidentally */
+  user-select: none;
+  -webkit-user-select: none;
+}
+/* When the user is actively dragging - cursor stays as "grabbing" */
+.sys7-scroll-thumb.sys7-thumb-dragging {
+  cursor: url('/cursors/move.png') 12 12, grabbing;
+}
+/* Hide the thumb entirely when content doesn't overflow.
+   JS adds .sys7-no-overflow to the scrollbar in that case. */
+.sys7-scrollbar.sys7-no-overflow .sys7-scroll-thumb {
+  display: none;
+}
+ 
+ 
+/* ============================================================
    RESPONSIVE - matches your existing 1100px breakpoint
    ============================================================
    Your existing @media(max-width:1100px) rule already collapses
@@ -2504,9 +2652,23 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
  
             <!-- The entries area. #gb-entries is the SAME ID as before -
                  your loadEntries() JS targets this and renders entries
-                 inside it. No JS changes needed. -->
+                 inside it. The custom scrollbar (sys7-scrollbar) sits
+                 to the right and is wired up by JS at the bottom of
+                 the file. -->
             <div class="sys7-content sys7-entries-content">
               <div id="gb-entries"></div>
+ 
+              <!-- Custom System 7 scrollbar - functional, wired in JS.
+                   The arrows scroll by a fixed amount per click, and the
+                   thumb is draggable. The browser's native scrollbar is
+                   hidden via CSS so this one isn't doubled up. -->
+              <div class="sys7-scrollbar" id="gb-scrollbar">
+                <button class="sys7-scroll-arrow" id="gb-scroll-up" type="button" aria-label="scroll up">&#9650;</button>
+                <div class="sys7-scroll-track" id="gb-scroll-track">
+                  <div class="sys7-scroll-thumb" id="gb-scroll-thumb"></div>
+                </div>
+                <button class="sys7-scroll-arrow" id="gb-scroll-down" type="button" aria-label="scroll down">&#9660;</button>
+              </div>
             </div>
  
           </aside>
@@ -4109,6 +4271,179 @@ if(tardisFirstAppear){
 loadEntries();
 </script>
 
+<script>
+/* ════════════════════════════════════════════════════════════
+   GUESTBOOK SYSTEM 7 SCROLLBAR
+   ════════════════════════════════════════════════════════════
+   Wires up the decorative scrollbar to actually scroll the
+   #gb-entries div. Handles:
+   - Thumb size based on content vs viewport ratio
+   - Thumb position reflects current scroll
+   - Arrow click scrolls by a fixed amount
+   - Drag the thumb to scroll
+   - Hides the thumb when content doesn't overflow
+   - Recalculates on entries load (MutationObserver) and resize
+   - Mouse wheel still scrolls naturally because the native bar
+     is just hidden, not disabled
+   ════════════════════════════════════════════════════════════ */
+(function(){
+  /* Grab all the elements we need */
+  var entries  = document.getElementById('gb-entries');
+  var bar      = document.getElementById('gb-scrollbar');
+  var track    = document.getElementById('gb-scroll-track');
+  var thumb    = document.getElementById('gb-scroll-thumb');
+  var upBtn    = document.getElementById('gb-scroll-up');
+  var downBtn  = document.getElementById('gb-scroll-down');
+ 
+  /* Bail safely if any element is missing - prevents errors if the
+     guestbook HTML changes in the future. */
+  if(!entries || !bar || !track || !thumb || !upBtn || !downBtn) return;
+ 
+  /* === CONFIG ===
+     These are the only "magic numbers" - adjust to taste. */
+  var SCROLL_STEP   = 40;   // pixels scrolled per arrow-button click
+  var MIN_THUMB_PX  = 20;   // smallest the thumb can shrink to (so it's still grabbable when content is very long)
+ 
+  /* === STATE === */
+  var dragging = false;     // true while the user is dragging the thumb
+  var dragStartY = 0;       // pageY where the drag started
+  var dragStartScroll = 0;  // entries.scrollTop when the drag started
+ 
+  /* ─────────────────────────────────────────────────────────
+     RECALCULATE - sizes the thumb and positions it based on
+     the current scroll state. Called on init, on scroll, on
+     resize, and whenever entries content changes.
+     ───────────────────────────────────────────────────────── */
+  function recalc(){
+    var trackH       = track.clientHeight;
+    var contentH     = entries.scrollHeight;   // total content height
+    var viewportH    = entries.clientHeight;   // visible window height
+    var maxScroll    = contentH - viewportH;   // max scrollTop value
+ 
+    /* If content fits without scrolling, hide the thumb and disable arrows */
+    if(maxScroll <= 0){
+      bar.classList.add('sys7-no-overflow');
+      upBtn.disabled = true;
+      downBtn.disabled = true;
+      return;
+    }
+    bar.classList.remove('sys7-no-overflow');
+    upBtn.disabled = false;
+    downBtn.disabled = false;
+ 
+    /* Thumb height = ratio of viewport to content, applied to track height.
+       Clamped to MIN_THUMB_PX so it stays grabbable. */
+    var thumbH = Math.max(MIN_THUMB_PX, Math.floor(trackH * (viewportH / contentH)));
+    thumb.style.height = thumbH + 'px';
+ 
+    /* Thumb position = current scroll progress mapped onto the
+       available track space (track height minus thumb height). */
+    var scrollProgress = entries.scrollTop / maxScroll;  // 0 to 1
+    var maxThumbTop = trackH - thumbH;
+    var thumbTop = Math.round(maxThumbTop * scrollProgress);
+    thumb.style.top = thumbTop + 'px';
+  }
+ 
+  /* ─────────────────────────────────────────────────────────
+     SCROLL EVENT - keep the thumb in sync when the user
+     scrolls via mouse wheel, trackpad, or keyboard.
+     ───────────────────────────────────────────────────────── */
+  entries.addEventListener('scroll', recalc);
+ 
+  /* ─────────────────────────────────────────────────────────
+     ARROW CLICKS - scroll by SCROLL_STEP pixels.
+     Math.max/min clamp values so we don't over-scroll past
+     the content boundaries.
+     ───────────────────────────────────────────────────────── */
+  upBtn.addEventListener('click', function(){
+    entries.scrollTop = Math.max(0, entries.scrollTop - SCROLL_STEP);
+  });
+  downBtn.addEventListener('click', function(){
+    var maxScroll = entries.scrollHeight - entries.clientHeight;
+    entries.scrollTop = Math.min(maxScroll, entries.scrollTop + SCROLL_STEP);
+  });
+ 
+  /* ─────────────────────────────────────────────────────────
+     THUMB DRAG - mousedown on thumb starts the drag,
+     mousemove on document tracks it, mouseup on document ends it.
+     We listen on document (not the thumb) for move/up so the drag
+     keeps working even if the cursor leaves the thumb.
+     ───────────────────────────────────────────────────────── */
+  thumb.addEventListener('mousedown', function(e){
+    e.preventDefault();
+    dragging = true;
+    dragStartY = e.pageY;
+    dragStartScroll = entries.scrollTop;
+    thumb.classList.add('sys7-thumb-dragging');
+    /* Prevent text selection elsewhere on the page while dragging */
+    document.body.style.userSelect = 'none';
+    document.body.style.webkitUserSelect = 'none';
+  });
+ 
+  document.addEventListener('mousemove', function(e){
+    if(!dragging) return;
+    /* Math:
+         deltaY      = how far the user dragged the mouse
+         scrollRatio = total content / track height
+                       (1px of drag = scrollRatio px of scroll)
+       Then clamp to the valid scrollTop range. */
+    var trackH      = track.clientHeight;
+    var contentH    = entries.scrollHeight;
+    var viewportH   = entries.clientHeight;
+    var maxScroll   = contentH - viewportH;
+    var thumbH      = thumb.offsetHeight;
+    var scrollRatio = maxScroll / (trackH - thumbH);
+    var deltaY      = e.pageY - dragStartY;
+    var newScroll   = dragStartScroll + (deltaY * scrollRatio);
+    entries.scrollTop = Math.max(0, Math.min(maxScroll, newScroll));
+  });
+ 
+  document.addEventListener('mouseup', function(){
+    if(!dragging) return;
+    dragging = false;
+    thumb.classList.remove('sys7-thumb-dragging');
+    document.body.style.userSelect = '';
+    document.body.style.webkitUserSelect = '';
+  });
+ 
+  /* Safety: if the user alt-tabs away mid-drag, the mouseup event
+     might not fire when they release the mouse off-screen. Window
+     blur fires when the page loses focus, so we use it to reset
+     the drag state. */
+  window.addEventListener('blur', function(){
+    if(!dragging) return;
+    dragging = false;
+    thumb.classList.remove('sys7-thumb-dragging');
+    document.body.style.userSelect = '';
+    document.body.style.webkitUserSelect = '';
+  });
+ 
+  /* ─────────────────────────────────────────────────────────
+     RESIZE - re-measure thumb when window size changes.
+     ───────────────────────────────────────────────────────── */
+  window.addEventListener('resize', recalc);
+ 
+  /* ─────────────────────────────────────────────────────────
+     CONTENT CHANGES - watch #gb-entries for child changes
+     so we recalculate when loadEntries() runs (initial load
+     after Supabase fetch, and again after a successful submit).
+     MutationObserver is more robust than wrapping loadEntries.
+     ───────────────────────────────────────────────────────── */
+  var observer = new MutationObserver(function(){
+    /* Use rAF so we measure after the browser has laid out the new content */
+    requestAnimationFrame(recalc);
+  });
+  observer.observe(entries, { childList: true, subtree: true });
+ 
+  /* ─────────────────────────────────────────────────────────
+     INITIAL CALCULATION - run once on load. Wrapped in
+     requestAnimationFrame to be sure the entries window has
+     its final size by then.
+     ───────────────────────────────────────────────────────── */
+  requestAnimationFrame(recalc);
+})();
+</script>
+   
 <!-- ═══════════════════════════════════════════════════════════════════
      SPACE KITTY EASTER EGG TRACKER (Phase 1)
      ═══════════════════════════════════════════════════════════════════ -->
