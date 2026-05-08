@@ -10,11 +10,1048 @@
 <!-- Onionring stylesheet — needed for the Apple Lovers and Women of the Internet webrings -->
 <link rel="stylesheet" href="https://poempuppy.neocities.org/webring/onionring.css">
 <style>
+/* ============================================================
+   CD PLAYER (socials section)
+   ============================================================
+   Cool silver chrome chassis with a black outer bezel, real knob
+   image, retro CD-player aesthetic. Scoped under #contact so
+   nothing else on the site is affected.
+ 
+   STRUCTURE:
+   .cd-bezel (black outer frame)
+     .cd-stack (silver chassis)
+       .cd-module .cd-header   - LCD + knob
+       .cd-module .cd-details  - ports + LEDs + preset buttons
+       .cd-module .cd-transport - prev/play/next
+       .cd-module .cd-panel    - personal links / favs / stamps / webrings
+       .cd-module .cd-footer-strip - decorative model strip
+   ============================================================ */
+ 
+#contact {
+  /* Cool silver palette - distinct from the warm cream guestbook */
+  --silver-light: #d4d8de;
+  --silver-mid:   #a8aeb6;
+  --silver-dark:  #6e747c;
+  --silver-shadow:#3a3e44;
+  --silver-deepest:#1a1d22;
+  --plastic-cream: #c8cdd2;
+ 
+  /* LCD - teal/pink/green palette per Lisle's preference */
+  --lcd-bg:    #0a1816;
+  --lcd-teal:  #6ce0d8;
+  --lcd-pink:  #ff8fb8;
+  --lcd-green: #7ce888;
+  --lcd-amber: #ffc870;
+ 
+  /* LED accent colors */
+  --led-green: #5fdc6a;
+  --led-teal:  #6ce0d8;
+  --led-pink:  #ff8fb8;
+}
+ 
+/* === BLACK OUTER BEZEL === */
+#contact .cd-bezel {
+  max-width: 800px;
+  margin: 40px auto 60px;       /* spacing above/below the player */
+  background:
+    repeating-linear-gradient(0deg,
+      transparent 0,
+      transparent 1px,
+      rgba(255,255,255,0.03) 1px,
+      rgba(255,255,255,0.03) 2px),
+    linear-gradient(180deg,
+      var(--silver-shadow) 0%,
+      var(--silver-deepest) 30%,
+      var(--silver-deepest) 70%,
+      var(--silver-shadow) 100%);
+  padding: 8px;
+  border-radius: 14px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    inset 0 -1px 0 rgba(0,0,0,0.6),
+    0 18px 40px rgba(0,0,0,0.6),
+    0 4px 0 rgba(0,0,0,0.35);
+  position: relative;
+}
+ 
+/* Two small silver "screws" in the top corners of the bezel */
+#contact .cd-bezel::before,
+#contact .cd-bezel::after {
+  content: '';
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: radial-gradient(circle at 30% 30%,
+    var(--silver-light) 0%,
+    var(--silver-mid) 40%,
+    var(--silver-dark) 80%);
+  border-radius: 50%;
+  box-shadow:
+    inset 0 -1px 1px rgba(0,0,0,0.6),
+    0 1px 2px rgba(0,0,0,0.5);
+  z-index: 5;
+}
+#contact .cd-bezel::before { top: 5px; left: 5px; }
+#contact .cd-bezel::after  { top: 5px; right: 5px; }
+ 
+/* === SILVER CHASSIS (sits inside the bezel) === */
+#contact .cd-stack {
+  margin: 0;
+  background:
+    /* Top reflective highlight band - light catching the casing */
+    linear-gradient(180deg,
+      transparent 0%,
+      transparent 18%,
+      rgba(255,255,255,0.45) 22%,
+      rgba(255,255,255,0.55) 28%,
+      transparent 36%,
+      transparent 60%,
+      rgba(255,255,255,0.18) 65%,
+      rgba(255,255,255,0.25) 72%,
+      transparent 80%,
+      transparent 100%),
+    /* Brushed-aluminum micro-stripes */
+    repeating-linear-gradient(0deg,
+      transparent 0,
+      transparent 1px,
+      rgba(255,255,255,0.08) 1px,
+      rgba(255,255,255,0.08) 2px),
+    /* Base cool-silver gradient */
+    linear-gradient(180deg,
+      var(--silver-light) 0%,
+      var(--silver-mid) 35%,
+      var(--silver-dark) 65%,
+      var(--silver-mid) 90%,
+      var(--silver-light) 100%);
+  border-radius: 6px;
+  padding: 4px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.85),
+    inset 1px 0 0 rgba(255,255,255,0.4),
+    inset -1px 0 0 rgba(0,0,0,0.3),
+    inset 0 -2px 0 rgba(0,0,0,0.4);
+  font-family: 'VT323', 'Courier New', monospace;
+  color: #2a2820;
+  position: relative;
+}
+ 
+/* Thin specular line at the very top of the chassis */
+#contact .cd-stack::before {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 8px;
+  right: 8px;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255,255,255,0.9) 20%,
+    rgba(255,255,255,1) 50%,
+    rgba(255,255,255,0.9) 80%,
+    transparent 100%);
+  z-index: 10;
+  pointer-events: none;
+  border-radius: 1px;
+}
+ 
+/* === Each module is a separate panel === */
+#contact .cd-module {
+  background:
+    linear-gradient(180deg,
+      transparent 0%,
+      rgba(255,255,255,0.35) 25%,
+      transparent 50%,
+      transparent 100%),
+    repeating-linear-gradient(0deg,
+      transparent 0,
+      transparent 1px,
+      rgba(0,0,0,0.025) 1px,
+      rgba(0,0,0,0.025) 2px),
+    linear-gradient(180deg,
+      var(--silver-light) 0%,
+      var(--silver-mid) 50%,
+      var(--silver-light) 100%);
+  border-top: 1px solid rgba(255,255,255,0.7);
+  border-bottom: 1px solid rgba(0,0,0,0.3);
+  padding: 14px 18px;
+  position: relative;
+}
+#contact .cd-module + .cd-module {
+  margin-top: 3px;          /* tiny seam between modules */
+}
+ 
+ 
+/* ============================================================
+   MODULE 1: HEADER (LCD + KNOB)
+   ============================================================ */
+ 
+#contact .cd-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 20px;
+  align-items: center;
+  padding: 18px 18px 16px;
+}
+ 
+/* === LCD display === */
+#contact .cd-lcd {
+  background: var(--lcd-bg);
+  border-radius: 4px;
+  border-top: 2px solid #1a1410;
+  border-left: 2px solid #1a1410;
+  border-right: 2px solid #6a6258;
+  border-bottom: 2px solid #6a6258;
+  padding: 10px 12px;
+  position: relative;
+  overflow: hidden;
+  min-height: 88px;
+  box-shadow:
+    inset 0 0 18px rgba(0,0,0,0.5),
+    inset 0 0 4px rgba(108,224,216,0.15);
+}
+/* Faint scanlines over the LCD */
+#contact .cd-lcd::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(0deg,
+    transparent 0,
+    transparent 2px,
+    rgba(0,0,0,0.18) 2px,
+    rgba(0,0,0,0.18) 3px);
+  z-index: 2;
+}
+ 
+/* LCD top status row */
+#contact .cd-lcd-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-family: 'VT323', monospace;
+  font-size: 14px;
+  color: var(--lcd-teal);
+  text-shadow: 0 0 4px rgba(108,224,216,0.7);
+  letter-spacing: 1px;
+  position: relative;
+  z-index: 3;
+}
+#contact .cd-lcd-status {
+  color: var(--lcd-pink);
+  text-shadow: 0 0 4px rgba(255,143,184,0.7);
+}
+#contact .cd-lcd-status::before {
+  content: '\25B6';                /* play triangle */
+  margin-right: 4px;
+}
+#contact .cd-lcd-status.paused::before {
+  content: '\23F8';                /* pause symbol */
+}
+#contact .cd-lcd-trackinfo {
+  color: var(--lcd-amber);
+  text-shadow: 0 0 4px rgba(255,200,112,0.5);
+}
+ 
+/* LCD main row (visualizer + scrolling marquee) */
+#contact .cd-lcd-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 3;
+}
+ 
+/* Visualizer bars */
+#contact .cd-visualizer {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 22px;
+  width: 60px;
+  flex-shrink: 0;
+}
+#contact .cd-vis-bar {
+  flex: 1;
+  background: linear-gradient(to top,
+    var(--lcd-pink) 0%,
+    var(--lcd-pink) 25%,
+    var(--lcd-green) 50%,
+    var(--lcd-teal) 80%,
+    var(--lcd-teal) 100%);
+  animation: cdVisualize 0.7s ease-in-out infinite alternate;
+  transform-origin: bottom;
+  border-radius: 1px 1px 0 0;
+  box-shadow: 0 0 4px rgba(108,224,216,0.4);
+}
+/* Stagger the bars so they don't all bounce together */
+#contact .cd-vis-bar:nth-child(1) { animation-duration: 0.6s; }
+#contact .cd-vis-bar:nth-child(2) { animation-duration: 0.85s; animation-delay: 0.1s; }
+#contact .cd-vis-bar:nth-child(3) { animation-duration: 0.5s;  animation-delay: 0.2s; }
+#contact .cd-vis-bar:nth-child(4) { animation-duration: 0.95s; animation-delay: 0.05s; }
+#contact .cd-vis-bar:nth-child(5) { animation-duration: 0.7s;  animation-delay: 0.15s; }
+#contact .cd-vis-bar:nth-child(6) { animation-duration: 0.55s; animation-delay: 0.25s; }
+#contact .cd-vis-bar:nth-child(7) { animation-duration: 0.8s;  animation-delay: 0.05s; }
+#contact .cd-vis-bar:nth-child(8) { animation-duration: 0.65s; animation-delay: 0.18s; }
+ 
+@keyframes cdVisualize {
+  0%   { height: 25%; opacity: 0.7; }
+  100% { height: 100%; opacity: 1; }
+}
+ 
+/* When music is paused, freeze visualizer */
+#contact .cd-stack.paused .cd-vis-bar {
+  animation-play-state: paused;
+  opacity: 0.4;
+}
+ 
+/* Scrolling marquee */
+#contact .cd-lcd-marquee {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  height: 22px;
+  display: flex;
+  align-items: center;
+}
+#contact .cd-lcd-marquee-track {
+  display: flex;
+  white-space: nowrap;
+  /* Chunky stepped scroll - like a real LCD display advancing one
+     character at a time. To adjust: change the steps() count.
+     Smaller = chunkier jumps, larger = smoother scroll. */
+  animation: cdMarqueeScroll 32s steps(120, end) infinite;
+  width: max-content;
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  color: var(--lcd-teal);
+  text-shadow: 0 0 4px rgba(108,224,216,0.6);
+  letter-spacing: 4px;
+}
+#contact .cd-lcd-msg {
+  margin-right: 60px;
+  flex-shrink: 0;
+}
+@keyframes cdMarqueeScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+#contact .cd-stack.paused .cd-lcd-marquee-track {
+  animation-play-state: paused;
+}
+ 
+/* Inline link inside LCD message (the miffynoa link in message 1) */
+#contact .cd-lcd-msg a {
+  color: var(--lcd-pink);
+  text-shadow: 0 0 4px rgba(255,143,184,0.6);
+  text-decoration: underline;
+}
+#contact .cd-lcd-msg a:hover {
+  color: var(--lcd-teal);
+  text-shadow: 0 0 6px rgba(108,224,216,0.8);
+}
+ 
+/* === Volume knob === */
+#contact .cd-knob-wrap {
+  width: 80px;
+  height: 80px;
+  position: relative;
+  background:
+    radial-gradient(circle at 35% 30%, rgba(255,255,255,0.2) 0%, transparent 35%),
+    radial-gradient(circle at center,
+      var(--silver-deepest) 0%,
+      #000 70%);
+  border-radius: 50%;
+  box-shadow:
+    inset 2px 3px 6px rgba(0,0,0,0.7),
+    inset -1px -1px 2px rgba(255,255,255,0.2),
+    0 1px 0 rgba(255,255,255,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--silver-shadow);
+}
+#contact .cd-knob {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  /* Outer shadow + highlight to seat the image in the well */
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.3),
+    0 2px 4px rgba(0,0,0,0.4),
+    0 1px 0 rgba(255,255,255,0.15);
+  position: relative;
+  cursor: pointer;
+  transition: none;
+  display: block;
+  /* Image rendering hint - keeps detail crisp at 64px */
+  image-rendering: auto;
+}
+/* Knob spin - 8 discrete steps over 0.8s, matches dog spin aesthetic */
+#contact .cd-knob.cd-spinning {
+  animation: cdKnobSpin 0.8s steps(8, end) forwards;
+}
+@keyframes cdKnobSpin {
+  from { transform: rotate(var(--cd-knob-from, 0deg)); }
+  to   { transform: rotate(var(--cd-knob-to, 360deg)); }
+}
+ 
+ 
+/* ============================================================
+   MODULE 1.5: DETAIL STRIP (ports + LEDs + presets)
+   ============================================================ */
+ 
+#contact .cd-details {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 16px;
+  align-items: center;
+  padding: 10px 14px;
+  background:
+    linear-gradient(180deg,
+      rgba(0,0,0,0.08) 0%,
+      transparent 6%,
+      rgba(255,255,255,0.18) 30%,
+      transparent 50%,
+      rgba(0,0,0,0.05) 100%),
+    repeating-linear-gradient(0deg,
+      transparent 0,
+      transparent 1px,
+      rgba(0,0,0,0.025) 1px,
+      rgba(0,0,0,0.025) 2px),
+    linear-gradient(180deg,
+      var(--silver-light) 0%,
+      var(--silver-mid) 50%,
+      var(--silver-light) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.5),
+    inset 0 -1px 0 rgba(0,0,0,0.2);
+}
+ 
+#contact .cd-details-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+ 
+/* Port jacks (PHONES, MIC) */
+#contact .cd-port {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+#contact .cd-port-hole {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center,
+    #000 0%,
+    #000 55%,
+    var(--silver-shadow) 60%,
+    var(--silver-mid) 80%,
+    var(--silver-light) 100%);
+  box-shadow:
+    inset 0 2px 3px rgba(0,0,0,0.9),
+    0 1px 0 rgba(255,255,255,0.4);
+}
+#contact .cd-port-label {
+  font-family: 'VT323', monospace;
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  color: var(--silver-shadow);
+  text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+}
+ 
+/* Status LED bar */
+#contact .cd-led-bar {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 4px 12px;
+  background: linear-gradient(180deg,
+    rgba(0,0,0,0.2) 0%,
+    rgba(0,0,0,0.05) 50%,
+    rgba(0,0,0,0.2) 100%);
+  border-radius: 3px;
+  box-shadow:
+    inset 0 1px 2px rgba(0,0,0,0.4),
+    inset 0 -1px 0 rgba(255,255,255,0.3);
+}
+#contact .cd-led-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+#contact .cd-led {
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.4);
+  position: relative;
+}
+/* LED size tiers - power is biggest */
+#contact .cd-led-large { width: 10px; height: 10px; }
+#contact .cd-led-med   { width: 8px;  height: 8px;  }
+#contact .cd-led-small { width: 6px;  height: 6px;  }
+ 
+/* LED color variants */
+#contact .cd-led-green {
+  background: radial-gradient(circle at 35% 30%, #c8ffd0 0%, #5fdc6a 40%, #2a8a35 100%);
+  box-shadow:
+    inset 0 0 2px rgba(255,255,255,0.6),
+    0 0 6px rgba(95,220,106,0.7),
+    0 0 2px rgba(95,220,106,0.9);
+}
+#contact .cd-led-teal {
+  background: radial-gradient(circle at 35% 30%, #c0fff8 0%, var(--led-teal) 40%, #2a8a82 100%);
+  box-shadow:
+    inset 0 0 2px rgba(255,255,255,0.6),
+    0 0 6px rgba(108,224,216,0.7),
+    0 0 2px rgba(108,224,216,0.9);
+}
+#contact .cd-led-pink {
+  background: radial-gradient(circle at 35% 30%, #ffd0e0 0%, var(--led-pink) 40%, #b34670 100%);
+  box-shadow:
+    inset 0 0 2px rgba(255,255,255,0.6),
+    0 0 6px rgba(255,143,184,0.7),
+    0 0 2px rgba(255,143,184,0.9);
+}
+ 
+#contact .cd-led-label {
+  font-family: 'VT323', monospace;
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  color: var(--silver-shadow);
+  text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+}
+ 
+/* Preset buttons (decorative) */
+#contact .cd-presets {
+  display: flex;
+  gap: 4px;
+}
+#contact .cd-preset-btn {
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  width: 26px;
+  height: 18px;
+  border-radius: 2px;
+  background:
+    linear-gradient(180deg,
+      rgba(255,255,255,0.6) 0%,
+      rgba(255,255,255,0.15) 30%,
+      transparent 55%,
+      rgba(0,0,0,0.1) 100%),
+    linear-gradient(180deg, var(--silver-light) 0%, var(--silver-mid) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.7),
+    inset 0 -1px 0 rgba(0,0,0,0.25),
+    0 1px 0 rgba(0,0,0,0.3),
+    0 2px 2px rgba(0,0,0,0.2);
+  cursor: pointer;
+  font-family: 'VT323', monospace;
+  font-size: 10px;
+  color: var(--silver-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+  transition: none;
+  padding: 0;
+}
+#contact .cd-preset-btn:active {
+  transform: translateY(1px);
+  background:
+    linear-gradient(180deg,
+      rgba(0,0,0,0.15) 0%,
+      transparent 50%,
+      rgba(255,255,255,0.2) 100%),
+    linear-gradient(180deg, var(--silver-mid) 0%, var(--silver-light) 100%);
+  box-shadow:
+    inset 0 2px 3px rgba(0,0,0,0.4),
+    0 0 0 rgba(0,0,0,0);
+}
+#contact .cd-preset-btn span {
+  display: block;
+  line-height: 1;
+}
+ 
+ 
+/* ============================================================
+   MODULE 2: TRANSPORT BUTTONS
+   ============================================================ */
+ 
+#contact .cd-transport {
+  padding: 16px 18px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background:
+    linear-gradient(180deg,
+      rgba(0,0,0,0.15) 0%,
+      transparent 8%,
+      rgba(255,255,255,0.2) 25%,
+      transparent 60%,
+      rgba(0,0,0,0.1) 100%),
+    repeating-linear-gradient(0deg,
+      transparent 0,
+      transparent 1px,
+      rgba(0,0,0,0.04) 1px,
+      rgba(0,0,0,0.04) 2px),
+    linear-gradient(180deg,
+      var(--silver-mid) 0%,
+      var(--silver-light) 50%,
+      var(--silver-mid) 100%);
+  box-shadow:
+    inset 0 3px 6px rgba(0,0,0,0.2),
+    inset 0 -1px 0 rgba(255,255,255,0.4);
+}
+ 
+/* Transport button - polished metal with press state */
+#contact .cd-button {
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  width: 64px;
+  height: 38px;
+  border-radius: 6px;
+  background:
+    linear-gradient(180deg,
+      rgba(255,255,255,0.7) 0%,
+      rgba(255,255,255,0.2) 25%,
+      transparent 50%,
+      rgba(0,0,0,0.1) 100%),
+    linear-gradient(180deg,
+      var(--silver-light) 0%,
+      var(--silver-mid) 50%,
+      var(--silver-dark) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.9),
+    inset 0 -1px 0 rgba(0,0,0,0.3),
+    inset 1px 0 0 rgba(255,255,255,0.3),
+    inset -1px 0 0 rgba(0,0,0,0.15),
+    0 2px 0 rgba(0,0,0,0.3),
+    0 3px 5px rgba(0,0,0,0.25);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  font-family: 'VT323', monospace;
+  font-size: 11px;
+  color: var(--silver-shadow);
+  letter-spacing: 0.5px;
+  position: relative;
+  transition: none;
+  text-shadow:
+    0 1px 0 rgba(255,255,255,0.5),
+    0 -1px 0 rgba(0,0,0,0.15);
+}
+#contact .cd-button:active {
+  transform: translateY(2px);
+  background:
+    linear-gradient(180deg,
+      rgba(0,0,0,0.15) 0%,
+      transparent 50%,
+      rgba(255,255,255,0.2) 100%),
+    linear-gradient(180deg,
+      var(--silver-mid) 0%,
+      var(--silver-light) 50%,
+      var(--silver-mid) 100%);
+  box-shadow:
+    inset 0 2px 4px rgba(0,0,0,0.35),
+    inset 0 -1px 0 rgba(255,255,255,0.4),
+    0 0 0 rgba(0,0,0,0),
+    0 1px 2px rgba(0,0,0,0.2);
+}
+#contact .cd-button-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+#contact .cd-button-text {
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+ 
+/* LED indicator above each transport button */
+#contact .cd-button-led {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(0,0,0,0.4);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.6);
+  transition: none;
+}
+#contact .cd-button.active .cd-button-led,
+#contact .cd-button.flash .cd-button-led {
+  background: radial-gradient(circle at 35% 30%, #c8ffd0 0%, var(--led-green) 40%, #2a8a35 100%);
+  box-shadow:
+    inset 0 0 2px rgba(255,255,255,0.6),
+    0 0 8px rgba(95,220,106,0.8),
+    0 0 3px rgba(95,220,106,1);
+}
+#contact .cd-button.flash .cd-button-led {
+  animation: cdLedFlash 0.3s ease-out;
+}
+@keyframes cdLedFlash {
+  0%   {
+    background: radial-gradient(circle at 35% 30%, #c8ffd0 0%, var(--led-green) 40%, #2a8a35 100%);
+    box-shadow: 0 0 10px var(--led-green), inset 0 0 2px #fff;
+  }
+  100% {
+    background: rgba(0,0,0,0.5);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.6);
+  }
+}
+ 
+ 
+/* ============================================================
+   MODULE 3: CONTENT PANEL (links / favs / stamps / webrings)
+   ============================================================ */
+ 
+#contact .cd-panel {
+  padding: 18px 20px;
+  background:
+    linear-gradient(180deg,
+      rgba(0,0,0,0.08) 0%,
+      transparent 4%,
+      transparent 96%,
+      rgba(0,0,0,0.05) 100%),
+    linear-gradient(180deg,
+      var(--plastic-cream) 0%,
+      #b8bdc4 100%);
+  border-top: 2px solid var(--silver-shadow);
+  box-shadow: inset 0 4px 8px rgba(0,0,0,0.15);
+}
+ 
+/* Group box (each section inside the panel) */
+#contact .cd-groupbox {
+  background: rgba(255,255,255,0.4);
+  border-top: 1px solid rgba(0,0,0,0.2);
+  border-left: 1px solid rgba(0,0,0,0.2);
+  border-right: 1px solid rgba(255,255,255,0.7);
+  border-bottom: 1px solid rgba(255,255,255,0.7);
+  border-radius: 4px;
+  margin-bottom: 16px;
+  padding: 22px 14px 14px;
+  position: relative;
+}
+#contact .cd-groupbox-title {
+  position: absolute;
+  top: -8px;
+  left: 14px;
+  background: linear-gradient(180deg, var(--silver-light), var(--silver-mid));
+  padding: 3px 10px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  color: var(--silver-shadow);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border-radius: 3px;
+  border: 1px solid var(--silver-dark);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.6),
+    0 1px 2px rgba(0,0,0,0.2);
+}
+ 
+/* Personal links icon grid */
+#contact .cd-icon-grid {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 6px 0;
+}
+#contact .cd-icon-item {
+  width: 80px;
+  text-align: center;
+  cursor: url('/cursors/pointer.png') 18 10, pointer;
+  font-size: 13px;
+  text-decoration: none;
+  color: inherit;
+}
+#contact .cd-icon-img {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 6px;
+  border: 1px dashed var(--silver-shadow);
+  background: rgba(255,255,255,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'VT323', monospace;
+  font-size: 10px;
+  color: var(--silver-shadow);
+  text-align: center;
+  padding: 4px;
+  line-height: 1.2;
+  border-radius: 4px;
+  transition: none;
+  /* IMG SWAP NOTE: when you have real platform icons, replace each
+     <div class="cd-icon-img">[Letterboxd 48x48]</div> with
+     <img class="cd-icon-img" src="images/letterboxd.png" alt="..." />
+     (48x48 PNGs work best). */
+}
+#contact .cd-icon-item:hover .cd-icon-img {
+  background: rgba(255,255,255,0.7);
+  box-shadow: 0 0 8px var(--led-pink);
+}
+#contact .cd-icon-label {
+  font-family: 'VT323', monospace;
+  font-size: 14px;
+  color: var(--silver-shadow);
+  letter-spacing: 1px;
+  text-transform: lowercase;
+}
+#contact .cd-icon-item:hover .cd-icon-label {
+  color: var(--terra);
+}
+ 
+/* Disc selector bar */
+#contact .cd-disc-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  padding: 6px 8px;
+  background: linear-gradient(180deg, var(--silver-mid), var(--silver-light));
+  border-radius: 4px;
+  border: 1px solid var(--silver-dark);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+}
+#contact .cd-disc-bar-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  color: var(--silver-shadow);
+  letter-spacing: 1px;
+  margin-right: 4px;
+}
+#contact .cd-disc-btn {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid var(--silver-dark);
+  width: 36px;
+  height: 24px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, var(--silver-light) 0%, var(--silver-mid) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.7),
+    0 1px 0 rgba(0,0,0,0.2);
+  font-family: 'VT323', monospace;
+  font-size: 13px;
+  color: var(--silver-shadow);
+  cursor: url('/cursors/pointer.png') 18 10, pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 0 4px;
+  transition: none;
+}
+#contact .cd-disc-btn:active {
+  transform: translateY(1px);
+  box-shadow:
+    inset 0 1px 2px rgba(0,0,0,0.3),
+    0 0 0 rgba(0,0,0,0);
+}
+#contact .cd-disc-btn-led {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(0,0,0,0.4);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.6);
+  flex-shrink: 0;
+}
+#contact .cd-disc-btn.active .cd-disc-btn-led {
+  background: radial-gradient(circle at 35% 30%, #c8ffd0 0%, var(--led-green) 40%, #2a8a35 100%);
+  box-shadow:
+    inset 0 0 1px rgba(255,255,255,0.6),
+    0 0 5px rgba(95,220,106,0.8);
+}
+#contact .cd-disc-btn.active {
+  background: linear-gradient(180deg, var(--silver-mid) 0%, var(--silver-light) 100%);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+  color: #1a1a1a;
+}
+ 
+/* Favorite sites grid (target of the disc carousel) */
+#contact .cd-fav-stage {
+  position: relative;
+  min-height: 80px;
+}
+#contact .cd-button-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 4px 0;
+  position: relative;            /* anchor for ::before/::after glitch */
+}
+/* GLITCH TRANSITION: RGB-split style flicker when changing discs */
+#contact .cd-button-grid.cd-glitching {
+  animation: cdGlitch 0.25s steps(4, end);
+}
+@keyframes cdGlitch {
+  0%   { transform: translate(0, 0); filter: none; }
+  20%  { transform: translate(-3px, 1px); filter: hue-rotate(15deg) contrast(1.3); }
+  40%  { transform: translate(2px, -2px); filter: hue-rotate(-20deg) saturate(2); }
+  60%  { transform: translate(-2px, 2px); filter: hue-rotate(20deg) contrast(1.5); }
+  80%  { transform: translate(1px, -1px); filter: hue-rotate(-10deg) saturate(1.5); }
+  100% { transform: translate(0, 0); filter: none; }
+}
+#contact .cd-button-grid.cd-glitching::before,
+#contact .cd-button-grid.cd-glitching::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg,
+    transparent 0,
+    transparent 4px,
+    rgba(255, 200, 200, 0.15) 4px,
+    rgba(255, 200, 200, 0.15) 5px);
+  mix-blend-mode: screen;
+  z-index: 5;
+  animation: cdGlitchBands 0.25s steps(4, end);
+}
+#contact .cd-button-grid.cd-glitching::after {
+  background: repeating-linear-gradient(0deg,
+    transparent 0,
+    transparent 6px,
+    rgba(108, 224, 216, 0.15) 6px,
+    rgba(108, 224, 216, 0.15) 7px);
+}
+@keyframes cdGlitchBands {
+  0%   { transform: translateY(0); opacity: 0.8; }
+  50%  { transform: translateY(-3px); opacity: 0.5; }
+  100% { transform: translateY(2px); opacity: 0.7; }
+}
+ 
+/* Each site button (88x31 placeholder for now, swap to <img> later) */
+#contact .cd-site-button {
+  width: 88px;
+  height: 31px;
+  border: 1px dashed var(--silver-shadow);
+  background: rgba(255,255,255,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'VT323', monospace;
+  font-size: 11px;
+  color: var(--silver-shadow);
+  text-align: center;
+  cursor: url('/cursors/pointer.png') 18 10, pointer;
+  padding: 2px;
+  line-height: 1.1;
+  text-decoration: none;
+  /* IMG SWAP NOTE: replace the placeholder text content with
+     <img src="..." alt="site name" width="88" height="31" /> when
+     you have real 88x31 site button images. */
+}
+ 
+/* Stamps marquee */
+#contact .cd-marquee-frame {
+  background: var(--lcd-bg);
+  border-top: 1px solid var(--silver-shadow);
+  border-left: 1px solid var(--silver-shadow);
+  border-right: 1px solid rgba(255,255,255,0.5);
+  border-bottom: 1px solid rgba(255,255,255,0.5);
+  border-radius: 3px;
+  padding: 8px 0;
+  overflow: hidden;
+}
+#contact .cd-marquee-track {
+  display: flex;
+  animation: cdMarqueeScroll 35s linear infinite;
+  width: max-content;
+}
+#contact .cd-marquee-frame:hover .cd-marquee-track {
+  animation-play-state: paused;
+}
+#contact .cd-stamp {
+  /* Real stamp images - sized to a consistent height, width auto. */
+  height: 56px;
+  width: auto;
+  flex-shrink: 0;
+  margin-right: 12px;
+  display: block;
+  /* Pixel-art friendly rendering for crisper stamps */
+  image-rendering: pixelated;
+}
+ 
+/* Webrings - reuse existing .webring-item etc. but override the tilt */
+#contact .cd-webrings {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  padding: 4px 0;
+}
+/* Override the inline rotate(...) style on each webring item.
+   Since the inline style has high specificity, we use !important here. */
+#contact .cd-webrings .webring-item {
+  transform: none !important;
+}
+#contact .cd-webrings .webring-item:hover {
+  /* Subtle scale on hover instead of straightening */
+  transform: scale(1.04) !important;
+}
+ 
+ 
+/* ============================================================
+   MODULE 4: BOTTOM FOOTER STRIP
+   ============================================================ */
+ 
+#contact .cd-footer-strip {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 18px;
+  background: linear-gradient(180deg, var(--silver-mid), var(--silver-dark));
+  font-family: 'VT323', monospace;
+  font-size: 11px;
+  color: rgba(0,0,0,0.55);
+  letter-spacing: 1px;
+}
+#contact .cd-footer-spec {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+#contact .cd-footer-led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #c8ffd0 0%, var(--led-green) 40%, #2a8a35 100%);
+  border: 1px solid rgba(0,0,0,0.4);
+  box-shadow:
+    inset 0 0 2px rgba(255,255,255,0.6),
+    0 0 6px rgba(95,220,106,0.7);
+}
+#contact .cd-footer-model {
+  margin-left: auto;
+  font-style: italic;
+}
+ 
+ 
+/* ============================================================
+   END CD PLAYER STYLES
+   ============================================================ */
+ 
 /* ============================================
    WEBRINGS ROW
    A staggered horizontal row of webring widgets
-   that sits under the links/socials card.
-   
    TO ADD A NEW WEBRING:
    Copy one of the .webring-item blocks in the HTML
    and adjust the rotate() angle in its inline style
@@ -2707,71 +3744,333 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
       </div>
       </div>
     </div>
-    <div class="card reveal" style="position:relative;">
-      <div class="card-tape"></div>
-      <p class="contact-text">(I'm not very active on social media these days!)</p>
-      <div class="contact-links">
-        <a href="https://www.instagram.com/lislecoombs/" class="contact-link" target="_blank">instagram</a>
+    <!-- ============================================================
+         CD PLAYER - replaces the old socials card + webrings row.
+         The section header (pigeon + "links to socials, etc.") above
+         is untouched.
+         ============================================================ -->
+ 
+    <!-- Black bezel wrapper - frames the silver chassis -->
+    <div class="cd-bezel reveal">
+    <div class="cd-stack" id="cd-stack">
+ 
+      <!-- ====== MODULE 1: HEADER (LCD + knob) ======
+           Brand badge area was removed - LCD takes the full left
+           portion now. Knob sits on the right. -->
+      <div class="cd-module cd-header">
+ 
+        <!-- LCD display -->
+        <div class="cd-lcd">
+          <div class="cd-lcd-top">
+            <span class="cd-lcd-status" id="cd-status">PLAY</span>
+            <span class="cd-lcd-trackinfo" id="cd-trackinfo">TR.01  --:--</span>
+          </div>
+          <div class="cd-lcd-main">
+            <!-- Animated visualizer bars - pause/play state controlled
+                 via .paused class on #cd-stack -->
+            <div class="cd-visualizer">
+              <div class="cd-vis-bar"></div>
+              <div class="cd-vis-bar"></div>
+              <div class="cd-vis-bar"></div>
+              <div class="cd-vis-bar"></div>
+              <div class="cd-vis-bar"></div>
+              <div class="cd-vis-bar"></div>
+              <div class="cd-vis-bar"></div>
+              <div class="cd-vis-bar"></div>
+            </div>
+            <!-- Scrolling LCD marquee. Messages cycle when the knob
+                 is clicked. The first message has the YouTube creator
+                 link. To EDIT MESSAGES: change the strings in the JS
+                 messages array. -->
+            <div class="cd-lcd-marquee">
+              <div class="cd-lcd-marquee-track" id="cd-marquee">
+                <!-- Initial content rendered by JS on load. -->
+              </div>
+            </div>
+          </div>
+        </div>
+ 
+        <!-- Volume knob - real PNG image. Click spins it + cycles LCD msg.
+             To swap to a different image: change the src below. -->
+        <div class="cd-knob-wrap">
+          <img class="cd-knob" id="cd-knob" src="images/CD-knob.png" alt="volume knob" />
+        </div>
       </div>
-    </div>
-  <!-- WEBRINGS ROW
-     Sits under the links card. Each .webring-item is one webring,
-     tilted a different angle for that scattered scrapbook feel.
-     To add another webring later, just copy one of the .webring-item
-     blocks below and change the rotation angle. -->
-<div class="webrings-row">
-
-  <!-- Off-Platform Webring -->
-  <!-- Three GIFs in a row: previous site, main webring link, next site. -->
-  <div class="webring-item" style="transform: rotate(-2.5deg);">
-    <div class="offplatform-row">
-      <a href="https://sakk.ie/off-platform?action=previous">
-        <img src="webrings/offplatform-left.gif" alt="Previous site in Off-Platform Webring">
-      </a>
-      <a href="https://sakk.ie/off-platform/">
-        <img src="webrings/offplatform-main.gif" alt="Off-Platform Webring" title="Off-Platform Webring">
-      </a>
-      <a href="https://sakk.ie/off-platform?action=next">
-        <img src="webrings/offplatform-right.gif" alt="Next site in Off-Platform Webring">
-      </a>
-    </div>
-  </div>
-
-  <!-- Apple Lovers Webring (green apple variant) -->
-  <!-- The two scripts inject the widget into the #apple-webring div. -->
-  <div class="webring-item" style="transform: rotate(2deg);">
-    <div id="apple-webring" data-apple="green">
-      <script type="text/javascript" src="https://poempuppy.neocities.org/webring/onionring-variables.js"></script>
-      <script type="text/javascript" src="https://poempuppy.neocities.org/webring/onionring-widget.js"></script>
-    </div>
-  </div>
-
-<!-- Void.Shrooms Webring -->
-  <!-- The iframe is rendered at its full 200x250 size, then visually shrunk
-       using CSS transform: scale() in the wrapper below. The wrapper has the
-       final scaled dimensions so the layout flows correctly. -->
-  <div class="webring-item" style="transform: rotate(1deg);">
-    <div class="shroom-iframe-wrapper">
-      <iframe src="https://void.shroom.ink/widget/?slug=Lisle&hex=" 
-              height="250" 
-              width="200" 
-              scrolling="no" 
-              frameborder="0"
-              class="shroom-iframe"
-              title="Void.Shrooms Webring"></iframe>
-    </div>
-  </div>
-
-  <!-- Women of the Internet Webring -->
-  <!-- Same onionring system as Apple Lovers but injected into #women-web. -->
-  <div class="webring-item" style="transform: rotate(-1.5deg);">
-    <div id="women-web">
-      <script type="text/javascript" src="https://womenoftheinternet.neocities.org/files/onionring-variables.js"></script>
-      <script type="text/javascript" src="https://womenoftheinternet.neocities.org/files/onionring-widget.js"></script>
-    </div>
-  </div>
-
-</div>
+ 
+      <!-- ====== MODULE 1.5: DETAIL STRIP ======
+           Decorative chrome details - side ports, status LEDs, preset
+           buttons. Preset buttons can be clicked for visual press
+           feedback but currently have no other behavior (sound effects
+           planned for later). -->
+      <div class="cd-module cd-details">
+ 
+        <!-- PHONES jack (left edge) -->
+        <div class="cd-port">
+          <div class="cd-port-hole"></div>
+          <div class="cd-port-label">PHONES</div>
+        </div>
+ 
+        <!-- Center: status LEDs + preset buttons -->
+        <div class="cd-details-center">
+ 
+          <!-- Status LED bar - all decorative -->
+          <div class="cd-led-bar">
+            <div class="cd-led-cell">
+              <div class="cd-led cd-led-large cd-led-green"></div>
+              <span class="cd-led-label">PWR</span>
+            </div>
+            <div class="cd-led-cell">
+              <div class="cd-led cd-led-med cd-led-teal"></div>
+              <span class="cd-led-label">CD</span>
+            </div>
+            <div class="cd-led-cell">
+              <div class="cd-led cd-led-med cd-led-pink"></div>
+              <span class="cd-led-label">FM</span>
+            </div>
+            <div class="cd-led-cell">
+              <div class="cd-led cd-led-med cd-led-green"></div>
+              <span class="cd-led-label">AUX</span>
+            </div>
+          </div>
+ 
+          <!-- 6 decorative preset buttons. Pressable for visual feedback,
+               no action wired up yet. Add sound effects later by listening
+               for click on .cd-preset-btn elements. -->
+          <div class="cd-presets">
+            <button class="cd-preset-btn" type="button" aria-label="preset 1"><span>1</span></button>
+            <button class="cd-preset-btn" type="button" aria-label="preset 2"><span>2</span></button>
+            <button class="cd-preset-btn" type="button" aria-label="preset 3"><span>3</span></button>
+            <button class="cd-preset-btn" type="button" aria-label="preset 4"><span>4</span></button>
+            <button class="cd-preset-btn" type="button" aria-label="preset 5"><span>5</span></button>
+            <button class="cd-preset-btn" type="button" aria-label="preset 6"><span>6</span></button>
+          </div>
+ 
+        </div>
+ 
+        <!-- MIC jack (right edge) -->
+        <div class="cd-port">
+          <div class="cd-port-hole"></div>
+          <div class="cd-port-label">MIC</div>
+        </div>
+ 
+      </div>
+ 
+      <!-- ====== MODULE 2: TRANSPORT BUTTONS ======
+           prev: skip back 15s in YouTube video
+           play: play/pause toggle (respects tbcActive)
+           next: skip forward 15s in YouTube video -->
+      <div class="cd-module cd-transport">
+ 
+        <button class="cd-button" id="cd-prev" type="button" aria-label="skip back 15 seconds">
+          <span class="cd-button-led"></span>
+          <span class="cd-button-icon">&#9664;&#9664;</span>
+          <span class="cd-button-text">prev</span>
+        </button>
+ 
+        <button class="cd-button active" id="cd-play" type="button" aria-label="play / pause music">
+          <span class="cd-button-led"></span>
+          <span class="cd-button-icon" id="cd-play-icon">&#9654;</span>
+          <span class="cd-button-text" id="cd-play-text">play</span>
+        </button>
+ 
+        <button class="cd-button" id="cd-next" type="button" aria-label="skip forward 15 seconds">
+          <span class="cd-button-led"></span>
+          <span class="cd-button-icon">&#9654;&#9654;</span>
+          <span class="cd-button-text">next</span>
+        </button>
+      </div>
+ 
+      <!-- ====== MODULE 3: CONTENT PANEL ======
+           Personal links + favorite sites carousel + stamps + webrings -->
+      <div class="cd-module cd-panel">
+ 
+        <!-- ─────── PERSONAL LINKS ───────
+             4 social platforms. To add more, just add another
+             <a class="cd-icon-item">...</a> block. The grid wraps. -->
+        <div class="cd-groupbox">
+          <div class="cd-groupbox-title">personal links</div>
+          <div class="cd-icon-grid">
+ 
+            <a class="cd-icon-item" href="https://letterboxd.com/lislecoombs/" target="_blank" rel="noopener">
+              <div class="cd-icon-img">[Letter<br>boxd<br>48x48]</div>
+              <div class="cd-icon-label">letterboxd</div>
+            </a>
+            <a class="cd-icon-item" href="https://www.goodreads.com/" target="_blank" rel="noopener">
+              <div class="cd-icon-img">[Good<br>reads<br>48x48]</div>
+              <div class="cd-icon-label">goodreads</div>
+            </a>
+            <a class="cd-icon-item" href="https://www.instagram.com/lislecoombs/" target="_blank" rel="noopener">
+              <div class="cd-icon-img">[Insta<br>gram<br>48x48]</div>
+              <div class="cd-icon-label">instagram</div>
+            </a>
+            <a class="cd-icon-item" href="https://open.spotify.com/" target="_blank" rel="noopener">
+              <div class="cd-icon-img">[Spot<br>ify<br>48x48]</div>
+              <div class="cd-icon-label">spotify</div>
+            </a>
+ 
+          </div>
+        </div>
+ 
+        <!-- ─────── FAVORITE SITES (DISC CAROUSEL) ───────
+             Disc 1 holds your initial 8 favorite sites.
+             To ADD A NEW DISC: add a button in .cd-disc-bar and a
+             matching object in the JS `discs` data with up to ~8 sites.
+             To ADD A NEW SITE: add an entry to the right disc's array.
+             Each site is { name, url } - name shows as button text
+             until you swap to real 88x31 site button images. -->
+        <div class="cd-groupbox">
+          <div class="cd-groupbox-title">favorite sites</div>
+ 
+          <!-- Disc selector bar -->
+          <div class="cd-disc-bar">
+            <span class="cd-disc-bar-label">disc</span>
+            <button class="cd-disc-btn active" type="button" data-disc="1">
+              <span class="cd-disc-btn-led"></span>1
+            </button>
+            <button class="cd-disc-btn" type="button" data-disc="2">
+              <span class="cd-disc-btn-led"></span>2
+            </button>
+            <button class="cd-disc-btn" type="button" data-disc="3">
+              <span class="cd-disc-btn-led"></span>3
+            </button>
+            <button class="cd-disc-btn" type="button" data-disc="4">
+              <span class="cd-disc-btn-led"></span>4
+            </button>
+          </div>
+ 
+          <!-- Stage where the favorite sites grid renders.
+               Initial content is populated by JS on load from the
+               `discs` data object (see CHANGE 3). -->
+          <div class="cd-fav-stage">
+            <div class="cd-button-grid" id="cd-fav-grid">
+              <!-- populated by JS -->
+            </div>
+          </div>
+        </div>
+ 
+        <!-- ─────── STAMPS MARQUEE ───────
+             Scrolling row of your 16 stamps. To ADD MORE STAMPS:
+             add the new <img> to BOTH copies inside .cd-marquee-track
+             below (the duplication is what makes the loop seamless -
+             every new stamp must appear twice in the same order). -->
+        <div class="cd-groupbox">
+          <div class="cd-groupbox-title">neocities stamps</div>
+          <div class="cd-marquee-frame">
+            <div class="cd-marquee-track">
+ 
+              <!-- Copy A -->
+              <img class="cd-stamp" src="stamps/abducted.png"     alt="abducted by aliens stamp" />
+              <img class="cd-stamp" src="stamps/aliencat.png"     alt="alien cat stamp" />
+              <img class="cd-stamp" src="stamps/awesome.png"      alt="awesome stamp" />
+              <img class="cd-stamp" src="stamps/cheese.gif"       alt="cheese stamp" />
+              <img class="cd-stamp" src="stamps/compcat.webp"     alt="cat on computer stamp" />
+              <img class="cd-stamp" src="stamps/computers.png"    alt="computers in forest stamp" />
+              <img class="cd-stamp" src="stamps/dude.jpg"         alt="dude stamp" />
+              <img class="cd-stamp" src="stamps/emoticonlover.gif" alt="emoticon lover stamp" />
+              <img class="cd-stamp" src="stamps/ilovecats.png"    alt="i love cats stamp" />
+              <img class="cd-stamp" src="stamps/jellyfish.gif"    alt="jellyfish stamp" />
+              <img class="cd-stamp" src="stamps/nyancat.webp"     alt="nyan cat stamp" />
+              <img class="cd-stamp" src="stamps/pochitaCSM.png"   alt="pochita stamp" />
+              <img class="cd-stamp" src="stamps/sleeping.gif"     alt="sleeping stamp" />
+              <img class="cd-stamp" src="stamps/snailmail.gif"    alt="snail mail stamp" />
+              <img class="cd-stamp" src="stamps/teeth.webp"       alt="teeth stamp" />
+              <img class="cd-stamp" src="stamps/trishJJBA.jpg"    alt="trish JJBA stamp" />
+ 
+              <!-- Copy B - DUPLICATE of Copy A (required for seamless loop) -->
+              <img class="cd-stamp" src="stamps/abducted.png"     alt="" aria-hidden="true" />
+              <img class="cd-stamp" src="stamps/aliencat.png"     alt="" aria-hidden="true" />
+              <img class="cd-stamp" src="stamps/awesome.png"      alt="" aria-hidden="true" />
+              <img class="cd-stamp" src="stamps/cheese.gif"       alt="" aria-hidden="true" />
+              <img class="cd-stamp" src="stamps/compcat.webp"     alt="" aria-hidden="true" />
+              <img class="cd-stamp" src="stamps/computers.png"    alt="" aria-hidden="true" />
+              <img class="cd-stamp" src="stamps/dude.jpg"         alt="" aria-hidden="true" />
+              <img class="cd-stamp" src="stamps/emoticonlover.gif" alt="" aria-hidden="true" />
+              <img class="cd-stamp" src="stamps/ilovecats.png"    alt="" aria-hidden="true" />
+              <img class="cd-stamp" src="stamps/jellyfish.gif"    alt="" aria-hidden="true" />
+              <img class="cd-stamp" src="stamps/nyancat.webp"     alt="" aria-hidden="true" />
+              <img class="cd-stamp" src="stamps/pochitaCSM.png"   alt="" aria-hidden="true" />
+              <img class="cd-stamp" src="stamps/sleeping.gif"     alt="" aria-hidden="true" />
+              <img class="cd-stamp" src="stamps/snailmail.gif"    alt="" aria-hidden="true" />
+              <img class="cd-stamp" src="stamps/teeth.webp"       alt="" aria-hidden="true" />
+              <img class="cd-stamp" src="stamps/trishJJBA.jpg"    alt="" aria-hidden="true" />
+ 
+            </div>
+          </div>
+        </div>
+ 
+        <!-- ─────── WEBRINGS ───────
+             Reuses the existing webring HTML. The .cd-webrings wrapper
+             overrides the rotation tilts so they sit straight inside
+             the CD player. To ADD A NEW WEBRING: add another
+             <div class="webring-item"> block inside .cd-webrings. -->
+        <div class="cd-groupbox">
+          <div class="cd-groupbox-title">webrings</div>
+          <div class="cd-webrings">
+ 
+            <!-- Off-Platform Webring -->
+            <div class="webring-item">
+              <div class="offplatform-row">
+                <a href="https://sakk.ie/off-platform?action=previous">
+                  <img src="webrings/offplatform-left.gif" alt="Previous site in Off-Platform Webring">
+                </a>
+                <a href="https://sakk.ie/off-platform/">
+                  <img src="webrings/offplatform-main.gif" alt="Off-Platform Webring" title="Off-Platform Webring">
+                </a>
+                <a href="https://sakk.ie/off-platform?action=next">
+                  <img src="webrings/offplatform-right.gif" alt="Next site in Off-Platform Webring">
+                </a>
+              </div>
+            </div>
+ 
+            <!-- Apple Lovers Webring -->
+            <div class="webring-item">
+              <div id="apple-webring" data-apple="green">
+                <script type="text/javascript" src="https://poempuppy.neocities.org/webring/onionring-variables.js"></script>
+                <script type="text/javascript" src="https://poempuppy.neocities.org/webring/onionring-widget.js"></script>
+              </div>
+            </div>
+ 
+            <!-- Void.Shrooms Webring -->
+            <div class="webring-item">
+              <div class="shroom-iframe-wrapper">
+                <iframe src="https://void.shroom.ink/widget/?slug=Lisle&hex="
+                        height="250"
+                        width="200"
+                        scrolling="no"
+                        frameborder="0"
+                        class="shroom-iframe"
+                        title="Void.Shrooms Webring"></iframe>
+              </div>
+            </div>
+ 
+            <!-- Women of the Internet Webring -->
+            <div class="webring-item">
+              <div id="women-web">
+                <script type="text/javascript" src="https://womenoftheinternet.neocities.org/files/onionring-variables.js"></script>
+                <script type="text/javascript" src="https://womenoftheinternet.neocities.org/files/onionring-widget.js"></script>
+              </div>
+            </div>
+ 
+          </div>
+        </div>
+ 
+      </div>
+ 
+      <!-- ====== MODULE 4: BOTTOM FOOTER STRIP ======
+           Decorative model number bar -->
+      <div class="cd-module cd-footer-strip">
+        <div class="cd-footer-spec">
+          <div class="cd-footer-led"></div>
+          <span>POWER</span>
+        </div>
+        <div class="cd-footer-spec">
+          <span>STEREO  CD-DA</span>
+        </div>
+        <div class="cd-footer-model">model LC-1986</div>
+      </div>
+ 
+    </div><!-- /.cd-stack -->
+    </div><!-- /.cd-bezel -->
   </div>
 </section>
 <footer id="site-footer">
@@ -4269,6 +5568,285 @@ if(tardisFirstAppear){
   });
 
 loadEntries();
+/* ════════════════════════════════════════════════════════════
+   CD PLAYER (socials section)
+   ════════════════════════════════════════════════════════════
+   Wires up:
+   - Knob spin + LCD message cycling
+   - Play/pause hooked to YouTube (respects tbcActive, syncs the
+     existing musicBtn/musicLabel state)
+   - Prev/next = YouTube seekTo +/- 15s with brief LCD overlay
+   - Disc carousel with glitchy RGB-split transition
+   ════════════════════════════════════════════════════════════ */
+(function(){
+ 
+  // Bail if the CD player isn't on the page
+  var stack = document.getElementById('cd-stack');
+  if(!stack) return;
+ 
+  /* ─────────────────────────────────────────────────────────
+     LCD MARQUEE MESSAGES
+     The first message has the YouTube creator credit with a
+     clickable link to miffynoa's channel. Edit messages[1+]
+     freely - any HTML works inside each message.
+     ───────────────────────────────────────────────────────── */
+  var messages = [
+    'now playing: fun and chill elevator videogame music by <a href="https://www.youtube.com/@miffynoa" target="_blank" rel="noopener">miffynoa</a>',
+    '<-- you are visitor #00321 --> sign the guestbook',
+    '** off-platform & off the grid ** thanks for stopping by',
+    '~ recently watched: a kid like jake (2018) ~',
+    '* currently reading: the secret history * donna tartt'
+  ];
+  var msgIdx = 0;
+ 
+  var marqueeEl = document.getElementById('cd-marquee');
+ 
+  function renderMessage(){
+    var msg = messages[msgIdx];
+    // Marquee needs the message TWICE for seamless loop
+    marqueeEl.innerHTML =
+      '<span class="cd-lcd-msg">' + msg + '</span>' +
+      '<span class="cd-lcd-msg">' + msg + '</span>';
+  }
+  function setMessage(idx){
+    msgIdx = ((idx % messages.length) + messages.length) % messages.length;
+    renderMessage();
+  }
+  // Initial render
+  renderMessage();
+ 
+  /* ─────────────────────────────────────────────────────────
+     SKIP OVERLAY (prev/next show a brief "<<15s" / "15s>>" on
+     the LCD top-right for ~1s)
+     ───────────────────────────────────────────────────────── */
+  var trackInfoEl = document.getElementById('cd-trackinfo');
+  var trackInfoDefault = trackInfoEl ? trackInfoEl.textContent : '';
+  var trackInfoTimer = null;
+ 
+  function showSkipOverlay(text){
+    if(!trackInfoEl) return;
+    trackInfoEl.textContent = text;
+    if(trackInfoTimer) clearTimeout(trackInfoTimer);
+    trackInfoTimer = setTimeout(function(){
+      trackInfoEl.textContent = trackInfoDefault;
+    }, 1000);
+  }
+ 
+  function flashLed(btnId){
+    var btn = document.getElementById(btnId);
+    if(!btn) return;
+    btn.classList.add('flash');
+    setTimeout(function(){ btn.classList.remove('flash'); }, 320);
+  }
+ 
+  /* ─────────────────────────────────────────────────────────
+     PREV / NEXT - YouTube seekTo +/- 15s.
+     We don't change the LCD scrolling text - that's the knob's job.
+     We DO show a brief skip indicator on the LCD top-right.
+     ───────────────────────────────────────────────────────── */
+  document.getElementById('cd-prev').addEventListener('click', function(){
+    flashLed('cd-prev');
+    showSkipOverlay('<<15s');
+    if(typeof ytPlayer !== 'undefined' && ytPlayer && musicReady){
+      try {
+        var t = ytPlayer.getCurrentTime();
+        ytPlayer.seekTo(Math.max(0, t - 15), true);
+      } catch(e){ /* ytPlayer not ready, ignore */ }
+    }
+  });
+  document.getElementById('cd-next').addEventListener('click', function(){
+    flashLed('cd-next');
+    showSkipOverlay('15s>>');
+    if(typeof ytPlayer !== 'undefined' && ytPlayer && musicReady){
+      try {
+        var t = ytPlayer.getCurrentTime();
+        ytPlayer.seekTo(t + 15, true);
+      } catch(e){ /* ytPlayer not ready, ignore */ }
+    }
+  });
+ 
+  /* ─────────────────────────────────────────────────────────
+     PLAY / PAUSE - hooked to YouTube. Mirrors the existing
+     #music-btn behavior (so the tooltip in the top-left stays
+     in sync with what the CD button does). Respects tbcActive:
+     when the To Be Continued easter egg is active, this button
+     does nothing.
+     ───────────────────────────────────────────────────────── */
+  var statusEl = document.getElementById('cd-status');
+  var playIcon = document.getElementById('cd-play-icon');
+  var playText = document.getElementById('cd-play-text');
+  var playBtn  = document.getElementById('cd-play');
+ 
+  function updatePlayUI(isPlaying){
+    if(isPlaying){
+      stack.classList.remove('paused');
+      statusEl.textContent = 'PLAY';
+      statusEl.classList.remove('paused');
+      playIcon.innerHTML = '&#9654;';
+      playText.textContent = 'play';
+      playBtn.classList.add('active');
+    } else {
+      stack.classList.add('paused');
+      statusEl.textContent = 'PAUSE';
+      statusEl.classList.add('paused');
+      playIcon.innerHTML = '&#10074;&#10074;';
+      playText.textContent = 'pause';
+      playBtn.classList.remove('active');
+    }
+  }
+ 
+  // Initialize the visual state to match current music state
+  updatePlayUI(typeof musicPlaying !== 'undefined' ? musicPlaying : false);
+ 
+  playBtn.addEventListener('click', function(){
+    // Don't override TBC - the easter egg has paused music intentionally
+    if(typeof tbcActive !== 'undefined' && tbcActive){
+      // Brief LCD hint that this is unavailable right now
+      showSkipOverlay('LOCKED');
+      return;
+    }
+    if(typeof musicReady === 'undefined' || !musicReady){
+      // YT API not loaded yet - just flip the visual state for feedback
+      updatePlayUI(!stack.classList.contains('paused') ? false : true);
+      return;
+    }
+    if(musicPlaying){
+      ytPlayer.pauseVideo();
+      musicPlaying = false;
+      // Sync the existing music button at the top of the page
+      var topBtn = document.getElementById('music-btn');
+      var topLbl = document.getElementById('music-label');
+      if(topBtn) topBtn.classList.add('paused');
+      if(topLbl) topLbl.textContent = 'play music';
+      updatePlayUI(false);
+    } else {
+      ytPlayer.playVideo();
+      musicPlaying = true;
+      var topBtn = document.getElementById('music-btn');
+      var topLbl = document.getElementById('music-label');
+      if(topBtn) topBtn.classList.remove('paused');
+      if(topLbl) topLbl.textContent = 'music on';
+      updatePlayUI(true);
+    }
+  });
+ 
+  /* ─────────────────────────────────────────────────────────
+     STATE SYNC - if the user toggles the top music button
+     (or TBC ends and resumes music), this CD player's UI
+     should reflect the new state. We poll the global
+     musicPlaying every 500ms as a low-effort sync mechanism.
+     This is cheaper than wrapping every place that mutates
+     musicPlaying, and a 500ms lag is imperceptible.
+     ───────────────────────────────────────────────────────── */
+  var lastKnownPlaying = (typeof musicPlaying !== 'undefined') ? musicPlaying : false;
+  setInterval(function(){
+    if(typeof musicPlaying === 'undefined') return;
+    if(musicPlaying !== lastKnownPlaying){
+      lastKnownPlaying = musicPlaying;
+      updatePlayUI(musicPlaying);
+    }
+  }, 500);
+ 
+  /* ─────────────────────────────────────────────────────────
+     VOLUME KNOB - click to spin + cycle LCD message
+     Uses 8 discrete steps over 0.8s for the chunky/retro feel.
+     The 6 rivets around the knob's rim make rotation visible.
+     ───────────────────────────────────────────────────────── */
+  var knob = document.getElementById('cd-knob');
+  var knobRotation = 0;
+ 
+  if(knob){
+    knob.addEventListener('click', function(){
+      var fromDeg = knobRotation;
+      knobRotation = knobRotation + 360;
+      knob.style.setProperty('--cd-knob-from', fromDeg + 'deg');
+      knob.style.setProperty('--cd-knob-to', knobRotation + 'deg');
+      // Re-trigger the animation by removing + re-adding the class
+      knob.classList.remove('cd-spinning');
+      void knob.offsetWidth;       // force reflow so animation restarts
+      knob.classList.add('cd-spinning');
+      // Cycle to next message
+      setMessage(msgIdx + 1);
+    });
+ 
+    // After spin completes, persist the final rotation as inline transform
+    // so the knob stays at that angle between clicks (avoids snap-back)
+    knob.addEventListener('animationend', function(e){
+      if(e.animationName === 'cdKnobSpin'){
+        knob.style.transform = 'rotate(' + knobRotation + 'deg)';
+        knob.classList.remove('cd-spinning');
+      }
+    });
+  }
+ 
+  /* ─────────────────────────────────────────────────────────
+     DISC CAROUSEL - swap the favorite sites grid based on
+     which disc is active. Glitchy RGB-split transition.
+ 
+     TO ADD A NEW SITE: add an entry to the right disc's array
+     in `discs` below. Each entry is { name, url }.
+     TO ADD A NEW DISC: extend the discs object (e.g. discs[5])
+     and add a matching <button data-disc="5"> in the HTML.
+     ───────────────────────────────────────────────────────── */
+  var discs = {
+    1: [
+      { name: 'ribo.zone',           url: 'https://ribo.zone/' },
+      { name: 'rice place',          url: 'https://rice.place/home.html' },
+      { name: 'altalenae',           url: 'https://altalenae.neocities.org/' },
+      { name: 'two-reeler',          url: 'https://two-reeler.com/home/' },
+      { name: 'known-lighthouse',    url: 'https://known-lighthouse.neocities.org/homepage' },
+      { name: 'olliveen',            url: 'https://olliveen.neocities.org' },
+      { name: 'oodlecat',            url: 'https://oodlecat.meowandsparkle.party/nekOS.html' },
+      { name: 'snails.town',         url: 'https://snails.town/' }
+    ],
+    2: [],
+    3: [],
+    4: []
+  };
+ 
+  var favGrid = document.getElementById('cd-fav-grid');
+  var discBtns = document.querySelectorAll('#contact .cd-disc-btn');
+ 
+  function renderDisc(num){
+    var sites = discs[num] || [];
+    if(sites.length === 0){
+      favGrid.innerHTML = '<div style="font-family:VT323,monospace;font-size:13px;color:#3a3e44;padding:18px 0;width:100%;text-align:center;">[ disc empty - add sites in the JS ]</div>';
+      return;
+    }
+    favGrid.innerHTML = sites.map(function(s){
+      // IMG SWAP NOTE: when you have real 88x31 site button images,
+      // replace the inner text with <img src="..." alt="...">
+      return '<a class="cd-site-button" href="' + s.url + '" target="_blank" rel="noopener">' + s.name + '</a>';
+    }).join('');
+  }
+ 
+  function setDisc(num){
+    discBtns.forEach(function(b){
+      b.classList.toggle('active', parseInt(b.dataset.disc, 10) === num);
+    });
+    favGrid.classList.remove('cd-glitching');
+    void favGrid.offsetWidth;
+    favGrid.classList.add('cd-glitching');
+    // Swap content midway through the glitch
+    setTimeout(function(){ renderDisc(num); }, 100);
+    setTimeout(function(){ favGrid.classList.remove('cd-glitching'); }, 250);
+  }
+ 
+  // Initial render of disc 1
+  renderDisc(1);
+ 
+  // Wire up disc buttons
+  discBtns.forEach(function(b){
+    b.addEventListener('click', function(){
+      var num = parseInt(b.dataset.disc, 10);
+      // Skip if clicking the already-active disc
+      if(b.classList.contains('active')) return;
+      setDisc(num);
+    });
+  });
+ 
+})();
+
 </script>
 
 <script>
