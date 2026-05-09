@@ -4476,7 +4476,7 @@ drawStars();
 
 
 /* ═ YOUTUBE ═ */
-var YT_ID='yJTmJH4BKmo',YT_MAX=2520;
+var YT_ID='yJTmJH4BKmo',YT_MAX=6500;  /* video is 1h49m (~6540s) - leave a 40s buffer at the end */
 var ytPlayer=null,musicPlaying=false,musicReady=false;
 var ytScript=document.createElement('script');ytScript.src='https://www.youtube.com/iframe_api';document.head.appendChild(ytScript);
 window.onYouTubeIframeAPIReady=function(){
@@ -4497,10 +4497,35 @@ window.onYouTubeIframeAPIReady=function(){
 };
 var musicBtn=document.getElementById('music-btn');
 var musicLabel=document.getElementById('music-label');
+
+/* Tracks whether the user has pressed play yet THIS SESSION.
+   First press → seek to a random spot in the video.
+   All subsequent presses → just toggle play/pause normally
+   so the music resumes from where they paused it.
+   This flag is shared by the top-left music button AND the CD
+   player's play button (whichever fires first wins). */
+window.cdMusicFirstPlay = true;
+
+function cdHandleFirstPlay(){
+  if(!window.cdMusicFirstPlay) return;
+  if(!musicReady || !ytPlayer) return;
+  window.cdMusicFirstPlay = false;
+  /* Pick a random spot in the video. YT_MAX is set above to
+     6500 (just under the video's 6540s total length). */
+  var randomStart = Math.floor(Math.random() * YT_MAX);
+  try { ytPlayer.seekTo(randomStart, true); } catch(e){ /* ignore */ }
+}
+
 musicBtn.addEventListener('click',function(){
   if(!musicReady){musicLabel.textContent='loading...';return;}
-  if(musicPlaying){ytPlayer.pauseVideo();musicPlaying=false;musicBtn.classList.add('paused');musicLabel.textContent='play music';}
-  else{ytPlayer.playVideo();musicPlaying=true;musicBtn.classList.remove('paused');musicLabel.textContent='music on';}
+  if(musicPlaying){
+    ytPlayer.pauseVideo();musicPlaying=false;
+    musicBtn.classList.add('paused');musicLabel.textContent='play music';
+  } else {
+    cdHandleFirstPlay();  /* random seek if this is the first play of the session */
+    ytPlayer.playVideo();musicPlaying=true;
+    musicBtn.classList.remove('paused');musicLabel.textContent='music on';
+  }
 });
 
 /* ═ TYPEWRITER ═ */
@@ -5608,6 +5633,13 @@ loadEntries();
     marqueeEl.innerHTML =
       '<span class="cd-lcd-msg">' + msg + '</span>' +
       '<span class="cd-lcd-msg">' + msg + '</span>';
+    // Restart the marquee animation from the beginning so the new
+    // message scrolls in fresh instead of popping in mid-scroll.
+    // Briefly removing the animation + forcing a reflow + clearing
+    // the override lets the CSS rule re-apply from frame 0.
+    marqueeEl.style.animation = 'none';
+    void marqueeEl.offsetWidth;          // forces reflow
+    marqueeEl.style.animation = '';      // returns to the CSS rule
   }
   function setMessage(idx){
     msgIdx = ((idx % messages.length) + messages.length) % messages.length;
@@ -5647,11 +5679,21 @@ loadEntries();
      ───────────────────────────────────────────────────────── */
   document.getElementById('cd-prev').addEventListener('click', function(){
     flashLed('cd-prev');
-    showSkipOverlay('<<15s');
+    showSkipOverlay('<<30s');
     if(typeof ytPlayer !== 'undefined' && ytPlayer && musicReady){
       try {
         var t = ytPlayer.getCurrentTime();
-        ytPlayer.seekTo(Math.max(0, t - 15), true);
+        ytPlayer.seekTo(Math.max(0, t - 30), true);
+      } catch(e){ /* ytPlayer not ready, ignore */ }
+    }
+  });
+  document.getElementById('cd-next').addEventListener('click', function(){
+    flashLed('cd-next');
+    showSkipOverlay('30s>>');
+    if(typeof ytPlayer !== 'undefined' && ytPlayer && musicReady){
+      try {
+        var t = ytPlayer.getCurrentTime();
+        ytPlayer.seekTo(t + 30, true);
       } catch(e){ /* ytPlayer not ready, ignore */ }
     }
   });
@@ -5721,6 +5763,10 @@ loadEntries();
       if(topLbl) topLbl.textContent = 'play music';
       updatePlayUI(false);
     } else {
+      // First-play random seek (shared with the top music button).
+      // If the top button has already been pressed once this session,
+      // cdMusicFirstPlay is false and this is a no-op.
+      if(typeof cdHandleFirstPlay === 'function') cdHandleFirstPlay();
       ytPlayer.playVideo();
       musicPlaying = true;
       var topBtn = document.getElementById('music-btn');
