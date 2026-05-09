@@ -5699,7 +5699,7 @@ loadEntries();
   });
   document.getElementById('cd-next').addEventListener('click', function(){
     flashLed('cd-next');
-    showSkipOverlay('15s>>');
+    showSkipOverlay('30s>>');
     if(typeof ytPlayer !== 'undefined' && ytPlayer && musicReady){
       try {
         var t = ytPlayer.getCurrentTime();
