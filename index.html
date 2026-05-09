@@ -937,11 +937,13 @@
   100% { transform: translateY(2px); opacity: 0.7; }
 }
  
-/* Each site button (88x31 placeholder for now, swap to <img> later) */
+/* Each site button - 88x31 wrapper that holds either a button image
+   (if available) or text fallback. The wrapper keeps a uniform cell
+   size so the grid stays tidy even when button images vary. */
 #contact .cd-site-button {
   width: 88px;
   height: 31px;
-  border: 1px dashed var(--silver-shadow);
+  border: 1px solid rgba(0,0,0,0.15);   /* solid border (not dashed) since real buttons fill the cell */
   background: rgba(255,255,255,0.5);
   display: flex;
   align-items: center;
@@ -951,12 +953,28 @@
   color: var(--silver-shadow);
   text-align: center;
   cursor: url('/cursors/pointer.png') 18 10, pointer;
-  padding: 2px;
+  padding: 0;                            /* no padding so images fill edge-to-edge */
   line-height: 1.1;
   text-decoration: none;
-  /* IMG SWAP NOTE: replace the placeholder text content with
-     <img src="..." alt="site name" width="88" height="31" /> when
-     you have real 88x31 site button images. */
+  overflow: hidden;                      /* clip any image that exceeds the wrapper */
+  /* For text fallback (no img): show the dashed placeholder look */
+  background-clip: padding-box;
+}
+/* Cells WITHOUT an image inside (text fallback) get the dashed placeholder look */
+#contact .cd-site-button:not(:has(img)) {
+  border: 1px dashed var(--silver-shadow);
+  padding: 2px;
+}
+/* The button image itself - constrained to fit cleanly inside the cell.
+   max-width/max-height keep oversized buttons in bounds without distorting them.
+   Native dimensions render at 1:1 if they fit. */
+#contact .cd-site-button img {
+  max-width: 88px;
+  max-height: 31px;
+  width: auto;
+  height: auto;
+  display: block;
+  image-rendering: pixelated;            /* keeps pixel-art buttons crisp */
 }
  
 /* Stamps marquee */
@@ -5836,21 +5854,26 @@ loadEntries();
      and add a matching <button data-disc="5"> in the HTML.
      14 sites per disc. 
      ───────────────────────────────────────────────────────── */
+  /* Each entry: { name, url, img? }
+     - name: text fallback (used as alt text and shown if img is missing)
+     - url:  destination
+     - img:  filename in /site-buttons/ (omit if you don't have a button image yet)
+     TO ADD A SITE: append a new {} to the right disc array.
+     TO MOVE TO A NEW DISC: just shift entries between disc arrays below. */
   var discs = {
     1: [
-      { name: 'ribo.zone',           url: 'https://ribo.zone/' },
-      { name: 'rice place',          url: 'https://rice.place/home.html' },
-      { name: 'altalenae',           url: 'https://altalenae.neocities.org/' },
-      { name: 'two-reeler',          url: 'https://two-reeler.com/home/' },
-      { name: 'known-lighthouse',    url: 'https://known-lighthouse.neocities.org/homepage' },
-      { name: 'olliveen',            url: 'https://olliveen.neocities.org' },
-      { name: 'snails.town',         url: 'https://snails.town/' },
-      { name: 'ita.toys',            url: 'https://ita.toys/' },
-      { name: 'petrapixel',          url: 'https://petrapixel.neocities.org/' },
-      { name: 'myrrh',               url: 'https://myrrh.city' },
-      { name: 'stupied',             url: 'https://stupied.net' },
-      { name: 'ughbees',             url: 'https://ughbees.neocities.org/' },
-      
+      { name: 'ribo.zone',        url: 'https://ribo.zone/',                                    img: 'ribose.png' },
+      { name: 'rice place',       url: 'https://rice.place/home.html',                          img: 'riceplace.gif' },
+      { name: 'altalenae',        url: 'https://altalenae.neocities.org/' /* no button yet */                       },
+      { name: 'two-reeler',       url: 'https://two-reeler.com/home/',                          img: 'Two-Reeler_Microbanner.gif' },
+      { name: 'known-lighthouse', url: 'https://known-lighthouse.neocities.org/homepage',       img: 'knownlighthouse.png' },
+      { name: 'olliveen',         url: 'https://olliveen.neocities.org',                        img: 'olliveen.jpg' },
+      { name: 'snails.town',      url: 'https://snails.town/',                                  img: 'snails.png' },
+      { name: 'ita.toys',         url: 'https://ita.toys/',                                     img: 'ita-button-02.gif' },
+      { name: 'petrapixel',       url: 'https://petrapixel.neocities.org/',                     img: 'petrapixel.webp' },
+      { name: 'myrrh',            url: 'https://myrrh.city',                                    img: 'myrrh-button-2.png' },
+      { name: 'stupied',          url: 'https://stupied.net',                                   img: 'stupied.png' },
+      { name: 'ughbees',          url: 'https://ughbees.neocities.org/',                        img: 'ughbeesbutton.gif' }
     ],
     2: [],
     3: [],
@@ -5867,9 +5890,13 @@ loadEntries();
       return;
     }
     favGrid.innerHTML = sites.map(function(s){
-      // IMG SWAP NOTE: when you have real 88x31 site button images,
-      // replace the inner text with <img src="..." alt="...">
-      return '<a class="cd-site-button" href="' + s.url + '" target="_blank" rel="noopener">' + s.name + '</a>';
+      // If a button image exists, render it. Otherwise show text fallback.
+      // The wrapper .cd-site-button keeps a uniform 88x31 cell so the row
+      // looks tidy even when image dimensions vary.
+      var inner = s.img
+        ? '<img src="site-buttons/' + s.img + '" alt="' + s.name + '" />'
+        : s.name;
+      return '<a class="cd-site-button" href="' + s.url + '" target="_blank" rel="noopener" title="' + s.name + '">' + inner + '</a>';
     }).join('');
   }
  
