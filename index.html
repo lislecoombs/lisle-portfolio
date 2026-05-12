@@ -3073,14 +3073,24 @@
 #letter-overlay.open #letter-inner{transform:translateY(0) rotate(0deg);opacity:1;}
 #letter-scene{position:relative;padding:20px 105px 240px;}
 #letter-photos{position:absolute;inset:0;pointer-events:none;z-index:6;overflow:visible;}
-#letter-paper{position:relative;z-index:5;background-color:#f0ebe0;border:1px solid #c8b48a;box-shadow:4px 6px 28px rgba(0,0,0,.6);background-image:linear-gradient(rgba(180,120,55,.12) 1px,transparent 1px);background-size:100% 30px;background-position:0 29px;padding:36px 200px 36px 200px;}
+/* Paper padding (top right bottom left). The horizontal padding holds text
+   back from the area where polaroids overlap the paper's edges. With 220px
+   polaroids, side polaroids extend ~115px into the paper from each edge,
+   so 150px gives a ~35px buffer before text starts.
+   TWEAK if needed: smaller = wider text column but risks polaroids overlapping
+   the first character of each line. Don't go below 130. */
+#letter-paper{position:relative;z-index:5;background-color:#f0ebe0;border:1px solid #c8b48a;box-shadow:4px 6px 28px rgba(0,0,0,.6);background-image:linear-gradient(rgba(180,120,55,.12) 1px,transparent 1px);background-size:100% 30px;background-position:0 29px;padding:36px 150px 36px 150px;}
 #letter-paper::before{content:'';position:absolute;top:0;bottom:0;left:50px;width:1px;background:rgba(200,80,80,.2);pointer-events:none;}
 #letter-title-el{font-family:'Playfair Display',serif;font-style:italic;font-size:1.8rem;color:#2a1808;margin-bottom:6px;}
 #letter-date-el{font-family:'Caveat',cursive;font-size:.9rem;color:var(--terra);margin-bottom:18px;display:block;}
 #letter-body-el{font-family:'Lora',serif;font-size:.95rem;line-height:1.9;color:#3a2210;white-space:pre-wrap;}
-.letter-polaroid{position:absolute;pointer-events:all;background:#fff;padding:10px 10px 42px;box-shadow:3px 5px 18px rgba(0,0,0,.5);width:180px;cursor:url('/cursors/pointer.png') 18 10,pointer;opacity:0;z-index:1;}
+/* Polaroid card width — controls overall size since pol-img-area is width:100% */
+.letter-polaroid{position:absolute;pointer-events:all;background:#fff;padding:10px 10px 42px;box-shadow:3px 5px 18px rgba(0,0,0,.5);width:220px;cursor:url('/cursors/pointer.png') 18 10,pointer;opacity:0;z-index:1;}
 .letter-polaroid:hover{z-index:20;filter:brightness(1.06);}
-.letter-polaroid.pol-stack{height:240px;background:transparent;box-shadow:none;padding:0;}
+/* Stacked polaroids (when a blog photo has 2 images) need extra height
+   because the back card is rotated -8deg and offset. Keep this ~1.3x the
+   polaroid width so the card fully encloses the image + caption + offset. */
+.letter-polaroid.pol-stack{height:290px;background:transparent;box-shadow:none;padding:0;}
 .pol-card{position:absolute;inset:0;background:#fff;padding:10px 10px 42px;box-shadow:3px 5px 18px rgba(0,0,0,.5);transition:transform .4s cubic-bezier(.34,1.56,.64,1),z-index 0s;}
 .pol-front-card{z-index:2;}
 .pol-back-card{z-index:1;transform:rotate(-8deg) translate(-8px,-5px);}
@@ -3349,7 +3359,7 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
     <li><a href="#about">about</a></li>
     <li><a href="#gallery">portfolio</a></li>
     <li><a href="#guestbook">guestbook</a></li>
-    <li><a href="#contact">socials</a></li>
+    <li><a href="#contact">links</a></li>
   </ul>
 </nav>
 <section id="hero">
@@ -3427,7 +3437,7 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
 <section id="gallery">
   <div class="inner">
     <div class="gallery-header reveal">
-      <span class="section-tag">--&gt; my work.</span>
+      <span class="section-tag">--&gt; my work </span>
       <div style="position:relative;display:inline-block;width:100%;">
   <img src="images/brush.gif" alt="" style="position:absolute;top:-70px;right:150px;width:230px;image-rendering:pixelated;opacity:.85;pointer-events:none;" />
   <div class="portfolio-float" id="portfolio-title"></div>
@@ -3806,7 +3816,7 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
     <div class="reveal" style="text-align:center;">
       <span class="section-tag"> ♪┏(・o･)┛♪ </span>
       <div style="display:flex;align-items:center;justify-content:center;gap:14px;">
-        <h2 class="section-title"> links to socials, etc. </h2>
+        <h2 class="section-title"> links etc. </h2>
       </div>
       </div>
     </div>
@@ -5072,7 +5082,23 @@ document.getElementById('letter-close').addEventListener('click',function(e){
   closeLetter();
 });
 letterOverlay.addEventListener('click',function(e){
-  if(e.target===letterOverlay) closeLetter();
+  // Close on click in any of the "non-content" backdrop areas:
+  //  - #letter-overlay  → the dark area OUTSIDE the centered letter-inner
+  //                       (above/below/sides, on tall screens)
+  //  - #letter-scene    → the padding area INSIDE letter-inner but outside
+  //                       the paper (this is the big one — it's where the
+  //                       polaroids are scattered, including the empty space
+  //                       between them and below the paper). Previously this
+  //                       area didn't close the letter, which is the bug fix.
+  //  - #letter-inner    → safety net for the scroll container itself
+  // Clicks on the paper, the polaroids, or the close button are unaffected:
+  //   - paper clicks → target is #letter-paper or a descendant (h2/span/div)
+  //   - polaroid clicks → stopPropagation in the polaroid handler
+  //   - close button → stopPropagation in the close handler
+  var t = e.target;
+  if(t === letterOverlay || t.id === 'letter-scene' || t.id === 'letter-inner') {
+    closeLetter();
+  }
 });
 document.addEventListener('keydown',function(e){
   if(e.key==='Escape'&&envOpen) closeLetter();
