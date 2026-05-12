@@ -2774,16 +2774,19 @@
 }
 
 /* ─── COUNT STAMP (passport-style SVG) ─── */
+/* Rectangular postal-style stamp on the journal spread. Sizing follows the
+   SVG's viewBox aspect ratio (200:130 ≈ 1.54:1), so the rectangle proportions
+   stay correct if you resize. */
 .sk-stamp{
   position:absolute;
-  top:7%;
-  left:13%;
-  width:115px;
-  height:115px;
+  top:7%;                                          /* distance from top of journal spread */
+  left:13%;                                        /* distance from left of journal spread */
+  width:175px;                                     /* stamp width — change to resize */
+  height:114px;                                    /* keep at width × 0.65 for correct shape */
   pointer-events:none;
   z-index:5;
-  transform:rotate(-8deg);
-  filter:drop-shadow(1px 2px 0 rgba(0,0,0,.18));
+  transform:rotate(-8deg);                         /* tilt for "messy stamp" feel */
+  filter:drop-shadow(1px 2px 0 rgba(0,0,0,.18));   /* slight shadow so it sits on the page */
   opacity:.92;
 }
 
@@ -3300,21 +3303,39 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
     <!-- Spread (open pages) -->
     <div class="sk-spread" id="sk-spread">
       <img class="sk-spread-bg" src="images/journal-open.png" alt="" />
-      <svg class="sk-stamp" viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- Rectangular postal-stamp design with rough/wobbly ink edges.
+           IDs sk-count and sk-total are preserved so the existing EggTracker
+           JS continues to update the numbers without any JS changes. -->
+      <svg class="sk-stamp" viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <defs>
-          <path id="sk-stamp-arc" d="M 27 65 A 38 38 0 0 1 103 65" fill="none"/>
+          <!-- "Real ink stamp" texture. feTurbulence generates random noise;
+               feDisplacementMap uses that noise to push every edge around by
+               a few pixels, giving the wobbly hand-stamped imperfect look.
+               TWEAK 'scale' below: higher = messier, lower = cleaner.
+               TWEAK 'baseFrequency': higher = finer (more jagged) roughness,
+               lower = wider (more wavy) roughness. -->
+          <filter id="sk-stamp-rough" x="-8%" y="-8%" width="116%" height="116%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="4" result="noise"/>
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.2"/>
+          </filter>
         </defs>
-        <circle cx="65" cy="65" r="58" fill="none" stroke="rgba(0,1,7,.7)" stroke-width="2.5" stroke-dasharray="180,3,160,2"/>
-        <circle cx="65" cy="65" r="44" fill="none" stroke="rgba(0,1,7,.4)" stroke-width="1"/>
-        <text font-family="'Courier New', monospace" font-size="9" font-weight="bold" fill="rgba(0,1,7,.85)" letter-spacing="2">
-          <textPath href="#sk-stamp-arc" startOffset="50%" text-anchor="middle">EGGS FOUND</textPath>
-        </text>
-        <text x="34" y="69" font-size="7" fill="rgba(0,1,7,.6)" font-family="serif">✦</text>
-        <text x="91" y="69" font-size="7" fill="rgba(0,1,7,.6)" font-family="serif">✦</text>
-        <text x="65" y="74" text-anchor="middle" font-family="'Courier New', monospace" font-size="20" font-weight="bold" fill="rgba(0,1,7,.9)" letter-spacing="1">
-          <tspan id="sk-count">0</tspan>/<tspan id="sk-total">20</tspan>
-        </text>
-        <text x="65" y="94" text-anchor="middle" font-family="'Courier New', monospace" font-size="6.5" fill="rgba(0,1,7,.65)" letter-spacing="2">SPACE KITTY</text>
+        <!-- Everything inside this <g> gets the rough-ink filter applied. -->
+        <g filter="url(#sk-stamp-rough)">
+          <!-- Outer thick border (the classic stamp frame) -->
+          <rect x="6" y="6" width="188" height="118" fill="none" stroke="rgba(20,12,5,.88)" stroke-width="3"/>
+          <!-- Inner thin border — gives the double-line postal stamp look -->
+          <rect x="13" y="13" width="174" height="104" fill="none" stroke="rgba(20,12,5,.7)" stroke-width="1"/>
+          <!-- Horizontal divider between the label and the counter -->
+          <line x1="22" y1="52" x2="178" y2="52" stroke="rgba(20,12,5,.85)" stroke-width="1.2"/>
+          <!-- Top label -->
+          <text x="100" y="38" text-anchor="middle" font-family="'Courier New', monospace" font-size="17" font-weight="bold" letter-spacing="4" fill="rgba(20,12,5,.88)">EGGS FOUND</text>
+          <!-- The actual counter — the IDs are what the JS updates -->
+          <text x="100" y="93" text-anchor="middle" font-family="'Courier New', monospace" font-size="26" font-weight="bold" letter-spacing="1" fill="rgba(20,12,5,.9)">
+            <tspan id="sk-count">0</tspan> / <tspan id="sk-total">20</tspan>
+          </text>
+          <!-- Tiny attribution at the bottom — change this text freely -->
+          <text x="100" y="115" text-anchor="middle" font-family="'Courier New', monospace" font-size="6" letter-spacing="3" fill="rgba(20,12,5,.7)">SPACE KITTY ✦ JOURNAL</text>
+        </g>
       </svg>
       <button class="sk-eraser" id="sk-eraser" aria-label="erase progress">
         <img src="images/eraser.png" alt="" onerror="this.style.display='none'" />
@@ -4923,7 +4944,7 @@ document.getElementById('logo-btn').addEventListener('click',function(e){
   if(tripleCount>=5){tripleCount=0;sndTriggeredThisTick=true;showStarPlatinum();}
 });
   
-/* ═ TRIPLE-CLICK → STAR PLATINUM ═ */
+/* ═ FIVE-CLICK → STAR PLATINUM ═ */
 function showStarPlatinum(){
   var wasPlaying=musicPlaying;
   if(musicReady && musicPlaying){
@@ -4939,6 +4960,14 @@ function showStarPlatinum(){
   SND.ora.play().catch(function(e){console.warn('ora audio failed:',e);});
   foundEgg('ORA ORA ORA!!');
 
+  /* Timestamp the moment Star Platinum appears. The click handler below
+     ignores any clicks within the first ORA_DISMISS_DELAY ms so that wild
+     logo-clicking can't accidentally skip past the easter egg. The overlay
+     still absorbs those clicks (pointer-events:all + stopPropagation), so
+     they don't bubble to the page or trigger anything else either. */
+  var oraStartTime = Date.now();
+  var ORA_DISMISS_DELAY = 2000;     /* ms — change this to tune the grace period */
+
   var oraResumed=false;
   function resumeAfterOra(){
     if(oraResumed) return;
@@ -4949,6 +4978,8 @@ function showStarPlatinum(){
   }
   ov.onclick=function(e){
     e.stopPropagation();
+    /* Block early dismissal. After the delay, clicks dismiss normally. */
+    if(Date.now() - oraStartTime < ORA_DISMISS_DELAY) return;
     SND.ora.pause(); SND.ora.currentTime=0;
     ov.classList.add('fade');
     ov.onclick=null;
