@@ -2146,7 +2146,29 @@
 #music-btn *{cursor:url('/cursors/pointer.png') 18 10,pointer!important;}
   #music-btn{position:fixed;bottom:24px;left:24px;z-index:300;background:none;border:none;font-family:'Caveat',cursive;font-size:1rem;color:var(--sage);cursor:url('/cursors/pointer.png') 18 10, pointer;transition:color .3s;display:flex;align-items:center;gap:8px;}
   #music-btn:hover{color:var(--cream);}
-  #music-record{width:60px;height:auto;image-rendering:pixelated;}
+  /* CD that spins clockwise while music plays. The animation is always
+     "running" in CSS — the .paused class on #music-btn (set by the music
+     toggle, the CD player's play button, the TBC easter egg, and any
+     other code path that pauses music) freezes it via animation-play-state.
+     Because we PAUSE rather than reset, the CD resumes from wherever it
+     stopped — no snap back to 0deg. */
+  #music-record{
+    width:60px;                              /* CD size — change to resize */
+    height:auto;
+    image-rendering:pixelated;               /* keeps the crunchy pixel look */
+    animation:cdSpin 4s linear infinite;     /* 4s per full rotation — lower = faster */
+    transform-origin:50% 50%;                /* spin around the CD's center */
+  }
+  /* When #music-btn has .paused (music off, or TBC active), freeze the CD
+     in place. Removing .paused lets it pick up where it left off. */
+  #music-btn.paused #music-record{
+    animation-play-state:paused;
+  }
+  /* Clockwise rotation: 0deg → 360deg in CSS = clockwise. */
+  @keyframes cdSpin{
+    from{transform:rotate(0deg);}
+    to{transform:rotate(360deg);}
+  }
   #music-dot{width:7px;height:7px;border-radius:50%;background:var(--sage);animation:musicPulse 1.5s ease-in-out infinite;}
   #music-btn.paused #music-dot{animation:none;background:var(--mushroom);opacity:.5;}
   @keyframes musicPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
@@ -3179,7 +3201,7 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
 <body>
 <div id="yt-wrap" style="position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;overflow:hidden;pointer-events:none;clip-path:inset(50%);"><div id="yt-frame"></div></div>
 <button id="music-btn" class="paused" data-tip="click to play music ♪" title="toggle music">
-  <img id="music-record" src="images/record-player.gif" alt="" />
+  <img id="music-record" src="images/cd.png" alt="" />
   <span id="music-dot"></span>
   <span id="music-label" style="display:none;"></span>
 </button>
