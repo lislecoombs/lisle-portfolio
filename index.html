@@ -2781,7 +2781,7 @@
   position:absolute;
   top:7%;                                          /* distance from top of journal spread */
   left:13%;                                        /* distance from left of journal spread */
-  width:175px;                                     /* stamp width — change to resize */
+  width:150px;                                     /* stamp width — change to resize */
   height:114px;                                    /* keep at width × 0.65 for correct shape */
   pointer-events:none;
   z-index:5;
@@ -3316,7 +3316,7 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
                lower = wider (more wavy) roughness. -->
           <filter id="sk-stamp-rough" x="-8%" y="-8%" width="116%" height="116%">
             <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="4" result="noise"/>
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.2"/>
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.2"/>
           </filter>
         </defs>
         <!-- Everything inside this <g> gets the rough-ink filter applied. -->
