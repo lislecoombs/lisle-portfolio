@@ -111,10 +111,21 @@
   display: block;
   line-height: 0;                               /* kills the default inline gap below img */
 }
+/* Base rule applies to whichever pigeon is currently in the <img>'s src.
+   The small pigeon gets its own override below because its image has more
+   transparent space around the bird than the big pigeon's does. */
 #contact .pigeon-perch #pigeon-gif {
-  width: 95px;                                  /* pigeon size — change to resize */
-  height: auto;                                 /* preserves the aspect ratio of both images */
+  width: 95px;                                  /* BIG pigeon width (hover state) */
+  height: auto;                                 /* preserves aspect ratio for both images */
   display: block;
+}
+/* When the <img>'s src contains "pigeon-small", use a LARGER width so the
+   bird's body visually matches the big pigeon's body. The attribute selector
+   automatically toggles on/off as the src swaps on hover — no JS needed.
+   TWEAK the 140px: bump UP if small pigeon body still looks too small,
+   DOWN if it now looks too big. */
+#contact .pigeon-perch #pigeon-gif[src*="pigeon-small"] {
+  width: 140px;                                 /* small pigeon width (default/non-hover) */
 }
    
 /* === SILVER CHASSIS (sits inside the bezel) === */
