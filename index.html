@@ -1242,20 +1242,16 @@
   gap: 10px;
 }
  
-/* Apple logo placeholder. Replace with <img src="images/apple-rainbow.png"> */
+/* Rainbow Apple logo on the CRT monitor footer.
+   Source PNG is taller than it is wide (~0.84 ratio) because of the
+   stem leaf, so 22x26 matches the natural proportions.
+   TO RESIZE: scale width AND height together to keep the ratio
+   (e.g. 26x31 for a slightly bigger logo). */
 .crt-apple-logo {
-  width: 22px;
-  height: 26px;
-  border: 1px dashed rgba(0,0,0,0.35);
-  background: rgba(0,0,0,0.05);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Courier New', monospace;
-  font-size: 8px;
-  color: rgba(0,0,0,0.5);
-  text-align: center;
-  line-height: 1;
+  width: 22px;                  /* logo width — bump up to make bigger */
+  height: 26px;                 /* logo height — keep ~1.18x the width */
+  display: block;               /* sits cleanly next to the "Macintosh" text */
+  object-fit: contain;          /* preserves aspect ratio if you change size */
 }
  
 .crt-footer-label {
@@ -3740,7 +3736,8 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
            ============================================================ -->
       <div class="crt-footer">
         <div class="crt-footer-logo">
-          <div class="crt-apple-logo">[logo]</div>
+          <!-- Rainbow Apple logo on the CRT monitor footer -->
+          <img class="crt-apple-logo" src="images/crt-apple-logo.png" alt="rainbow apple logo" />
           <div class="crt-footer-label">Macintosh</div>
         </div>
         <div class="crt-led" title="power"></div>
@@ -5899,7 +5896,7 @@ loadEntries();
   function renderDisc(num){
     var sites = discs[num] || [];
     if(sites.length === 0){
-      favGrid.innerHTML = '<div style="font-family:VT323,monospace;font-size:13px;color:#3a3e44;padding:18px 0;width:100%;text-align:center;">[ disc empty - add sites in the JS ]</div>';
+      favGrid.innerHTML = '<div style="font-family:VT323,monospace;font-size:13px;color:#3a3e44;padding:18px 0;width:100%;text-align:center;">[ disc empty ]</div>';
       return;
     }
     favGrid.innerHTML = sites.map(function(s){
