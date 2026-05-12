@@ -780,31 +780,23 @@
   text-decoration: none;
   color: inherit;
 }
+/* Personal-links icon (img). Sized to match the old placeholder so the
+   grid layout doesn't shift. To resize all 4 icons at once, change the
+   width/height below. */
 #contact .cd-icon-img {
-  width: 48px;
+  width: 48px;                       /* icon size — change both to resize */
   height: 48px;
-  margin: 0 auto 6px;
-  border: 1px dashed var(--silver-shadow);
-  background: rgba(255,255,255,0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'VT323', monospace;
-  font-size: 10px;
-  color: var(--silver-shadow);
-  text-align: center;
-  padding: 4px;
-  line-height: 1.2;
-  border-radius: 4px;
-  transition: none;
-  /* IMG SWAP NOTE: when you have real platform icons, replace each
-     <div class="cd-icon-img">[Letterboxd 48x48]</div> with
-     <img class="cd-icon-img" src="images/letterboxd.png" alt="..." />
-     (48x48 PNGs work best). */
+  margin: 0 auto 6px;                /* centers in grid cell, 6px gap before label */
+  display: block;
+  object-fit: contain;               /* preserves aspect ratio if icon isn't perfectly square */
+  image-rendering: pixelated;        /* keeps the crunchy pixel-art look crisp */
+  transition: filter 0.2s ease;      /* smooth glow on hover */
 }
+/* Hover glow — drop-shadow follows the icon's actual silhouette (e.g.
+   spotify's circle) rather than the 48x48 box, so transparent corners
+   don't get a square halo around them. */
 #contact .cd-icon-item:hover .cd-icon-img {
-  background: rgba(255,255,255,0.7);
-  box-shadow: 0 0 8px var(--led-pink);
+  filter: drop-shadow(0 0 6px var(--led-pink));
 }
 #contact .cd-icon-label {
   font-family: 'VT323', monospace;
@@ -3906,20 +3898,23 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
           <div class="cd-groupbox-title">personal links</div>
           <div class="cd-icon-grid">
  
-            <a class="cd-icon-item" href="https://letterboxd.com/lislecoombs/" target="_blank" rel="noopener">
-              <div class="cd-icon-img">[Letter<br>boxd<br>48x48]</div>
+            <!-- Each <a> is the click target; pointer cursor is already on .cd-icon-item.
+                 The <img> keeps class="cd-icon-img" so it inherits the 48x48 sizing
+                 + hover glow from the CSS below. -->
+            <a class="cd-icon-item" href="https://letterboxd.com/lethepdf/" target="_blank" rel="noopener">
+              <img class="cd-icon-img" src="images/letterboxd.png" alt="letterboxd" />
               <div class="cd-icon-label">letterboxd</div>
             </a>
-            <a class="cd-icon-item" href="https://www.goodreads.com/" target="_blank" rel="noopener">
-              <div class="cd-icon-img">[Good<br>reads<br>48x48]</div>
+            <a class="cd-icon-item" href="https://www.goodreads.com/user/show/105653626-lisle" target="_blank" rel="noopener">
+              <img class="cd-icon-img" src="images/goodreads.png" alt="goodreads" />
               <div class="cd-icon-label">goodreads</div>
             </a>
             <a class="cd-icon-item" href="https://www.instagram.com/lislecoombs/" target="_blank" rel="noopener">
-              <div class="cd-icon-img">[Insta<br>gram<br>48x48]</div>
+              <img class="cd-icon-img" src="images/instagram.png" alt="instagram" />
               <div class="cd-icon-label">instagram</div>
             </a>
-            <a class="cd-icon-item" href="https://open.spotify.com/" target="_blank" rel="noopener">
-              <div class="cd-icon-img">[Spot<br>ify<br>48x48]</div>
+            <a class="cd-icon-item" href="https://open.spotify.com/user/clkbqq1u1xh4y1jwntu3270ii" target="_blank" rel="noopener">
+              <img class="cd-icon-img" src="images/spotify.png" alt="spotify" />
               <div class="cd-icon-label">spotify</div>
             </a>
  
