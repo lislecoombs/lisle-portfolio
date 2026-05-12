@@ -93,7 +93,30 @@
 }
 #contact .cd-bezel::before { top: 5px; left: 5px; }
 #contact .cd-bezel::after  { top: 5px; right: 5px; }
- 
+
+
+/* ─── Pigeon perched on the upper-right corner of the CD player ───
+   The trick: translateY(-100%) shifts the wrapper UP by its own height,
+   so the IMAGE'S BOTTOM edge anchors to the top:8px line on the bezel.
+   When hover swaps small pigeon → big pigeon (taller), the bottom-anchor
+   keeps the feet planted and the head pops upward. Without this, the
+   image would grow downward INTO the CD player on hover. */
+#contact .cd-bezel { position: relative; }      /* anchor point for the pigeon */
+#contact .pigeon-perch {
+  position: absolute;
+  top: 8px;                                     /* DOWN = more overlap with bezel, UP = less */
+  right: 30px;                                  /* inset from the right edge of the CD player */
+  transform: translateY(-100%);                 /* anchors the image's BOTTOM to top:8px */
+  z-index: 5;                                   /* sits above the bezel/chassis */
+  display: block;
+  line-height: 0;                               /* kills the default inline gap below img */
+}
+#contact .pigeon-perch #pigeon-gif {
+  width: 95px;                                  /* pigeon size — change to resize */
+  height: auto;                                 /* preserves the aspect ratio of both images */
+  display: block;
+}
+   
 /* === SILVER CHASSIS (sits inside the bezel) === */
 #contact .cd-stack {
   margin: 0;
@@ -3772,9 +3795,6 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
     <div class="reveal" style="text-align:center;">
       <span class="section-tag"> ♪┏(・o･)┛♪ </span>
       <div style="display:flex;align-items:center;justify-content:center;gap:14px;">
-        <a href="https://uquiz.com/quiz/6ijfLx/pick-random-things-get-a-bird" target="_blank" rel="noopener" style="cursor:url('/cursors/pointer.png') 18 10,pointer;">
-          <img id="pigeon-gif" src="images/pigeon.gif" alt="pigeon" style="width:115px;display:block;transform:translateY(-12px);" />
-        </a>
         <h2 class="section-title"> links to socials, etc. </h2>
       </div>
       </div>
@@ -3787,6 +3807,16 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
  
     <!-- Black bezel wrapper - frames the silver chassis -->
     <div class="cd-bezel reveal">
+      <!-- Pigeon perched on the upper-right corner of the CD player.
+           Mouseover swaps the sleepy small pigeon for the alert big pigeon.
+           The pigeon coo sound + egg tracker trigger are still handled by
+           the existing ═ PIGEON ═ JS block via id="pigeon-gif" — no JS
+           changes needed. Link goes to the bird quiz. -->
+      <a class="pigeon-perch" href="https://uquiz.com/quiz/6ijfLx/pick-random-things-get-a-bird" target="_blank" rel="noopener" aria-label="bird quiz">
+        <img id="pigeon-gif" src="images/pigeon-small.png" alt="pigeon"
+             onmouseover="this.src='images/pigeon-big.png'"
+             onmouseout="this.src='images/pigeon-small.png'" />
+      </a>
     <div class="cd-stack" id="cd-stack">
  
       <!-- ====== MODULE 1: HEADER (LCD + knob) ======
