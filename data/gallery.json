@@ -31,14 +31,14 @@
       "title": "Entropy"
     },
     {
-      "image": "/images/portrait-of-tracy.jpg",
-      "title": "Portrait of Tracey",
-      "year": "2023"
-    },
-    {
       "image": "/images/bigredcoat.jpeg",
       "title": "Big Red Coat",
       "year": "2022"
+    },
+    {
+      "image": "/images/portrait-of-tracy.jpg",
+      "title": "Portrait of Tracey",
+      "year": "2023"
     }
   ],
   "drawings": [
