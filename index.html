@@ -4090,7 +4090,8 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
             </div>
 
             <!-- sapphic Webring -->
-                             <div id="sapphicring3">
+            <div class="webring-item">
+              <div id="sapphicring3">
                 <a href="https://sunnishinez.neocities.org/webring/sapphicring"><img
                     src="https://sunnishinez.neocities.org/webring/sapphic/sappho.png" /></a><br />
                 <a href="https://sunnishinez.neocities.org/webring/sapphicring?action=previous"><img
@@ -4099,6 +4100,7 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
                 <a href="https://sunnishinez.neocities.org/webring/sapphicring?action=next"><img
                     src="https://sunnishinez.neocities.org/webring/sapphic/s_arleft.png" /></a>
               </div>
+            </div>
               
              
  
@@ -4865,7 +4867,7 @@ document.addEventListener('keydown',function(e){
 });
 function showKonami(){
   document.getElementById('konami-bg').classList.add('on');
-  spawnConfetti();foundEgg('cat found!');
+  spawnConfetti();
   document.getElementById('konami-bg').addEventListener('click',function(){
     document.getElementById('konami-bg').classList.remove('on');
     if(window.EggTracker) EggTracker.trigger('konami');
@@ -4894,7 +4896,6 @@ function showStarPlatinum(){
   ov.classList.add('on');
   SND.ora.currentTime=0;
   SND.ora.play().catch(function(e){console.warn('ora audio failed:',e);});
-  foundEgg('ORA ORA ORA!!');
 
   /* Timestamp the moment Star Platinum appears. The click handler below
      ignores any clicks within the first ORA_DISMISS_DELAY ms so that wild
@@ -6803,8 +6804,6 @@ var SpaceKitty = (function(){
   }
 
   function toggleRainbow(){
-    /* Diagnostic — remove this console.log once you've verified the toggle is firing */
-    console.log('[rainbow] toggle called, currently on:', isRainbowOn(), '| firstActivated:', rainbowFirstActivated);
     if(isRainbowOn()){
       deactivateRainbowVisual();
       return;
