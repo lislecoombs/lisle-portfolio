@@ -5463,7 +5463,11 @@ if(tardisFirstAppear){
     el.style.left=tx+'px';el.style.top=ty+'px';
     var now=Date.now();
     xHist.push({x:e.clientX,t:now});
-    xHist=xHist.filter(function(h){return now-h.t<300;});
+    // SHAKE SENSITIVITY (1 of 2): how far back in time to "look" when counting
+    // direction reversals. Bigger number = slower shakes can register.
+    // Lower (e.g. 300) = need fast back-and-forth, higher (e.g. 900) = very lazy
+    // shakes count. Pair with the 700 in checkShakeStop() below.
+    xHist=xHist.filter(function(h){return now-h.t<700;});
     checkShake();
   });
 
@@ -5514,7 +5518,11 @@ if(tardisFirstAppear){
 
   function checkShakeStop(){
     if(!shaking) return;
-    if(Date.now()-lastShakeTime>400){
+    // SHAKE SENSITIVITY (2 of 2): how long the shake can "coast" without a new
+    // direction reversal before the sound fades. Higher = sound keeps going
+    // through slower / pausier shakes. Should be ~equal to the xHist window
+    // above (currently both are 700).
+    if(Date.now()-lastShakeTime>700){
       shaking=false;
       fadeOutShake();
       [sndEnter].concat(sndDoctors).forEach(function(s){
