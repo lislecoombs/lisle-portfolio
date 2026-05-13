@@ -2400,7 +2400,6 @@
   @keyframes conffall{from{transform:translateY(-80px) rotate(0);opacity:1}to{transform:translateY(105vh) rotate(700deg);opacity:0}}
   .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;}
   .reveal.in{opacity:1;transform:translateY(0);}
-  #egg-badge{position:fixed;bottom:22px;right:22px;font-family:'Caveat',cursive;font-size:.85rem;color:var(--sage);z-index:200;opacity:0;transition:opacity 1s;pointer-events:none;}
 
 /* ═════════════════════════════════════════════════════════════════════
    SPACE KITTY EASTER EGG TRACKER
@@ -2925,7 +2924,6 @@
   .sk-stamp-count{font-size:.9rem;}
   .sk-eraser{width:42px;}
 }
-  #egg-badge.show{opacity:.7;}
   @media(max-width:900px){nav{padding:16px 24px;}section,#guestbook{padding:70px 24px;}.hero-layout{grid-template-columns:1fr;text-align:center;gap:40px;}.hero-left,.hero-right{text-align:center;}.float-title{justify-content:center!important;}.portrait-stack{margin:0 auto 32px;}.about-grid{grid-template-columns:1fr;}.gallery-grid{columns:2 160px;}footer{padding:28px 24px;}.form-row{grid-template-columns:1fr;}}
  /* ── SCRAPBOOK OVERRIDES ── */
 
@@ -3264,7 +3262,6 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
   <div class="aurora-layer aurora-2"></div>
   <div class="aurora-layer aurora-3"></div>
 </div>
-<div id="egg-badge">(o_O) <span id="egg-n">0</span> secrets found</div>
 <div id="konami-bg">
   <span class="konami-hint">click anywhere to close</span>
   <img id="konami-cat" src="images/surprise-cat.png" alt="surprise" />
@@ -4667,26 +4664,6 @@ function type(){
 type();
 
 /* ═ CMS ═ */
-var PH_COLORS={
-  paintings:['linear-gradient(135deg,#3d1e0a,#6b3520)','linear-gradient(135deg,#1e3a1e,#2d5a2d)','linear-gradient(135deg,#2d1a2d,#4a2040)','linear-gradient(135deg,#2d2010,#4a3520)','linear-gradient(135deg,#0e1e2d,#1e3a4a)','linear-gradient(135deg,#2d1010,#4a2020)'],
-  drawings:['linear-gradient(135deg,#1a1a1a,#2a2a2a)','linear-gradient(135deg,#1a1510,#2a2018)','linear-gradient(135deg,#101a10,#182518)','linear-gradient(135deg,#1a1020,#28183a)'],
-  sculpture:['linear-gradient(135deg,#2a1e10,#3a2c1a)','linear-gradient(135deg,#1e1a10,#2e2818)','linear-gradient(135deg,#1a1e1a,#282e28)'],
-  photography:['linear-gradient(135deg,#0a1520,#14253a)','linear-gradient(135deg,#101a10,#182a18)','linear-gradient(135deg,#1a1510,#2a2218)','linear-gradient(135deg,#1a0a10,#2e1220)'],
-};
-var PH_TITLES={
-  paintings:['Untitled No. 1','Study in Green','Dusk Study','Bark & Bone','Watershed','Heat & Memory'],
-  drawings:['Gesture Study','Field Notes','Root Systems','Night Sketchbook'],
-  sculpture:['Form No. 1','Vessel Study','Terrain'],
-  photography:['Golden Hour','Forest Floor','Macro Study','Dusk Light'],
-};
-var PH_YEARS=['2022','2023','2024'];
-function buildPH(cat){
-  return PH_TITLES[cat].map(function(t,i){
-    var bg=PH_COLORS[cat][i%PH_COLORS[cat].length];
-    var ar=['3/4','4/5','1/1','3/5','5/4','4/3'][i%6];
-    return '<div class="gallery-item"><div class="gallery-item-inner"><div class="art-ph" style="--ar:'+ar+';--bg:'+bg+'"><span style="font-size:1.2rem;opacity:.3">(o)</span>add via admin</div><div class="gallery-caption">'+t+'<span class="yr">'+PH_YEARS[i%3]+'</span></div></div></div>';
-  }).join('');
-}
 function buildItem(item){
   function enc(s){return (s||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
   return '<div class="gallery-item" data-src="'+enc(item.image)+'" data-title="'+enc(item.title)+'" data-year="'+enc(item.year||'')+'" data-medium="'+enc(item.medium||'')+'" data-dims="'+enc(item.dimensions||'')+'" data-desc="'+enc(item.description||'')+'">'
@@ -4746,7 +4723,6 @@ thirdPortrait.addEventListener('animationend', function(){
     }
     sndTriggeredThisTick=true;
     play(SND.huh);
-    foundEgg('( ˙▿˙ )?');
     if(window.EggTracker) EggTracker.trigger('portrait-secret');
   }
 });
@@ -4846,7 +4822,10 @@ cats.forEach(function(cat){
     var cd=document.createElement('div');cd.className='stack-photo';
     cd.innerHTML='<div class="cat-placeholder"><span style="font-size:2rem;opacity:.4">ฅ^•ﻌ•^ฅ</span>Maggie here --<br>add via admin</div>';
     cs.appendChild(cd);
-    cats.forEach(function(cat){document.getElementById('grid-'+cat).innerHTML=buildPH(cat);});
+    // CMS fetch failed — show "no items yet" empty state in every category
+    cats.forEach(function(cat){
+      document.getElementById('grid-'+cat).innerHTML='<div class="gallery-empty" style="column-span:all"><span style="font-size:2rem;display:block;margin-bottom:12px">(o)</span>no '+cat+' yet</div>';
+    });
   }
 }
 function attachLightbox(grid){
@@ -5011,7 +4990,6 @@ function tbcShow(){
   document.getElementById('tbc-overlay').classList.add('on');
   if(SND.round.ended) SND.round.currentTime=0;
   SND.round.play().catch(function(e){console.warn('TBC audio failed:',e);});
-  foundEgg('To Be Continued...');
   SND.round.onended=function(){
     document.getElementById('tbc-sepia').classList.remove('on');
     document.getElementById('tbc-overlay').classList.remove('on');
@@ -5051,12 +5029,6 @@ function spawnConfetti(){
   }
 }
 
-/* ═ EGG COUNTER ═
-   Replaced by EggTracker (Space Kitty system, see bottom of file).
-   Kept as a no-op shim so existing foundEgg() calls don't break. */
-var eggCount=0;var found=new Set();
-function foundEgg(name){ /* no-op — replaced by EggTracker.trigger() */ }
-
 /* ═ ENVELOPE / LETTER ═ */
 var envOpen=false;
 var envWrap=document.getElementById('envelope-wrap');
@@ -5091,7 +5063,6 @@ function openLetter(){
   envImg.src='images/envelope-open.png';
   letterOverlay.classList.add('open');
   scatterPhotos();
-  foundEgg('secret letter! ✉');
 }
 function closeLetter(){
   if(!envOpen) return;
@@ -5159,7 +5130,6 @@ document.getElementById('yr').textContent=new Date().getFullYear();
     if(dogClickCount % 10 === 0){
       dog.classList.add('dog-spin');
       play(SND.bark10);
-      foundEgg('good dog!!');
       if(window.EggTracker) EggTracker.trigger('dog-spin');
     } else {
       dog.classList.add('dog-jump');
@@ -6426,12 +6396,6 @@ var EggTracker = (function(){
     return n;
   }
 
-  function updateLegacyBadge(){
-    var nEl = document.getElementById('egg-n');
-    if(nEl) nEl.textContent = foundEggs.size;
-    if(typeof window.eggCount !== 'undefined') window.eggCount = foundEggs.size;
-  }
-
   function trigger(eggId){
     var egg = EGG_REGISTRY[eggId];
     if(!egg) {
@@ -6444,7 +6408,6 @@ var EggTracker = (function(){
 
     foundEggs.add(eggId);
     saveSet(STORAGE_KEY, foundEggs);
-    updateLegacyBadge();
 
     if(window.SpaceKitty && SpaceKitty.isReady()){
       if(isFirstEverEgg){
@@ -6502,7 +6465,6 @@ var EggTracker = (function(){
     saveSet(STORAGE_KEY, foundEggs);
     saveSet(YT_KEY, ytVisited);
     saveSet(CONST_KEY, constHits);
-    updateLegacyBadge();
   }
 
   return {
@@ -6713,7 +6675,6 @@ var SpaceKitty = (function(){
     } catch(e){}
   }
   var rainbowFirstActivated = loadRainbowSeen();
-  var rainbowBurstTimeout = null;
   var rainbowMsgTimeout = null;
   var rainbowDanceEndTimeout = null;
 
@@ -6810,26 +6771,18 @@ var SpaceKitty = (function(){
     window.RAINBOW_MODE = true;
     document.body.classList.add('rainbow-active');
     startAuroraDriver(!!burst);
-    /* The .rainbow-burst class is no longer used for animation —
-       the JS driver handles speed via auroraBurstStartTime.
-       Keeping the class in case other CSS hooks into it later, but
-       it's optional now. */
+    /* During the first 5.5s of a rainbow activation, the starfield reads
+       window.RAINBOW_BURST_UNTIL to brighten stars + twinkle faster. */
     if(burst){
-      document.body.classList.add('rainbow-burst');
       window.RAINBOW_BURST_UNTIL = Date.now() + 5500;
-      if(rainbowBurstTimeout) clearTimeout(rainbowBurstTimeout);
-      rainbowBurstTimeout = setTimeout(function(){
-        document.body.classList.remove('rainbow-burst');
-      }, 5500);
     }
   }
 
   function deactivateRainbowVisual(){
     window.RAINBOW_MODE = false;
     window.RAINBOW_BURST_UNTIL = 0;
-    document.body.classList.remove('rainbow-active','rainbow-burst');
+    document.body.classList.remove('rainbow-active');
     stopAuroraDriver();
-    if(rainbowBurstTimeout){ clearTimeout(rainbowBurstTimeout); rainbowBurstTimeout = null; }
     /* If the dance/messages are in progress, stop them cleanly */
     if(rainbowMsgTimeout){ clearTimeout(rainbowMsgTimeout); rainbowMsgTimeout = null; }
     if(rainbowDanceEndTimeout){ clearTimeout(rainbowDanceEndTimeout); rainbowDanceEndTimeout = null; }
