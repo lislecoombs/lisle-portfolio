@@ -3211,7 +3211,6 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
 <button id="music-btn" class="paused" data-tip="click to play music ♪" title="toggle music">
   <img id="music-record" src="images/cd.png" alt="" />
   <span id="music-dot"></span>
-  <span id="music-label" style="display:none;"></span>
 </button>
 <canvas id="starfield"></canvas>
 <div id="rainbow-overlay" aria-hidden="true">
@@ -3363,9 +3362,6 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
 <div class="divider">. . .</div>
   <!-- ═══════════════════════════════════════════════════
      NEW ABOUT SECTION
-     Replace your entire <section id="about">…</section>
-     with this block (keep the <div class="divider"> tags
-     that surround it — don't replace those).
 ═══════════════════════════════════════════════════ -->
 
 <section id="about">
@@ -3795,19 +3791,19 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
       </div>
       </div>
     </div>
-    <!-- ============================================================
-         CD PLAYER - replaces the old socials card + webrings row.
-         The section header (pigeon + "links to socials, etc.") above
-         is untouched.
+<!-- ============================================================
+         CD PLAYER
+         Silver chassis containing: personal links, fav-sites disc
+         carousel, stamps marquee, webrings.
          ============================================================ -->
  
     <!-- Black bezel wrapper - frames the silver chassis -->
     <div class="cd-bezel reveal">
       <!-- Pigeon perched on the upper-right corner of the CD player.
            Mouseover swaps the sleepy small pigeon for the alert big pigeon.
-           The pigeon coo sound + egg tracker trigger are still handled by
-           the existing ═ PIGEON ═ JS block via id="pigeon-gif" — no JS
-           changes needed. Link goes to the bird quiz. -->
+           The pigeon coo sound + egg tracker trigger are wired up in the
+           ═ PIGEON ═ JS block via id="pigeon-gif".
+           Link goes to the bird quiz. -->
       <a class="pigeon-perch" href="https://uquiz.com/quiz/6ijfLx/pick-random-things-get-a-bird" target="_blank" rel="noopener" aria-label="bird quiz">
         <img id="pigeon-gif" src="images/pigeon-small.png" alt="pigeon"
              onmouseover="this.src='images/pigeon-big.png'"
@@ -3815,9 +3811,8 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
       </a>
     <div class="cd-stack" id="cd-stack">
  
-      <!-- ====== MODULE 1: HEADER (LCD + knob) ======
-           Brand badge area was removed - LCD takes the full left
-           portion now. Knob sits on the right. -->
+<!-- ====== MODULE 1: HEADER (LCD + knob) ======
+           LCD scrolling marquee on the left, volume knob on the right. -->
       <div class="cd-module cd-header">
  
         <!-- LCD display -->
@@ -4212,7 +4207,6 @@ function resumeMusic(){
     ytPlayer.playVideo();
     musicPlaying=true;
     if(musicBtn) musicBtn.classList.remove('paused');
-    if(musicLabel) musicLabel.textContent='music on';
   },200);
 }
 
@@ -4578,7 +4572,6 @@ window.onYouTubeIframeAPIReady=function(){
   });
 };
 var musicBtn=document.getElementById('music-btn');
-var musicLabel=document.getElementById('music-label');
 
 /* Tracks whether the user has pressed play yet THIS SESSION.
    First press → seek to a random spot in the video.
@@ -4599,14 +4592,14 @@ function cdHandleFirstPlay(){
 }
 
 musicBtn.addEventListener('click',function(){
-  if(!musicReady){musicLabel.textContent='loading...';return;}
+  if(!musicReady){return;}
   if(musicPlaying){
     ytPlayer.pauseVideo();musicPlaying=false;
-    musicBtn.classList.add('paused');musicLabel.textContent='play music';
+    musicBtn.classList.add('paused');
   } else {
     cdHandleFirstPlay();  /* random seek if this is the first play of the session */
     ytPlayer.playVideo();musicPlaying=true;
-    musicBtn.classList.remove('paused');musicLabel.textContent='music on';
+    musicBtn.classList.remove('paused');
   }
 });
 
@@ -4827,6 +4820,9 @@ loadCMS();
 (function(){
   var pigeonEl=document.getElementById('pigeon-gif');
   if(!pigeonEl) return;
+  /* Preload pigeon-big.png so the first hover doesn't briefly shrink the
+     image while the browser fetches the big version. */
+  new Image().src = 'images/pigeon-big.png';
   pigeonEl.addEventListener('mouseenter',function(){
     SND.pigeon.currentTime=0;
     SND.pigeon.play().catch(function(){});
@@ -4907,7 +4903,6 @@ function showStarPlatinum(){
     ytPlayer.pauseVideo();
     musicPlaying=false;
     if(musicBtn) musicBtn.classList.add('paused');
-    if(musicLabel) musicLabel.textContent='play music';
   }
   var ov=document.getElementById('jojo-overlay');
   ov.classList.remove('fade');
@@ -4965,7 +4960,6 @@ function tbcShow(){
     ytPlayer.pauseVideo();
     musicPlaying=false;
     if(musicBtn) musicBtn.classList.add('paused');
-    if(musicLabel) musicLabel.textContent='play music';
   }
   document.getElementById('tbc-sepia').classList.add('on');
   document.getElementById('tbc-overlay').classList.add('on');
@@ -4988,7 +4982,6 @@ function tbcHide(){
     ytPlayer.playVideo();
     musicPlaying=true;
     if(musicBtn) musicBtn.classList.remove('paused');
-    if(musicLabel) musicLabel.textContent='music on';
   }
   if(window.EggTracker) EggTracker.trigger('tbc');
 }
@@ -5194,7 +5187,6 @@ jojoEl.addEventListener('mouseenter', function(){
       ytPlayer.pauseVideo();
       musicPlaying=false;
       if(musicBtn) musicBtn.classList.add('paused');
-      if(musicLabel) musicLabel.textContent='play music';
     }
     SND.kq.currentTime = 0;
     SND.kq.play().catch(function(){});
@@ -5210,8 +5202,7 @@ jojoEl.addEventListener('mouseenter', function(){
     jojoEl.classList.remove('jojo-active');
     SND.kq.pause();
     SND.kq.currentTime = 0;
-    if(kqWasPlaying&&musicReady){ytPlayer.playVideo();musicPlaying=true;if(musicBtn)musicBtn.classList.remove('paused');if(musicLabel)musicLabel.textContent='music on';}
-  });
+    if(kqWasPlaying&&musicReady){ytPlayer.playVideo();musicPlaying=true;if(musicBtn)musicBtn.classList.remove('paused');}
 }
 })();
 /* ═ CLICK / MOVE CURSORS ═
@@ -5877,9 +5868,7 @@ loadEntries();
       musicPlaying = false;
       // Sync the existing music button at the top of the page
       var topBtn = document.getElementById('music-btn');
-      var topLbl = document.getElementById('music-label');
       if(topBtn) topBtn.classList.add('paused');
-      if(topLbl) topLbl.textContent = 'play music';
       updatePlayUI(false);
     } else {
       // First-play random seek (shared with the top music button).
@@ -5889,9 +5878,7 @@ loadEntries();
       ytPlayer.playVideo();
       musicPlaying = true;
       var topBtn = document.getElementById('music-btn');
-      var topLbl = document.getElementById('music-label');
       if(topBtn) topBtn.classList.remove('paused');
-      if(topLbl) topLbl.textContent = 'music on';
       updatePlayUI(true);
     }
   });
