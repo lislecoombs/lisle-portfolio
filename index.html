@@ -5488,7 +5488,12 @@ if(tardisFirstAppear){
       var d1=xHist[i-1].x-xHist[i-2].x,d2=xHist[i].x-xHist[i-1].x;
       if(d1*d2<0) changes++;
     }
+    // STARTING the shake requires 2 reversals in the xHist window (strict —
+    // prevents accidental triggers from regular drags).
     if(changes>=2) startShake();
+    // MAINTAINING the shake only needs 1 reversal — so any continued
+    // back-and-forth motion, even slow, refreshes the stop-timer below.
+    else if(shaking && changes>=1) lastShakeTime = Date.now();
   }
 
   function startShake(){
@@ -5518,11 +5523,13 @@ if(tardisFirstAppear){
 
   function checkShakeStop(){
     if(!shaking) return;
-    // SHAKE SENSITIVITY (2 of 2): how long the shake can "coast" without a new
-    // direction reversal before the sound fades. Higher = sound keeps going
-    // through slower / pausier shakes. Should be ~equal to the xHist window
-    // above (currently both are 700).
-    if(Date.now()-lastShakeTime>700){
+    // SHAKE SENSITIVITY (2 of 2): how long the shake can "coast" without ANY
+    // direction reversal before the sound fades. Combined with the single-
+    // reversal maintenance check in checkShake() above, this is the user's
+    // total grace period when they completely stop moving — 1500ms means
+    // they really have to slow to a near-halt before the audio dies.
+    // Tweak: 1000 = snappier stop, 2000 = even more lenient.
+    if(Date.now()-lastShakeTime>1500){
       shaking=false;
       fadeOutShake();
       [sndEnter].concat(sndDoctors).forEach(function(s){
