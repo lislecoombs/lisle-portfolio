@@ -1092,28 +1092,6 @@
 /* ============================================================
    END CD PLAYER STYLES
    ============================================================ */
- 
-/* ============================================
-   WEBRINGS ROW
-   A staggered horizontal row of webring widgets
-   TO ADD A NEW WEBRING:
-   Copy one of the .webring-item blocks in the HTML
-   and adjust the rotate() angle in its inline style
-   so it tilts a little differently from its neighbors.
-   ============================================ */
-
-.webrings-row {
-  display: flex;                    /* lay out webrings in a row */
-  flex-wrap: wrap;                /* webrings wrap to next line*/
-  justify-content: center;          /* center them horizontally */
-  align-items: center;              /* line them up vertically */
-  gap: 50px;                        /* space BETWEEN each webring — increase for more breathing room */
-  margin: 40px auto 60px;           /* top space, auto-center, bottom space */
-  max-width: 100%;                 /* let the container shrink-wrap to its contents */
-  padding: 0 20px;
-}
-
-
 
 /* Each individual webring — the tilt is set inline per item (in the HTML)
    so each one can have its own scrapbook-style angle. */
@@ -2432,33 +2410,12 @@
 #sk-ufo.sk-visible{opacity:1;}
 #sk-ufo.sk-entered{transform:translateX(0) rotate(0deg);}
 
-#sk-ufo.sk-reckless{
-  animation:skReckless 2s cubic-bezier(.45,.05,.55,.95);
-  transition:none;
-}
 #sk-ufo.sk-bobbing{animation:skUfoBob 1.6s ease-in-out infinite;}
 #sk-ufo.sk-leaving{
   animation:skLeaveJerky 1.5s cubic-bezier(.42,0,.85,.5) forwards;
   transition:none;
 }
 
-@keyframes skReckless{
-  0%   {transform:translateX(0)     translateY(0)    rotate(0deg);}
-  4%   {transform:translateX(-4px)  translateY(-2px) rotate(-1deg);}
-  9%   {transform:translateX(-12px) translateY(-6px) rotate(-3deg);}
-  14%  {transform:translateX(-28px) translateY(-9px) rotate(-5deg);}
-  20%  {transform:translateX(-65px) translateY(8px)  rotate(8deg);}
-  28%  {transform:translateX(-130px) translateY(-18px) rotate(-12deg);}
-  34%  {transform:translateX(-160px) translateY(10px)  rotate(15deg);}
-  43%  {transform:translateX(-130px) translateY(-8px) rotate(-5deg);}
-  51%  {transform:translateX(-150px) translateY(15px) rotate(11deg);}
-  60%  {transform:translateX(-90px)  translateY(-10px) rotate(-9deg);}
-  70%  {transform:translateX(-40px)  translateY(8px)   rotate(6deg);}
-  79%  {transform:translateX(15px)   translateY(-4px) rotate(-4deg);}
-  87%  {transform:translateX(-10px)  translateY(3px)  rotate(3deg);}
-  94%  {transform:translateX(4px)    translateY(-1px) rotate(-1deg);}
-  100% {transform:translateX(0)      translateY(0)    rotate(0deg);}
-}
 @keyframes skUfoBob{
   0%,100%{transform:translateY(0) rotate(-2deg);}
   50%{transform:translateY(-5px) rotate(2deg);}
@@ -5722,7 +5679,7 @@ loadEntries();
    - Knob spin + LCD message cycling
    - Play/pause hooked to YouTube (respects tbcActive, syncs the
      existing musicBtn/musicLabel state)
-   - Prev/next = YouTube seekTo +/- 15s with brief LCD overlay
+   - Prev/next = YouTube seekTo +/- 30s with brief LCD overlay
    - Disc carousel with glitchy RGB-split transition
    ════════════════════════════════════════════════════════════ */
 (function(){
@@ -5771,7 +5728,7 @@ loadEntries();
   renderMessage();
  
   /* ─────────────────────────────────────────────────────────
-     SKIP OVERLAY (prev/next show a brief "<<15s" / "15s>>" on
+     SKIP OVERLAY (prev/next show a brief "<<30s" / "30s>>" on
      the LCD top-right for ~1s)
      ───────────────────────────────────────────────────────── */
   var trackInfoEl = document.getElementById('cd-trackinfo');
@@ -5795,7 +5752,7 @@ loadEntries();
   }
  
   /* ─────────────────────────────────────────────────────────
-     PREV / NEXT - YouTube seekTo +/- 15s.
+     PREV / NEXT - YouTube seekTo +/- 30s.
      We don't change the LCD scrolling text - that's the knob's job.
      We DO show a brief skip indicator on the LCD top-right.
      ───────────────────────────────────────────────────────── */
@@ -5816,16 +5773,6 @@ loadEntries();
       try {
         var t = ytPlayer.getCurrentTime();
         ytPlayer.seekTo(t + 30, true);
-      } catch(e){ /* ytPlayer not ready, ignore */ }
-    }
-  });
-  document.getElementById('cd-next').addEventListener('click', function(){
-    flashLed('cd-next');
-    showSkipOverlay('30s>>');
-    if(typeof ytPlayer !== 'undefined' && ytPlayer && musicReady){
-      try {
-        var t = ytPlayer.getCurrentTime();
-        ytPlayer.seekTo(t + 15, true);
       } catch(e){ /* ytPlayer not ready, ignore */ }
     }
   });
@@ -6896,10 +6843,8 @@ var SpaceKitty = (function(){
   function playUFOEntrance(callback){
     clearPhaseTimeouts();
     clearIntroTimeouts();
-    /* Defensive cleanup: clear any leftover state from a previous run.
-       'sk-reckless' is no longer added but stays in the remove list as a safety
-       net in case any stale class lingers from a prior version. */
-    ufo.classList.remove('sk-entered','sk-reckless','sk-bobbing','sk-leaving');
+    /* Defensive cleanup: clear any leftover state from a previous run. */
+    ufo.classList.remove('sk-entered','sk-bobbing','sk-leaving');
     beam.classList.remove('sk-active','sk-retracting');
     cat.classList.remove('sk-materialized','sk-idle','sk-pulse-once','sk-pulse-continuous');
 
