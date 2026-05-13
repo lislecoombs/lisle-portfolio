@@ -5220,6 +5220,14 @@ document.getElementById('yr').textContent=new Date().getFullYear();
   var hasMoved = false;
   var root = document.documentElement;
 
+  /* Clears all click/move cursor classes and resets state. Called by
+     mouseup AND by the safety-net handlers below. */
+  function resetCursorState(){
+    isDown = false;
+    hasMoved = false;
+    root.classList.remove('cursor-click','cursor-pointer-click','cursor-move');
+  }
+
   document.addEventListener('mousedown', function(e){
     isDown = true;
     hasMoved = false;
@@ -5232,7 +5240,15 @@ document.getElementById('yr').textContent=new Date().getFullYear();
     }
   });
 
-  document.addEventListener('mousemove', function(){
+  document.addEventListener('mousemove', function(e){
+    /* SELF-HEAL: if we think the mouse is down but the browser reports
+       no buttons are pressed, a mouseup was missed somewhere (e.g. the
+       user released the mouse outside the browser window). Reset state
+       on the next mousemove that comes back into the page. */
+    if(isDown && e.buttons === 0){
+      resetCursorState();
+      return;
+    }
     if(!isDown) return;
     if(!hasMoved){
       hasMoved = true;
@@ -5241,11 +5257,12 @@ document.getElementById('yr').textContent=new Date().getFullYear();
     }
   });
 
-  document.addEventListener('mouseup', function(){
-    isDown = false;
-    hasMoved = false;
-    root.classList.remove('cursor-click','cursor-pointer-click','cursor-move');
-  });
+  document.addEventListener('mouseup', resetCursorState);
+
+  /* SAFETY NET: if the user alt-tabs to another app while still holding
+     the mouse and releases there, mouseup never fires on this page. The
+     window 'blur' event catches that scenario. */
+  window.addEventListener('blur', resetCursorState);
 })();
   
 /* ═ NOTICE BANNER ═ */
