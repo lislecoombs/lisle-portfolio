@@ -4631,6 +4631,10 @@ function buildItem(item){
     +'<div class="gallery-caption">'+item.title+'<span class="yr">'+(item.year||'')+'</span></div>'
     +'</div></div>';
 }
+/* Renders up to 3 photos as a stacked-polaroid pile inside `container`.
+   Also wires up click-to-shuffle: each click flips the stack and rotates
+   the bottom card to the front. Used for both the hero portrait stack
+   and the Maggie stack in the about section. */
 function buildStack(container,photos){
   container.innerHTML='';
   if(!photos||!photos.length){
@@ -4650,6 +4654,11 @@ function buildStack(container,photos){
     if(cards.length>1)container.insertBefore(cards[cards.length-1],cards[0]);
   });
 }
+/* Loads gallery + blog content from /data/gallery.json (edited via the
+   Decap CMS at /admin). Populates: hero portrait stack, Maggie stack,
+   about-me text, blog letter (title/date/body/photos), and the 4 portfolio
+   grids (paintings, drawings, sculpture, photography). On fetch failure,
+   shows "no items yet" empty-state cards in every grid. */
 async function loadCMS(){
   var cats=['paintings','drawings','sculpture','photography'];
   try{
@@ -4787,6 +4796,10 @@ cats.forEach(function(cat){
     });
   }
 }
+/* Wires up click handlers on every gallery item inside `grid` so clicking
+   one opens the lightbox showing its full image + title / year / medium /
+   dimensions / description (all read from the item's data-* attributes).
+   Called once per portfolio category after the grid is rendered. */
 function attachLightbox(grid){
   grid.querySelectorAll('.gallery-item[data-src]').forEach(function(item){
     item.addEventListener('click',function(){
@@ -4807,7 +4820,10 @@ function attachLightbox(grid){
 loadCMS();
 
 
-/* ═ PIGEON ═ */
+/* ═ PIGEON ═
+   The pigeon perched on the CD player. Hover plays a coo and registers
+   the 'pigeon' egg. The pigeon image is also wrapped in an <a> in the
+   HTML, so clicking opens a bird quiz in a new tab. */
 (function(){
   var pigeonEl=document.getElementById('pigeon-gif');
   if(!pigeonEl) return;
@@ -4818,7 +4834,9 @@ loadCMS();
   });
 })();
 
-/* ═ FISH ═ */
+/* ═ FISH ═
+   The fish floating above Maggie. Click plays a bubble sound, triggers
+   a brief wiggle animation, and registers the 'fish-click' egg. */
 (function(){
   var fishEl=document.getElementById('fish-gif');
   if(!fishEl) return;
@@ -4931,7 +4949,12 @@ function showStarPlatinum(){
 }
 
 
-/* ═ FOOTER → TO BE CONTINUED ═ */
+/* ═ FOOTER → TO BE CONTINUED ═
+   Scroll-to-bottom JoJo easter egg. tbcShow() applies a sepia tint,
+   slides in the arrow image, plays the Roundabout sound, and pauses
+   music. tbcHide() reverses everything when the user scrolls back up
+   and registers the 'tbc' egg. The scroll listener at the bottom of
+   this block triggers both. */
 var tbcActive=false,tbcMusicWasPlaying=false;
 
 function tbcShow(){
@@ -4987,12 +5010,20 @@ function spawnConfetti(){
   }
 }
 
-/* ═ ENVELOPE / LETTER ═ */
+/* ═ ENVELOPE / LETTER ═
+   The envelope sticker in the About section. Click → opens the blog
+   "letter" overlay (paper + scattered polaroids). Closes via the X
+   button, Escape key, or clicking the dim backdrop. The 'blog-open'
+   egg fires on close (not open) so it doesn't interrupt reading. */
 var envOpen=false;
 var envWrap=document.getElementById('envelope-wrap');
 var envImg=document.getElementById('envelope-img');
 var letterOverlay=document.getElementById('letter-overlay');
 
+/* Polaroid scatter animation. Stacks each blog polaroid at the letter's
+   center first, then animates them out to their final scattered positions
+   (read from each polaroid's data-fl / data-ft / data-fr attributes) with
+   a staggered delay. Called every time the envelope opens. */
 function scatterPhotos(){
   var inner=document.getElementById('letter-inner');
   var rect=inner.getBoundingClientRect();
@@ -5070,7 +5101,10 @@ document.addEventListener('keydown',function(e){
 
 document.getElementById('yr').textContent=new Date().getFullYear();
 
-/* ═ GUESTBOOK DOG ═ */
+/* ═ GUESTBOOK DOG ═
+   Click handler for the Undertale dog inside the guestbook. Every click
+   jumps the dog + plays a bark. Every 10th click triggers a spin + the
+   'dog-spin' egg. First click registers the 'dog-first' egg. */
 (function(){
   var dog = document.getElementById('guestbook-dog');
   if(!dog) return;
@@ -5101,7 +5135,14 @@ document.getElementById('yr').textContent=new Date().getFullYear();
   });
 })();
   
-/* ═ FAVORITES EASTER EGGS ═ */
+/* ═ FAVORITES EASTER EGGS ═
+   Click/hover handlers for items in the favorites board:
+   - Surf's Up   → click cycles through 4 Chicken Joe audio clips
+   - WWDITS      → click cycles through 3 vampire quote clips
+   - Mob Psycho  → hover reveals Dimple + registers the 'dimple' egg
+   - JoJo        → hover plays Killer Queen sound; if the sound is
+                   allowed to finish, redirects to /404.html as the
+                   punchline (move the mouse away to escape) */
 (function(){
   // Surf's Up: set img src, cycle audio on click
   var surfEl = document.getElementById('fav-surfsup');
@@ -5173,7 +5214,11 @@ jojoEl.addEventListener('mouseenter', function(){
   });
 }
 })();
-/* ═ CLICK / MOVE CURSORS ═ */
+/* ═ CLICK / MOVE CURSORS ═
+   Switches the cursor between custom states by adding/removing classes
+   on the <html> element: cursor-click (mouse held down on a normal
+   element), cursor-pointer-click (held down on a pointer-cursor element),
+   or cursor-move (held down AND dragging). All cleared on mouseup. */
 (function(){
   var isDown = false;
   var hasMoved = false;
@@ -5790,6 +5835,10 @@ loadEntries();
   var playText = document.getElementById('cd-play-text');
   var playBtn  = document.getElementById('cd-play');
  
+  /* Syncs the CD player's visual state to match the music's state:
+     PLAY / PAUSE text on the LCD, play/pause icon, the .active class on
+     the play button, and the .paused class on the whole CD stack (which
+     freezes the visualizer bars). Called whenever music starts/stops. */
   function updatePlayUI(isPlaying){
     if(isPlaying){
       stack.classList.remove('paused');
