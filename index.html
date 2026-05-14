@@ -10,6 +10,28 @@
 <!-- Onionring stylesheet — needed for the Apple Lovers and Women of the Internet webrings -->
 <link rel="stylesheet" href="https://poempuppy.neocities.org/webring/onionring.css">
 <style>
+
+/* ── COUNTER IMAGE BLEND ──
+   The websiteout counter renders as an image with a solid (likely white)
+   background baked in by their server, which clashes with the cream meta
+   strip. `darken` blends each counter pixel against the cream beneath it,
+   keeping whichever is darker — so white areas effectively disappear and
+   the gold stars stay visible.
+   
+   Applied to the WRAPPING SPAN (not the img directly) so it works no
+   matter what the script injects — single img, multiple imgs per digit,
+   or anything else. Scoped to the form window only so nothing else on
+   the page is affected.
+   
+   If you still see white halos/fringes after this:
+     → swap `darken` to `multiply` and try again
+        (multiply removes white cleanly but tints the gold slightly).
+     → if neither looks right, the image has anti-aliasing that this
+        trick can't fix — that's our cue to switch to Option B (Abacus). */
+#sys7-window-form .sys7-meta > span:first-child {
+  mix-blend-mode: darken;
+}
+   
 /* ============================================================
    CD PLAYER (socials section)
    ============================================================
@@ -3670,7 +3692,7 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
                  To change the STARTING VALUE, change the third number (56).
                  Full URL format: /js/{style}/{digits}/{start}/{mode} -->
             <div class="sys7-meta">
-              <span>visitory #<script type="text/javascript" src="https://counter.websiteout.com/js/28/0/56/0"></script></span>
+              <span>you are visitor number <script type="text/javascript" src="https://counter.websiteout.com/js/28/0/56/0"></script></span>
               <span>5 fields</span>
             </div>
  
