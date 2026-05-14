@@ -1070,7 +1070,7 @@
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 24px;
+  gap: 16px;
   padding: 4px 0;
 }
 /* Override the inline rotate(...) style on each webring item.
@@ -1146,7 +1146,7 @@
    width/height to match (width = 200 * scale, height = 250 * scale).
    Example values:
      scale 0.5 → width 100, height 125
-     scale 0.6 → width 120, height 150  (CURRENT)
+     scale 0.6 → width 120, height 150  
      scale 0.7 → width 140, height 175
      scale 0.8 → width 160, height 200
 */
@@ -1158,16 +1158,41 @@
 }
    
 .shroom-iframe-wrapper {
-  width: 100px;                     /* = 200 (iframe width) × 0.6 (scale) */
-  height: 125px;                    /* = 250 (iframe height) × 0.6 (scale) */
+  width: 88px;                     /* = 200 (iframe width) × 0.6 (scale) */
+  height: 110px;                    /* = 250 (iframe height) × 0.6 (scale) */
   overflow: hidden;                 /* hides any overflow during the scale */
 }
 
 .shroom-iframe {
   border: none;
   display: block;
-  transform: scale(0.5);            /* shrinks the iframe content to 60% */
+  transform: scale(0.44);            /* shrinks the iframe content to 60% */
   transform-origin: top left;       /* scales from the corner so it sits flush in the wrapper */
+}
+
+
+/* Wrapper for the Apple Lovers webring — same idea as .shroom-iframe-wrapper.
+   The onionring widget injects its content at full natural size, so we use
+   CSS transform:scale to shrink it visually, and the wrapper holds the
+   final scaled dimensions in the layout.
+   
+   TO RESIZE: change the SCALE factor, then update the wrapper width/height
+   to roughly match (the widget's natural size is ~200px wide × ~200px tall,
+   so width ≈ 200 × scale, height ≈ 200 × scale). 
+   Example values:
+     scale 0.55 → width 110, height 110
+     scale 0.65 → width 130, height 130  (CURRENT)
+     scale 0.75 → width 150, height 150
+*/
+.apple-webring-wrapper {
+  width: 130px;                     /* = ~200 (natural) × 0.65 (scale) */
+  height: 130px;
+  overflow: hidden;                 /* hides any overflow from the scaled content */
+}
+
+.apple-webring-wrapper #apple-webring {
+  transform: scale(0.65);           /* shrinks the apple widget to 65% */
+  transform-origin: top left;       /* scales from corner so it sits flush in the wrapper */
 }
    
 /* Off-Platform webring: three GIFs that need to sit in a tight row (prev, main, next).
@@ -4132,9 +4157,11 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
  
             <!-- Apple Lovers Webring -->
             <div class="webring-item">
-              <div id="apple-webring" data-apple="green">
-                <script type="text/javascript" src="https://poempuppy.neocities.org/webring/onionring-variables.js"></script>
-                <script type="text/javascript" src="https://poempuppy.neocities.org/webring/onionring-widget.js"></script>
+              <div class="apple-webring-wrapper">
+                <div id="apple-webring" data-apple="green">
+                  <script type="text/javascript" src="https://poempuppy.neocities.org/webring/onionring-variables.js"></script>
+                  <script type="text/javascript" src="https://poempuppy.neocities.org/webring/onionring-widget.js"></script>
+                </div>
               </div>
             </div>
  
