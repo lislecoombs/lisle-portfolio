@@ -31,6 +31,15 @@
 #sys7-window-form .sys7-meta > span:first-child {
   mix-blend-mode: darken;
 }
+
+/* Center the counter image with the "you are visitor number" text.
+   Default inline alignment is `baseline` — image bottom sits on the
+   text baseline, which makes the image stick up above the text and
+   the text look too low. `middle` aligns the image's center with
+   the text's x-height middle so they read as visually centered. */
+#sys7-window-form .sys7-meta > span:first-child img {
+  vertical-align: middle;
+}
    
 /* ============================================================
    CD PLAYER (socials section)
@@ -1408,6 +1417,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;            /* keeps counter image + "5 fields" text vertically aligned */
+  min-height: 26px;               /* matches the height of the form window's strip (taller due to counter image) so both strips align */
   background: var(--cream);
   color: #000;
   font-family: 'Monaco', 'Courier New', monospace;
