@@ -3095,8 +3095,14 @@
 #letter-title-el{font-family:'Playfair Display',serif;font-style:italic;font-size:1.8rem;color:#2a1808;margin-bottom:6px;}
 #letter-date-el{font-family:'Caveat',cursive;font-size:.9rem;color:var(--terra);margin-bottom:18px;display:block;}
 #letter-body-el{font-family:'Lora',serif;font-size:.95rem;line-height:1.9;color:#3a2210;white-space:pre-wrap;}
-/* Polaroid card width — controls overall size since pol-img-area is width:100% */
-.letter-polaroid{position:absolute;pointer-events:all;background:#fff;padding:10px 10px 42px;box-shadow:3px 5px 18px rgba(0,0,0,.5);width:220px;cursor:url('/cursors/pointer.png') 18 10,pointer;opacity:0;z-index:1;}
+/* Polaroid card width — controls overall size since pol-img-area is width:100%.
+   pointer-events default to none so the invisible polaroids (when the letter
+   is closed) don't catch clicks across the viewport — they're position:absolute
+   inside a position:fixed #letter-overlay, so each one sits at a fixed viewport
+   spot and would silently swallow clicks that land on Maggie, the fish, the
+   gallery, etc. The rule below re-enables clicks only when the overlay is open. */
+.letter-polaroid{position:absolute;pointer-events:none;background:#fff;padding:10px 10px 42px;box-shadow:3px 5px 18px rgba(0,0,0,.5);width:220px;cursor:url('/cursors/pointer.png') 18 10,pointer;opacity:0;z-index:1;}
+#letter-overlay.open .letter-polaroid{pointer-events:auto;}
 .letter-polaroid:hover{z-index:20;filter:brightness(1.06);}
 /* Stacked polaroids (when a blog photo has 2 images) need extra height
    because the back card is rotated -8deg and offset. Keep this ~1.3x the
