@@ -10,6 +10,54 @@
 <!-- Onionring stylesheet — needed for the Apple Lovers and Women of the Internet webrings -->
 <link rel="stylesheet" href="https://poempuppy.neocities.org/webring/onionring.css">
 <style>
+/* ═══════════════════════════════════════════════════════════════════
+   ROOM TEST / ROOM STAGE (TEMPORARY for now, will become the
+   permanent "things I love" replacement)
+   
+   How the scaling works:
+   - clamp(MIN, FLUID, MAX) sets the room's width:
+       MIN width = 900px  → smallest the room ever shrinks to
+       FLUID     = 90vw   → 90% of the browser window width
+       MAX width = 1500px → largest the room ever grows to
+     On a typical 15" laptop, this lands around 1300px.
+   - aspect-ratio: 16/10 locks the height to match the room canvas
+     (3200x2000 = 16:10), so the room never gets squished or stretched.
+   - All .room-layer images sit at position:absolute; inset:0 inside
+     .room-stage. Because every object PNG was exported at full
+     3200x2000 canvas size, stacking them like this auto-aligns them.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* The label above the test — DELETE THIS RULE when removing the test */
+.room-test-label{
+  text-align:center;
+  font-family:'Caveat',cursive;
+  font-size:1.2rem;
+  color:var(--terra);
+  opacity:.65;
+  margin-bottom:14px;
+  letter-spacing:1px;
+}
+
+/* The container that holds the room. Scales as a single block. */
+.room-stage{
+  width:clamp(900px, 90vw, 1500px);   /* min / fluid / max — tweak these */
+  aspect-ratio: 16 / 10;               /* matches 3200:2000 canvas */
+  margin:0 auto;                       /* centers horizontally */
+  position:relative;                   /* anchor for absolute layers */
+}
+
+/* Every layer (base + future objects) uses this. They all fill the
+   stage exactly, so they line up automatically. */
+.room-layer{
+  position:absolute;
+  inset:0;                             /* shorthand for top/right/bottom/left:0 */
+  width:100%;
+  height:100%;
+  display:block;
+  pointer-events:none;                 /* base isn't clickable; cursor falls through */
+  user-select:none;                    /* prevents accidental image-drag selection */
+  -webkit-user-drag:none;              /* Safari/Chrome: disables image dragging */
+}
 
 /* ── COUNTER IMAGE BLEND ──
    The websiteout counter renders as an image with a solid (likely white)
@@ -3484,6 +3532,26 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
 </section>
 <div class="divider">— — —</div>
 <section id="favorites">
+  <!-- ═══════════════════════════════════════════════════════════════════
+       ROOM TEST (temporary) — verifying base loads & scales correctly.
+       Sits ABOVE the current things-i-love card section. Once we've
+       confirmed the room works (scaling, alignment, easter-egg parity),
+       we'll delete the original card section + devices-row below this.
+       TO REMOVE THIS TEST: delete from this comment down to the matching
+       "END ROOM TEST" comment.
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div class="reveal" style="margin-bottom:60px;">
+    <p class="room-test-label">★ ROOM TEST — base image loading &amp; scaling ★</p>
+    <div class="room-stage">
+      <!-- Base layer. Every future object layer will be added INSIDE
+           .room-stage with the same .room-layer class — they'll all
+           stack at the same coordinates automatically because each
+           object PNG was exported at the full 3200x2000 canvas size. -->
+      <img class="room-layer" src="images/room-base-1.webp" alt="Lisle's room" />
+    </div>
+  </div>
+  <!-- ═══════════ END ROOM TEST ═══════════ -->
+
   <div class="inner">
     <div class="geo-divider reveal">✦ &nbsp;✧&nbsp; Things I Love &nbsp;✧&nbsp; ✦</div>
     <div class="fav-board-scatter-wrap reveal">
