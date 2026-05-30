@@ -59,6 +59,168 @@
   -webkit-user-drag:none;              /* Safari/Chrome: disables image dragging */
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   ROOM INTERACTIVE OBJECTS — shelf phase
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Hover-grow transition for any interactive room object */
+.room-obj{
+  transition:transform .22s ease;
+  will-change:transform;
+}
+
+/* TRANSFORM-ORIGIN per object = the CENTER of the object within the
+   3200x2000 canvas, as a percentage. This is what makes "grow on
+   hover" feel like the object swelling in place rather than
+   drifting toward the canvas center.
+   
+   If you move an object in Procreate, recalculate as:
+     x% = (object_center_col / 3200) * 100
+     y% = (object_center_row / 2000) * 100 */
+#room-radio       { transform-origin: 14%  15%;   }
+#room-book-stack  { transform-origin: 15%  32.5%; }
+#room-cd-stack    { transform-origin: 8%   47%;   }
+
+/* The grow itself — toggled by JS on the image when its hit zone is hovered */
+.room-obj.room-obj-hover{
+  transform:scale(1.08);    /* how much bigger on hover — bump up/down to taste */
+}
+
+/* When the book widget is showing, fade out the book stack image */
+#room-book-stack.is-hidden{ opacity:0; pointer-events:none; }
+
+/* ─── HIT ZONES ─── 
+   Invisible buttons over each object. They handle hover/click
+   without blocking interactions elsewhere on the page. */
+.room-hit{
+  position:absolute;
+  background:transparent;
+  border:none;
+  padding:0;
+  margin:0;
+  cursor:url('/cursors/pointer.png') 18 10, pointer;
+}
+.room-hit:focus-visible{
+  outline:2px dashed var(--terra);
+  outline-offset:2px;
+}
+
+/* TOOLTIPS on hit zones — small floating label on hover.
+   Matches the data-tip pattern used by the iPod and envelope.
+   To disable tooltips entirely: remove these two rules.
+   To disable just one: remove the data-tip attribute from that button. */
+.room-hit[data-tip]::after{
+  content:attr(data-tip);
+  position:absolute;
+  bottom:100%;
+  left:50%;
+  transform:translateX(-50%) translateY(-2px);
+  font-family:'Caveat',cursive;
+  font-size:.95rem;
+  color:var(--wheat);
+  background:rgba(20,15,10,.85);
+  padding:3px 10px;
+  border-radius:3px;
+  white-space:nowrap;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .2s, transform .2s;
+}
+.room-hit[data-tip]:hover::after{
+  opacity:1;
+  transform:translateX(-50%) translateY(-6px);
+}
+
+/* ─── BOOK WIDGET OVERLAY ───
+   The container is full-canvas like other room layers (for alignment),
+   but the VISIBLE widget frame inside it is positioned over the book
+   stack area. */
+.book-widget-overlay{ pointer-events:none; }
+.book-widget-overlay[hidden]{ display:none; }
+
+.book-widget-frame{
+  position:absolute;
+  /* Where the widget appears in the room — slightly larger than the
+     book stack itself so titles & covers fit. Adjust left/top/width
+     to reposition. */
+  left:8%;
+  top:24%;
+  width:18%;
+  background:linear-gradient(135deg,#f4ecd6 0%, #e6d9b8 100%);
+  border:1px solid rgba(80,55,30,.4);
+  box-shadow:3px 5px 12px rgba(0,0,0,.5);
+  padding:8px 10px 6px;
+  font-family:'Lora',serif;
+  color:#2a1808;
+  pointer-events:auto;        /* widget itself is clickable (book links etc.) */
+  transform:rotate(-1.5deg);  /* slight tilt for the scrapbook feel */
+  z-index:2;
+}
+.book-widget-title{
+  font-family:'Caveat',cursive;
+  font-size:1.1rem;
+  color:var(--terra);
+  text-align:center;
+  margin-bottom:4px;
+  letter-spacing:.5px;
+  border-bottom:1px dashed rgba(80,55,30,.3);
+  padding-bottom:3px;
+}
+.book-widget-close{
+  position:absolute;
+  top:2px; right:6px;
+  background:none; border:none;
+  font-family:'Caveat',cursive; font-size:1.3rem; line-height:1;
+  color:#5a3a20;
+  padding:0 4px;
+  cursor:url('/cursors/pointer.png') 18 10, pointer;
+  z-index:3;
+}
+.book-widget-close:hover{ color:var(--terra); }
+
+/* Styling for the Goodreads-injected markup inside our overlay.
+   Goodreads injects elements with class names ending in the widget_id
+   (1775360114). These rules are scoped to #goodreads-read-widget so
+   they don't conflict with the existing currently-reading widget
+   styling on the favorites card. */
+#goodreads-read-widget{ font-size:.7rem; line-height:1.3; }
+#goodreads-read-widget .gr_custom_container_1775360114{
+  background:transparent!important; border:none!important;
+  width:100%!important; padding:0!important; color:#3a2210!important;
+}
+#goodreads-read-widget .gr_custom_header_1775360114{ display:none!important; }
+#goodreads-read-widget .gr_custom_each_container_1775360114{
+  border-bottom:1px dotted rgba(80,55,30,.25)!important;
+  padding-bottom:5px!important; margin-bottom:5px!important;
+  overflow:visible!important;
+}
+#goodreads-read-widget .gr_custom_each_container_1775360114:last-of-type{ border:none!important; }
+#goodreads-read-widget .gr_custom_book_container_1775360114{
+  height:46px!important; width:30px!important;
+  float:left!important; margin-right:8px!important;
+  overflow:hidden!important;
+  border:1px solid rgba(80,55,30,.3)!important;
+  box-shadow:1px 2px 4px rgba(0,0,0,.3)!important;
+  transform:rotate(-1.5deg)!important;
+}
+#goodreads-read-widget .gr_custom_book_container_1775360114 img{
+  width:100%!important; height:100%!important;
+  object-fit:cover!important; display:block!important;
+}
+#goodreads-read-widget .gr_custom_title_1775360114 a{
+  font-family:'Lora',serif!important; font-size:.72rem!important;
+  line-height:1.2!important; color:#2a1808!important;
+  text-decoration:none!important; font-weight:600!important;
+}
+#goodreads-read-widget .gr_custom_author_1775360114{
+  font-family:'Lora',serif!important; font-size:.62rem!important;
+  color:#5a3a20!important; font-style:italic!important;
+}
+/* Hide the bits we don't need: rating, tags, Goodreads logo */
+#goodreads-read-widget .gr_custom_rating_1775360114,
+#goodreads-read-widget .gr_custom_tags_1775360114,
+#goodreads-read-widget center{ display:none!important; }
+   
 /* ── COUNTER IMAGE BLEND ──
    The websiteout counter renders as an image with a solid (likely white)
    background baked in by their server, which clashes with the cream meta
@@ -3543,11 +3705,50 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
   <div class="reveal" style="margin-bottom:60px;">
     <p class="room-test-label">★ ROOM TEST — base image loading &amp; scaling ★</p>
     <div class="room-stage">
-      <!-- Base layer. Every future object layer will be added INSIDE
-           .room-stage with the same .room-layer class — they'll all
-           stack at the same coordinates automatically because each
-           object PNG was exported at the full 3200x2000 canvas size. -->
+      <!-- BASE LAYER -->
       <img class="room-layer" src="images/room-base-1.webp" alt="Lisle's room" />
+
+      <!-- ─── INTERACTIVE SHELF OBJECTS ─── 
+           Each is a full-canvas PNG layered over the base. The
+           transform-origin in CSS (per #id) keeps the hover-grow
+           centered on the actual object, not the canvas center. -->
+      <img class="room-layer room-obj" id="room-radio" src="images/radio.png" alt="" />
+      <img class="room-layer room-obj" id="room-book-stack" src="images/book-stack.png" alt="" />
+      <img class="room-layer room-obj" id="room-cd-stack" src="images/cd-stack.png" alt="" />
+
+      <!-- ─── BOOK WIDGET OVERLAY ───
+           Hidden by default. Shown when the book stack is clicked.
+           Replaces the book stack image in place. -->
+      <div class="room-layer book-widget-overlay" id="book-widget-overlay" hidden>
+        <div class="book-widget-frame">
+          <button class="book-widget-close" aria-label="Close" type="button">×</button>
+          <div class="book-widget-title">recently read ✦</div>
+          <div id="goodreads-read-widget">Loading...</div>
+        </div>
+      </div>
+
+      <!-- ─── HIT ZONES ─── 
+           Transparent buttons sized to each object's bounding box.
+           These handle hover + click. The percentages below = 
+           the object's location within the 3200x2000 canvas.
+           
+           If you move an object in Procreate and re-export, you'll
+           need to update the matching left/top/width/height here.
+           (Same percentages work because the room scales as a block.) -->
+      <button class="room-hit" data-target="room-radio"
+              data-tip="my radio show ♪"
+              style="left:8%;top:5%;width:12%;height:20.5%;"
+              aria-label="Listen to my recent radio show" type="button"></button>
+
+      <button class="room-hit" data-target="room-book-stack"
+              data-tip="recently finished ✦"
+              style="left:9%;top:24.5%;width:11.5%;height:15.5%;"
+              aria-label="See my recently finished books" type="button"></button>
+
+      <button class="room-hit" data-target="room-cd-stack"
+              data-tip="some fav songs ♪"
+              style="left:4%;top:39%;width:8%;height:16%;"
+              aria-label="Open my Spotify playlist" type="button"></button>
     </div>
   </div>
   <!-- ═══════════ END ROOM TEST ═══════════ -->
