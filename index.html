@@ -112,32 +112,53 @@
    Matches the data-tip pattern used by the iPod and envelope.
    To disable tooltips entirely: remove these two rules.
    To disable just one: remove the data-tip attribute from that button. */
+/* TOOLTIPS — ribo.zone style. Light letters with black outline,
+   centered across each interactive object. No background pill. */
 .room-hit[data-tip]::after{
   content:attr(data-tip);
   position:absolute;
-  /* Now positioned at the TOP of the hit zone, mostly above with
-     a small slice overlapping the top of the image. */
-  top:0;                                                /* anchor to top edge */
+  /* Centered on the hit zone (= centered on the object) */
+  top:50%;
   left:50%;
-  transform:translateX(-50%) translateY(-72%);          /* mostly above, slight overlap. */
-                                                        /* -100% = fully above, 0% = fully on image */
-                                                        /* tweak this to taste */
+  transform:translate(-50%, -50%);
+
+  /* FONT — keeps Caveat for handwritten feel + consistency with
+     existing tooltips (iPod, envelope, TV).
+     For a chunkier display look closer to ribo.zone's INFO/CONTACT, try:
+       font-family:'Playfair Display',serif;
+       font-weight:700;
+       text-transform:uppercase;
+       letter-spacing:.04em; */
   font-family:'Caveat',cursive;
-  font-size:.95rem;
-  color:var(--wheat);
-  background:rgba(20,15,10,.85);
-  padding:3px 10px;
-  border-radius:3px;
+  font-size:1.8rem;                /* tune size here */
+  font-weight:700;
+  color:var(--cream);              /* light fill inside the letters */
+
+  /* OUTLINE — 8-direction text-shadow makes a clean black stroke.
+     Bump the 2px values up for thicker outline, down for thinner. */
+  text-shadow:
+    -2px -2px 0 #000,
+     2px -2px 0 #000,
+    -2px  2px 0 #000,
+     2px  2px 0 #000,
+    -2px  0   0 #000,
+     2px  0   0 #000,
+     0   -2px 0 #000,
+     0    2px 0 #000;
+
+  /* No background pill — just the outlined text floating over the object */
+  background:none;
+  padding:0;
+  border-radius:0;
+
   white-space:nowrap;
   opacity:0;
   pointer-events:none;
-  transition:opacity .2s, transform .2s;
+  transition:opacity .2s;
 }
 .room-hit[data-tip]:hover::after{
   opacity:1;
-  transform:translateX(-50%) translateY(-68%);          /* tiny lift on hover */
 }
-
 /* ─── BOOK WIDGET OVERLAY ───
    The container is full-canvas like other room layers (for alignment),
    but the VISIBLE widget frame inside it is positioned over the book
