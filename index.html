@@ -159,6 +159,56 @@
 .room-hit[data-tip]:hover::after{
   opacity:1;
 }
+
+/* ═══ ROOM — VHS TAPE LAYER SYSTEM ═══
+   Each tape is a full-canvas transparent PNG layered over the base,
+   sitting exactly where you exported it. Visual only — the .room-vhs-hit
+   buttons handle interaction for the 3 interactive tapes. */
+.room-vhs{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  display:block;
+  pointer-events:none;        /* tapes never catch clicks; hit zones do */
+  user-select:none;
+  -webkit-user-drag:none;
+  /* SNAP feel on hover — quick pop with a tiny overshoot.
+     Softer: raise .12s. Punchier: lower it. Plain grow: drop the cubic-bezier. */
+  transition:transform .12s cubic-bezier(.34,1.56,.64,1);
+}
+
+/* TRANSFORM-ORIGIN per interactive tape = that tape's center on the
+   3200x2000 canvas, so it grows in place. Auto-read from your exports. */
+#room-vhs-wwdits  { transform-origin:50.6% 32.2%; }
+#room-vhs-surfsup { transform-origin:54.9% 32.2%; }
+#room-vhs-jjba    { transform-origin:58.5% 32.3%; }
+
+/* The hover snap. 1.07 = "slightly bigger" — tune to taste.
+   z-index lift keeps the growing tape above its neighbours. */
+.room-vhs.is-hover{ transform:scale(1.07); z-index:50; }
+
+/* Invisible hit buttons for the interactive tapes only. Separate class
+   from .room-hit so the old room-test handlers don't grab these. */
+.room-vhs-hit{
+  position:absolute;
+  background:transparent;
+  border:none; padding:0; margin:0;
+  z-index:60;                                       /* above the tape layers */
+  cursor:url('/cursors/pointer.png') 18 10, pointer; /* custom pointer cursor */
+}
+.room-vhs-hit:focus-visible{ outline:2px dashed var(--terra); outline-offset:2px; }
+
+/* OLD room-test objects (radio / book stack / CD stack) belong to the
+   PREVIOUS base and would float in the wrong spots over the new room.
+   Hidden here rather than deleted, so the markup + handlers stay dormant
+   for reference. To revive one in the new room: give it a fresh
+   full-canvas export and remove it from this rule. */
+#room-radio, #room-book-stack, #room-cd-stack,
+.room-hit[data-target="room-radio"],
+.room-hit[data-target="room-book-stack"],
+.room-hit[data-target="room-cd-stack"]{ display:none !important; }
+
 /* ─── BOOK WIDGET OVERLAY ───
    The container is full-canvas like other room layers (for alignment),
    but the VISIBLE widget frame inside it is positioned over the book
@@ -3734,7 +3784,33 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
     <p class="room-test-label">★ ROOM TEST — base image loading &amp; scaling ★</p>
     <div class="room-stage">
       <!-- BASE LAYER -->
-      <img class="room-layer" src="images/room-base-1.webp" alt="Lisle's room" />
+      <img class="room-layer" src="images/room-base-2.webp" alt="Lisle's room" />
+
+      <!-- ─── VHS TAPES (visual layers) ───
+           Full-canvas transparent PNGs, each placed where you exported it.
+           Order = left-to-right on the shelf. Visual only; the .room-vhs-hit
+           buttons below handle hover/click for the interactive ones. -->
+      <img class="room-vhs" id="room-vhs-wwdits"      src="images/vhs-WWDITS.png" alt="" />
+      <img class="room-vhs" id="room-vhs-perfectblue" src="images/vhs-perfectblue.png" alt="" />
+      <img class="room-vhs" id="room-vhs-hailmary"    src="images/vhs-hailmary.png" alt="" />
+      <img class="room-vhs" id="room-vhs-surfsup"     src="images/vhs-surfsup.png" alt="" />
+      <img class="room-vhs" id="room-vhs-mobpsycho"   src="images/vhs-mobpsycho100.png" alt="" />
+      <img class="room-vhs" id="room-vhs-tlou"        src="images/vhs-TLOU.png" alt="" />
+      <img class="room-vhs" id="room-vhs-jjba"        src="images/vhs-jjba.png" alt="" />
+
+      <!-- ─── VHS HIT ZONES (interactive tapes only) ───
+           Transparent buttons over the 3 interactive tapes, padded a touch
+           wider than the tape so they're easy to hit. Tune the % values, or
+           add ?roomedit to the URL to read exact coords as you mouse around. -->
+      <button class="room-vhs-hit" data-target="room-vhs-wwdits"
+              style="left:49.0%;top:25.4%;width:3.2%;height:13.7%;"
+              aria-label="Play a What We Do in the Shadows clip" type="button"></button>
+      <button class="room-vhs-hit" data-target="room-vhs-surfsup"
+              style="left:53.6%;top:25.4%;width:2.6%;height:13.7%;"
+              aria-label="Play a Surf's Up clip" type="button"></button>
+      <button class="room-vhs-hit" data-target="room-vhs-jjba"
+              style="left:57.6%;top:25.5%;width:2.0%;height:13.6%;"
+              aria-label="JoJo's Bizarre Adventure" type="button"></button>
 
       <!-- ─── INTERACTIVE SHELF OBJECTS ─── 
            Each is a full-canvas PNG layered over the base. The
@@ -5805,6 +5881,98 @@ document.getElementById('yr').textContent=new Date().getFullYear();
     openYt(link.href);
   });
 })();
+
+/* ═ ROOM — VHS TAPE INTERACTIONS ═
+   Hover-snap for the 3 interactive tapes + their actions. Decorative tapes
+   have no hit zone, so they do nothing (intentional). */
+(function(){
+  var hits = document.querySelectorAll('.room-vhs-hit');
+  if(!hits.length) return;
+
+  /* Hover snap on every interactive tape */
+  hits.forEach(function(btn){
+    var tape = document.getElementById(btn.dataset.target);
+    if(!tape) return;
+    btn.addEventListener('mouseenter', function(){ tape.classList.add('is-hover'); });
+    btn.addEventListener('mouseleave', function(){ tape.classList.remove('is-hover'); });
+  });
+
+  /* WWDITS — click cycles 3 audio clips (no image, unlike the old egg) */
+  var ww = document.querySelector('.room-vhs-hit[data-target="room-vhs-wwdits"]');
+  if(ww){
+    var wwSounds = [SND.wwdits1, SND.wwdits2, SND.wwdits3];
+    var wwIdx = 0;
+    ww.addEventListener('click', function(){
+      sndTriggeredThisTick = true;                 /* suppress the generic click.mp3 */
+      wwSounds.forEach(function(s){ s.pause(); s.currentTime = 0; });
+      wwSounds[wwIdx].play().catch(function(){});
+      wwIdx = (wwIdx + 1) % 3;
+      if(window.EggTracker) EggTracker.trigger('wwdits');
+    });
+  }
+
+  /* Surf's Up — click cycles Chicken Joe audio (no image, unlike the old egg) */
+  var su = document.querySelector('.room-vhs-hit[data-target="room-vhs-surfsup"]');
+  if(su){
+    su.addEventListener('click', function(){
+      sndTriggeredThisTick = true;                 /* suppress the generic click.mp3 */
+      play(CJ_SOUNDS[cjSoundIdx % CJ_SOUNDS.length]);
+      cjSoundIdx++;
+      if(window.EggTracker) EggTracker.trigger('surfs-up');
+    });
+  }
+
+  /* JoJo — HOVER plays Killer Queen; when it finishes, redirect to 404.
+     Leaving the tape before it ends cancels the redirect and resumes music. */
+  var jj = document.querySelector('.room-vhs-hit[data-target="room-vhs-jjba"]');
+  if(jj){
+    var kqPlaying = false, kqWasPlaying = false;
+    jj.addEventListener('click', function(){
+      if(kqPlaying) return;
+      kqPlaying = true;
+      if(window.EggTracker) EggTracker.trigger('jojo-kq');
+      kqWasPlaying = musicPlaying;
+      if(musicReady && musicPlaying){
+        ytPlayer.pauseVideo(); musicPlaying = false;
+        if(musicBtn) musicBtn.classList.add('paused');
+      }
+      SND.kq.currentTime = 0;
+      SND.kq.play().catch(function(){});
+      SND.kq.onended = function(){ if(kqPlaying) window.location.href = '/404.html'; };
+    });
+    jj.addEventListener('mouseleave', function(){
+      kqPlaying = false;
+      SND.kq.pause(); SND.kq.currentTime = 0;
+      if(kqWasPlaying && musicReady){
+        ytPlayer.playVideo(); musicPlaying = true;
+        if(musicBtn) musicBtn.classList.remove('paused');
+      }
+    });
+  }
+})();
+
+/* ═ DEV POSITIONING HELPER ═
+   Visible ONLY when the URL has ?roomedit (e.g. lislecoombs.me/?roomedit).
+   Shows live cursor coords as % inside the room, so you can read off
+   left/top values for placing or tuning objects. Visitors never see it. */
+(function(){
+  if(!/[?&]roomedit/.test(location.search)) return;
+  var stage = document.querySelector('.room-stage');
+  if(!stage) return;
+  var tag = document.createElement('div');
+  tag.style.cssText = 'position:fixed;z-index:99999;bottom:10px;left:10px;'+
+    'background:#000;color:#0f0;font:14px monospace;padding:6px 10px;'+
+    'border:1px solid #0f0;pointer-events:none;white-space:pre;';
+  tag.textContent = 'move cursor over the room';
+  document.body.appendChild(tag);
+  stage.addEventListener('mousemove', function(e){
+    var r = stage.getBoundingClientRect();
+    var x = (e.clientX - r.left) / r.width  * 100;
+    var y = (e.clientY - r.top)  / r.height * 100;
+    tag.textContent = 'left:' + x.toFixed(1) + '%  top:' + y.toFixed(1) + '%';
+  });
+})();
+   
 </script>
 <script>
 /* ═ TARDIS ═ */
