@@ -3765,6 +3765,121 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
               aria-label="Open my Spotify playlist" type="button"></button>
     </div>
   </div>
+
+   <script>
+/* ═ ROOM INTERACTIONS — Phase 1: shelf objects ═
+   Hover-grow + click handlers for the bookshelf interactive objects
+   (radio, book stack, CD stack).
+   
+   To add a new interactive object later:
+   1. Add <img class="room-layer room-obj" id="room-X" src="..."> inside .room-stage
+   2. Add <button class="room-hit" data-target="room-X" data-tip="..."
+      style="left:X%;top:Y%;width:W%;height:H%;" aria-label="...">
+   3. Set transform-origin in CSS for #room-X (the object's center as %)
+   4. Add a click handler in the dispatch below for the new data-target */
+function initRoomInteractions(){
+  var hits = document.querySelectorAll('.room-hit');
+  if(!hits.length) return;
+
+  /* Hover + click for each hit zone */
+  hits.forEach(function(btn){
+    var targetId = btn.dataset.target;
+    var target = document.getElementById(targetId);
+    if(!target) return;
+
+    /* Hover: add the grow class to the target IMAGE */
+    btn.addEventListener('mouseenter', function(){
+      target.classList.add('room-obj-hover');
+    });
+    btn.addEventListener('mouseleave', function(){
+      target.classList.remove('room-obj-hover');
+    });
+
+    /* Click: dispatch based on which object */
+    btn.addEventListener('click', function(){
+      if(targetId === 'room-radio'){
+        openRadio();
+      } else if(targetId === 'room-book-stack'){
+        toggleBookWidget();
+      } else if(targetId === 'room-cd-stack'){
+        openSpotifyOverlay();
+      }
+    });
+  });
+
+  /* ─── RADIO ─── 
+     Opens KSPC program schedule in a new tab. */
+  function openRadio(){
+    window.open('https://kspc.org/listen/program-schedule/', '_blank', 'noopener');
+  }
+
+  /* ─── SPOTIFY ─── 
+     Opens the existing #spotify-overlay (same one the iPod uses).
+     Lazy-loads the iframe src on first open. */
+  function openSpotifyOverlay(){
+    var overlay = document.getElementById('spotify-overlay');
+    var iframe  = document.getElementById('spotify-iframe');
+    if(!overlay || !iframe) return;
+    if(iframe.src === 'about:blank' || !iframe.src){
+      iframe.src = iframe.getAttribute('data-src');
+    }
+    overlay.classList.add('open');
+  }
+
+  /* ─── BOOK STACK ↔ WIDGET TOGGLE ─── 
+     Click toggles between the book stack photo and the Goodreads
+     "recently read" widget. The widget loads lazily on first show. */
+  var bookStackImg = document.getElementById('room-book-stack');
+  var bookOverlay  = document.getElementById('book-widget-overlay');
+  var bookHitBtn   = document.querySelector('.room-hit[data-target="room-book-stack"]');
+  var bookLoaded   = false;
+
+  /* GOODREADS "RECENTLY READ" URL — modified from existing widget URL.
+     If this shows the wrong books or fails to load, create a new
+     custom widget on Goodreads for the "read" shelf and paste here. */
+  var GR_READ_URL = "https://www.goodreads.com/review/custom_widget/105653626.Lisle's%20bookshelf:%20read?cover_position=left&cover_size=small&num_books=3&order=d&shelf=read&show_author=1&show_cover=1&show_rating=0&show_review=0&show_tags=0&show_title=1&sort=date_read&widget_bg_color=FFFFFF&widget_bg_transparent=&widget_border_width=0&widget_id=1775360114&widget_text_color=000000&widget_title_size=small&widget_width=thin";
+
+  function loadGoodreadsRead(){
+    if(bookLoaded) return;
+    bookLoaded = true;
+    var s = document.createElement('script');
+    s.src = GR_READ_URL;
+    s.charset = 'utf-8';
+    document.getElementById('goodreads-read-widget').appendChild(s);
+  }
+
+  function toggleBookWidget(){
+    var isShowing = !bookOverlay.hidden;
+    if(isShowing){
+      bookOverlay.hidden = true;
+      bookStackImg.classList.remove('is-hidden');
+      if(bookHitBtn) bookHitBtn.style.pointerEvents = '';
+    } else {
+      loadGoodreadsRead();
+      bookOverlay.hidden = false;
+      bookStackImg.classList.add('is-hidden');
+      if(bookHitBtn) bookHitBtn.style.pointerEvents = 'none';
+    }
+  }
+
+  /* Close button on the book widget */
+  var closeBtn = document.querySelector('.book-widget-close');
+  if(closeBtn){
+    closeBtn.addEventListener('click', function(e){
+      e.stopPropagation();
+      toggleBookWidget();
+    });
+  }
+}
+
+/* Fire init now if DOM is already parsed, otherwise wait. */
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', initRoomInteractions);
+} else {
+  initRoomInteractions();
+}
+</script>
+   
   <!-- ═══════════ END ROOM TEST ═══════════ -->
 
   <div class="inner">
