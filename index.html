@@ -29,6 +29,32 @@
      3200x2000 canvas size, stacking them like this auto-aligns them.
    ═══════════════════════════════════════════════════════════════════ */
 
+/* ═══ ROOM — SWAP OBJECTS (open on hover, act on click) ═══
+   A swap object is a full-canvas wrapper holding two stacked state
+   images (closed + open). Toggling .is-open on the wrapper CUTS
+   between them. Frog/guitar/karma all use this. Visual only — the
+   .room-swap-hit button drives it. */
+.room-swap{ position:absolute; inset:0; pointer-events:none; }
+.room-swap img{
+  position:absolute; inset:0; width:100%; height:100%;
+  display:block; user-select:none; -webkit-user-drag:none;
+  transition:none;                 /* retro CUT between states; for a soft
+                                      fade instead: transition:opacity .12s ease; */
+}
+.room-swap .swap-open{ opacity:0; }              /* open state hidden by default */
+.room-swap.is-open .swap-closed{ opacity:0; }    /* when open: hide closed... */
+.room-swap.is-open .swap-open{ opacity:1; }      /* ...show open */
+.room-swap.is-open{ z-index:40; }                /* lift above neighbours when open */
+
+/* Hit zones for swap objects — own class so they don't collide with
+   .room-hit (popups) or .room-vhs-hit (tapes). */
+.room-swap-hit{
+  position:absolute; background:transparent;
+  border:none; padding:0; margin:0; z-index:55;
+  cursor:url('/cursors/pointer.png') 18 10, pointer;   /* custom pointer cursor */
+}
+.room-swap-hit:focus-visible{ outline:2px dashed var(--terra); outline-offset:2px; }
+
 /* The label above the test — DELETE THIS RULE when removing the test */
 .room-test-label{
   text-align:center;
@@ -68,7 +94,7 @@
 
 /* Hover-grow transition for any interactive room object */
 .room-obj{
-  transition:transform .22s ease;
+  transition:none;          /* retro CUT — instant snap, no smooth growth */
   will-change:transform;
 }
 
@@ -175,7 +201,7 @@
   -webkit-user-drag:none;
   /* SNAP feel on hover — quick pop with a tiny overshoot.
      Softer: raise .12s. Punchier: lower it. Plain grow: drop the cubic-bezier. */
-  transition:transform .12s cubic-bezier(.34,1.56,.64,1);
+  transition:none;          /* retro CUT — instant snap */
 }
 
 /* TRANSFORM-ORIGIN per interactive tape = that tape's center on the
@@ -199,15 +225,6 @@
 }
 .room-vhs-hit:focus-visible{ outline:2px dashed var(--terra); outline-offset:2px; }
 
-/* OLD room-test objects (radio / book stack / CD stack) belong to the
-   PREVIOUS base and would float in the wrong spots over the new room.
-   Hidden here rather than deleted, so the markup + handlers stay dormant
-   for reference. To revive one in the new room: give it a fresh
-   full-canvas export and remove it from this rule. */
-#room-radio, #room-book-stack, #room-cd-stack,
-.room-hit[data-target="room-radio"],
-.room-hit[data-target="room-book-stack"],
-.room-hit[data-target="room-cd-stack"]{ display:none !important; }
 
 /* ─── BOOK WIDGET OVERLAY ───
    The container is full-canvas like other room layers (for alignment),
@@ -3853,6 +3870,47 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
               data-tip="some fav songs ♪"
               style="left:4%;top:39%;width:8%;height:16%;"
               aria-label="Open my Spotify playlist" type="button"></button>
+       <!-- ═══ ROOM SWAP OBJECTS — frog / guitar / karma ═══
+           Each is a full-canvas wrapper of stacked state images, driven
+           by the matching .room-swap-hit button below. -->
+
+      <!-- FROG PHONE — hover opens, mouse-away closes, click = ribbit. -->
+      <div class="room-swap" id="room-frog">
+        <img class="swap-closed" src="images/frog-closed.png" alt="" />
+        <img class="swap-open"   src="images/frog-open.png"   alt="" />
+      </div>
+
+      <!-- GUITAR CASE — hover opens; click latches open + plays sodom.mp3
+           with an audio bar; click again closes + stops. -->
+      <div class="room-swap" id="room-guitar">
+        <img class="swap-closed" src="images/guitar-closed.png" alt="" />
+        <img class="swap-open"   src="images/guitar-open.png"   alt="" />
+      </div>
+
+      <!-- KARMA GAME — hover opens; click latches open + shows cards;
+           click again closes + hides cards. -->
+      <div class="room-swap" id="room-karma">
+        <img class="swap-closed" src="images/karma-closed.png" alt="" />
+        <img class="swap-open"   src="images/karma-open.png"   alt="" />
+        <img class="swap-extra"  src="images/karma-cards.png"  alt="" />
+      </div>
+
+      <!-- Guitar audio bar (native player, themed). Hidden until opened. -->
+      <div class="room-audio-bar" id="guitar-audio-bar" hidden>
+        <audio id="guitar-audio" src="sounds/sodom.mp3" preload="none" controls></audio>
+      </div>
+
+      <!-- Swap-object hit zones. Tune left/top/width/height, or load the
+           page with ?roomedit to read exact coords as you mouse around. -->
+      <button class="room-swap-hit" data-swap="room-frog" data-action="frog"
+              style="left:70%;top:42.5%;width:9.5%;height:12.5%;"
+              aria-label="Frog phone — ribbit" type="button"></button>
+      <button class="room-swap-hit" data-swap="room-guitar" data-action="guitar"
+              style="left:5.5%;top:64.5%;width:35.5%;height:24%;"
+              aria-label="Guitar case — play a clip" type="button"></button>
+      <button class="room-swap-hit" data-swap="room-karma" data-action="karma"
+              style="left:42.5%;top:70.5%;width:11.5%;height:14%;"
+              aria-label="Karma card game" type="button"></button>
     </div>
   </div>
 
@@ -4732,6 +4790,7 @@ var SND={
   kq:    new Audio('sounds/kq.mp3'),
   huh: mkAudio('sounds/huh.mp3'),
   bubbles: mkAudio('sounds/bubbles.mp3'),
+  ribbit:  mkAudio('sounds/ribbit.mp3', .9),   /* frog phone */
   pigeon:  mkAudio('sounds/pigeon.mp3', 1),
   sparkle: mkAudio('sounds/sparkle.mp3', 1),
   click:   mkAudio('sounds/click.mp3', .35),
@@ -5951,6 +6010,73 @@ document.getElementById('yr').textContent=new Date().getFullYear();
   }
 })();
 
+/* ═ ROOM — SWAP OBJECTS (hover to open, click to act/latch) ═
+   • Frog   : hover opens, leave closes, click = ribbit (never latches)
+   • Guitar : hover opens; click LATCHES open + plays sodom.mp3 + shows
+              the audio bar; click again closes + stops + hides bar
+   • Karma  : hover opens; click LATCHES open + shows cards; click again
+              closes + hides cards
+   Latched objects ignore mouse-away until clicked again. */
+(function(){
+  var hits = document.querySelectorAll('.room-swap-hit');
+  if(!hits.length) return;
+
+  /* Guitar audio bar helpers */
+  var guitarBar   = document.getElementById('guitar-audio-bar');
+  var guitarAudio = document.getElementById('guitar-audio');
+  function showGuitarAudio(){
+    if(guitarBar) guitarBar.hidden = false;
+    if(guitarAudio){ guitarAudio.currentTime = 0; guitarAudio.play().catch(function(){}); }
+  }
+  function hideGuitarAudio(){
+    if(guitarAudio){ guitarAudio.pause(); guitarAudio.currentTime = 0; }
+    if(guitarBar) guitarBar.hidden = true;
+  }
+
+  hits.forEach(function(btn){
+    var group  = document.getElementById(btn.dataset.swap);
+    var action = btn.dataset.action;
+    if(!group) return;
+    var latched = false;   /* per-object latch state */
+
+    /* HOVER preview — skipped while latched open */
+    btn.addEventListener('mouseenter', function(){
+      if(latched) return;
+      group.classList.add('is-open');
+    });
+    btn.addEventListener('mouseleave', function(){
+      if(latched) return;
+      group.classList.remove('is-open');
+    });
+
+    /* CLICK */
+    btn.addEventListener('click', function(){
+      /* Frog: just ribbit, never latches */
+      if(action === 'frog'){
+        sndTriggeredThisTick = true;          /* suppress generic click.mp3 */
+        play(SND.ribbit);
+        return;
+      }
+      /* Guitar / Karma: latch toggle */
+      if(!latched){
+        latched = true;
+        group.classList.remove('is-open');
+        group.classList.add('is-latched');
+        if(action === 'guitar'){
+          sndTriggeredThisTick = true;        /* sodom plays instead of click.mp3 */
+          showGuitarAudio();
+        }
+        /* karma cards appear automatically via .is-latched */
+      } else {
+        latched = false;
+        group.classList.remove('is-latched','is-open');   /* back to closed */
+        if(action === 'guitar') hideGuitarAudio();
+      }
+    });
+  });
+})();
+
+</parameter>   
 /* ═ DEV POSITIONING HELPER ═
    Visible ONLY when the URL has ?roomedit (e.g. lislecoombs.me/?roomedit).
    Shows live cursor coords as % inside the room, so you can read off
