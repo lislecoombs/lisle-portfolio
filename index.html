@@ -10,6 +10,15 @@
 <!-- Onionring stylesheet — needed for the Apple Lovers and Women of the Internet webrings -->
 <link rel="stylesheet" href="https://poempuppy.neocities.org/webring/onionring.css">
 <style>
+
+   /* DIAGNOSTIC — DELETE AFTER WE FIX THE POSITIONS
+   Makes hit zones visible as semi-transparent red boxes so we can
+   see exactly where they're landing vs the objects. */
+.room-hit{
+  background:rgba(255,80,80,.35) !important;
+  outline:2px solid red !important;
+}
+   
 /* ═══════════════════════════════════════════════════════════════════
    ROOM TEST / ROOM STAGE (TEMPORARY for now, will become the
    permanent "things I love" replacement)
@@ -37,6 +46,7 @@
   margin-bottom:14px;
   letter-spacing:1px;
 }
+   
 
 /* The container that holds the room. Scales as a single block. */
 .room-stage{
@@ -112,9 +122,13 @@
 .room-hit[data-tip]::after{
   content:attr(data-tip);
   position:absolute;
-  bottom:100%;
+  /* Now positioned at the TOP of the hit zone, mostly above with
+     a small slice overlapping the top of the image. */
+  top:0;                                                /* anchor to top edge */
   left:50%;
-  transform:translateX(-50%) translateY(-2px);
+  transform:translateX(-50%) translateY(-72%);          /* mostly above, slight overlap. */
+                                                        /* -100% = fully above, 0% = fully on image */
+                                                        /* tweak this to taste */
   font-family:'Caveat',cursive;
   font-size:.95rem;
   color:var(--wheat);
@@ -128,7 +142,7 @@
 }
 .room-hit[data-tip]:hover::after{
   opacity:1;
-  transform:translateX(-50%) translateY(-6px);
+  transform:translateX(-50%) translateY(-68%);          /* tiny lift on hover */
 }
 
 /* ─── BOOK WIDGET OVERLAY ───
