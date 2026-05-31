@@ -29,31 +29,6 @@
      3200x2000 canvas size, stacking them like this auto-aligns them.
    ═══════════════════════════════════════════════════════════════════ */
 
-/* ═══ ROOM — SWAP OBJECTS (open on hover, act on click) ═══
-   A swap object is a full-canvas wrapper holding two stacked state
-   images (closed + open). Toggling .is-open on the wrapper CUTS
-   between them. Frog/guitar/karma all use this. Visual only — the
-   .room-swap-hit button drives it. */
-.room-swap{ position:absolute; inset:0; pointer-events:none; }
-.room-swap img{
-  position:absolute; inset:0; width:100%; height:100%;
-  display:block; user-select:none; -webkit-user-drag:none;
-  transition:none;                 /* retro CUT between states; for a soft
-                                      fade instead: transition:opacity .12s ease; */
-}
-.room-swap .swap-open{ opacity:0; }              /* open state hidden by default */
-.room-swap.is-open .swap-closed{ opacity:0; }    /* when open: hide closed... */
-.room-swap.is-open .swap-open{ opacity:1; }      /* ...show open */
-.room-swap.is-open{ z-index:40; }                /* lift above neighbours when open */
-
-/* Hit zones for swap objects — own class so they don't collide with
-   .room-hit (popups) or .room-vhs-hit (tapes). */
-.room-swap-hit{
-  position:absolute; background:transparent;
-  border:none; padding:0; margin:0; z-index:55;
-  cursor:url('/cursors/pointer.png') 18 10, pointer;   /* custom pointer cursor */
-}
-.room-swap-hit:focus-visible{ outline:2px dashed var(--terra); outline-offset:2px; }
 
 /* The label above the test — DELETE THIS RULE when removing the test */
 .room-test-label{
@@ -6076,7 +6051,6 @@ document.getElementById('yr').textContent=new Date().getFullYear();
   });
 })();
 
-</parameter>   
 /* ═ DEV POSITIONING HELPER ═
    Visible ONLY when the URL has ?roomedit (e.g. lislecoombs.me/?roomedit).
    Shows live cursor coords as % inside the room, so you can read off
