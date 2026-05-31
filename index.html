@@ -199,6 +199,52 @@
   cursor:url('/cursors/pointer.png') 18 10, pointer; /* custom pointer cursor */
 }
 .room-vhs-hit:focus-visible{ outline:2px dashed var(--terra); outline-offset:2px; }
+/* ═══ ROOM — SWAP OBJECTS (open on hover, act/latch on click) ═══
+   A swap object is a full-canvas wrapper of stacked state images
+   (closed + open, plus an optional "extra" layer like Karma's cards).
+   JS toggles two classes:
+     .is-open    → hover preview (closed hidden, open shown)
+     .is-latched → clicked-open LOCK (open + extra shown; stays open
+                   until clicked again, ignores mouse-away)
+   States CUT instantly (retro, no fade). */
+.room-swap{ position:absolute; inset:0; pointer-events:none; }
+.room-swap img{
+  position:absolute; inset:0; width:100%; height:100%;
+  display:block; user-select:none; -webkit-user-drag:none;
+  transition:none;        /* retro CUT; for a soft fade: transition:opacity .12s ease; */
+}
+.room-swap .swap-open,
+.room-swap .swap-extra{ opacity:0; }              /* open + extra hidden by default */
+.room-swap.is-open    .swap-closed{ opacity:0; }
+.room-swap.is-open    .swap-open{   opacity:1; }
+.room-swap.is-latched .swap-closed{ opacity:0; }
+.room-swap.is-latched .swap-open{   opacity:1; }
+.room-swap.is-latched .swap-extra{  opacity:1; }
+.room-swap.is-open, .room-swap.is-latched{ z-index:40; }   /* lift above neighbours */
+
+/* Hit zones for swap objects — own class so they don't collide with
+   .room-hit (popups) or .room-vhs-hit (tapes). */
+.room-swap-hit{
+  position:absolute; background:transparent;
+  border:none; padding:0; margin:0; z-index:55;
+  cursor:url('/cursors/pointer.png') 18 10, pointer;   /* custom pointer cursor */
+}
+.room-swap-hit:focus-visible{ outline:2px dashed var(--terra); outline-offset:2px; }
+
+/* Guitar audio bar — hidden until the case is clicked open. */
+.room-audio-bar{
+  position:absolute;
+  left:6%; top:56%; width:30%;          /* floats just above the case — tune freely */
+  z-index:60;
+  background:var(--cream);
+  border:2px solid var(--terra);
+  border-radius:6px;
+  padding:5px 6px;
+  box-shadow:2px 3px 0 rgba(0,0,0,.35); /* hard retro shadow */
+  transform:rotate(-1.5deg);            /* slight scrapbook tilt */
+}
+.room-audio-bar[hidden]{ display:none; }
+.room-audio-bar audio{ width:100%; display:block; }
 
 
 /* ─── BOOK WIDGET OVERLAY ───
