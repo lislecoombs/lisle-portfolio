@@ -103,7 +103,7 @@
    Invisible buttons over each object. They handle hover/click
    without blocking interactions elsewhere on the page. */
 .room-hit{
-  position:absolute;
+  position:absolute !important;  /* !important forces this over whatever was overriding it */
   background:transparent;
   border:none;
   padding:0;
