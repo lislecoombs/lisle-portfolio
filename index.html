@@ -6045,13 +6045,33 @@ document.getElementById('yr').textContent=new Date().getFullYear();
   /* Guitar audio bar helpers */
   var guitarBar   = document.getElementById('guitar-audio-bar');
   var guitarAudio = document.getElementById('guitar-audio');
-  function showGuitarAudio(){
+   var guitarMusicWasPlaying = false;   /* tracks whether CD music was on before the clip */
+function showGuitarAudio(){
     if(guitarBar) guitarBar.hidden = false;
-    if(guitarAudio){ guitarAudio.currentTime = 0; guitarAudio.play().catch(function(){}); }
+    if(!guitarAudio) return;
+    /* Stop the background music (YouTube CD player) while the clip plays,
+       remembering whether it was on so we can resume on close. */
+    guitarMusicWasPlaying = (typeof musicPlaying !== 'undefined') && musicPlaying;
+    if(guitarMusicWasPlaying && typeof ytPlayer !== 'undefined' && musicReady){
+      ytPlayer.pauseVideo();
+      musicPlaying = false;
+      if(musicBtn) musicBtn.classList.add('paused');
+    }
+    guitarAudio.load();                 /* preload="none" means we must load first */
+    guitarAudio.currentTime = 0;
+    var p = guitarAudio.play();         /* play() inside the click gesture */
+    if(p && p.catch) p.catch(function(){});
   }
-  function hideGuitarAudio(){
+function hideGuitarAudio(){
     if(guitarAudio){ guitarAudio.pause(); guitarAudio.currentTime = 0; }
     if(guitarBar) guitarBar.hidden = true;
+    /* Resume the background music only if it was playing before. */
+    if(guitarMusicWasPlaying && typeof ytPlayer !== 'undefined' && musicReady){
+      ytPlayer.playVideo();
+      musicPlaying = true;
+      if(musicBtn) musicBtn.classList.remove('paused');
+    }
+    guitarMusicWasPlaying = false;
   }
 
   hits.forEach(function(btn){
