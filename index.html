@@ -446,6 +446,15 @@
   border-bottom:1px dashed rgba(80,55,30,.3);
   padding-bottom:3px;
 }
+/* The clickable heading → Lisle's Goodreads profile. Inherits the
+   heading color/font; brightens slightly on hover. */
+.book-widget-title-link{
+  color:inherit;
+  text-decoration:none;
+  cursor:url('/cursors/pointer.png') 18 10, pointer;
+  transition:color .2s;
+}
+.book-widget-title-link:hover{ color:var(--gold); }
 .book-widget-close{
   position:absolute;
   top:2px; right:6px;
@@ -502,7 +511,7 @@
 .gr-read-title{
   font-family:'Caveat',cursive;
   font-size:1rem; line-height:1.05;
-  color:var(--cream);
+  color:var(--terra);
   margin-bottom:1px;
 }
 .gr-read-author{
@@ -4055,7 +4064,7 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
       <div class="room-layer book-widget-overlay" id="book-widget-overlay" hidden>
         <div class="book-widget-frame">
           <button class="book-widget-close" aria-label="Close" type="button">×</button>
-          <div class="book-widget-title">recently read ✦</div>
+          <div class="book-widget-title"><a href="https://www.goodreads.com/user/show/105653626-lisle" target="_blank" rel="noopener" class="book-widget-title-link">recently read ✦</a></div>
           <div id="goodreads-read-widget">Loading...</div>
         </div>
       </div>
