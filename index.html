@@ -245,6 +245,65 @@
 }
 .room-audio-bar[hidden]{ display:none; }
 .room-audio-bar audio{ width:100%; display:block; }
+/* ═══ ROOM — TV SCREEN (DVD bounce ↔ Letterboxd) ═══
+   The screen is a clipped box positioned over the TV glass in the base
+   image. It holds two views: the bouncing DVD logo (default) and the
+   Letterboxd panel (after click). Coordinates measured off room-base-2;
+   nudge if your base shifts. */
+.room-tv-screen{
+  position:absolute;
+  left:30.2%; top:14.6%; width:19.2%; height:23.3%;   /* inside the bezel — tune here */
+  overflow:hidden;
+  background:#0b0b0b;
+  z-index:35;
+  cursor:url('/cursors/pointer.png') 18 10, pointer;  /* whole screen is clickable */
+}
+
+/* DVD logo bounce. JS sets the start position + velocity; the logo is
+   moved by JS each frame (no CSS keyframes — bounce needs live edge math). */
+.room-dvd{
+  position:absolute;
+  width:26%;                 /* DVD size relative to screen — tune */
+  top:0; left:0;
+  pointer-events:none;       /* clicks pass through to the screen */
+  user-select:none; -webkit-user-drag:none;
+}
+.room-tv-screen.is-letterboxd .room-dvd{ display:none; }   /* hide DVD when on Letterboxd */
+
+/* Letterboxd panel — hidden until the screen is clicked. */
+.room-tv-lb{
+  position:absolute; inset:0;
+  display:none;
+  overflow-y:auto; overflow-x:hidden;
+  background:#0b0b0b;
+  padding:3px 4px; box-sizing:border-box;
+  font-size:.5rem; line-height:1.2; color:#d4b896;
+  filter:sepia(.2) brightness(.88);
+}
+.room-tv-screen.is-letterboxd .room-tv-lb{ display:block; }
+.room-tv-lb::-webkit-scrollbar{ width:3px; }
+.room-tv-lb::-webkit-scrollbar-thumb{ background:rgba(180,140,80,.3); }
+.room-tv-lb a{ color:#c9a97a!important; text-decoration:none; }
+.room-tv-lb img{ max-width:50%; border-radius:2px; }
+.room-tv-lb .letterboxd-embed-tc-diary-entry{ gap:.2rem!important; padding:0 .15rem!important; }
+.room-tv-lb .letterboxd-embed-tc-content{ gap:.4rem!important; }
+.room-tv-lb .letterboxd-embed-tc-title{ font-size:.72rem!important; margin-bottom:0!important; line-height:1.1!important; }
+.room-tv-lb .letterboxd-embed-tc-year{ font-size:.5rem!important; }
+.room-tv-lb .letterboxd-embed-tc-date{ font-size:.55rem!important; margin-bottom:0!important; }
+.room-tv-lb .letterboxd-embed-tc-rating{ font-size:.65rem!important; line-height:1!important; }
+
+/* Scanlines + static overlay (always on top of whichever view shows). */
+.room-tv-scanlines{
+  position:absolute; inset:0; pointer-events:none; z-index:4;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.18) 2px,rgba(0,0,0,.18) 3px);
+}
+/* TV static burst — toggled briefly by JS during the channel "flicker". */
+.room-tv-static{
+  position:absolute; inset:0; pointer-events:none; z-index:5;
+  opacity:0;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.7'/></svg>");
+}
+.room-tv-static.on{ opacity:.85; }
 
 
 /* ─── BOOK WIDGET OVERLAY ───
@@ -3932,6 +3991,17 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
       <button class="room-swap-hit" data-swap="room-karma" data-action="karma"
               style="left:42.5%;top:70.5%;width:11.5%;height:14%;"
               aria-label="Karma card game" type="button"></button>
+       <!-- ═══ TV SCREEN — DVD bounce by default, click flickers to Letterboxd ═══
+           Positioned over the TV glass. Clicking toggles DVD↔Letterboxd;
+           clicking while on Letterboxd opens the profile in a new tab;
+           1 min idle returns to the DVD bounce. -->
+      <div class="room-tv-screen" id="room-tv" role="button" tabindex="0"
+           aria-label="TV — recently watched on Letterboxd">
+        <img class="room-dvd" id="room-dvd" src="images/dvd-icon.png" alt="" />
+        <div class="room-tv-lb" id="room-tv-lb">Loading...</div>
+        <div class="room-tv-scanlines"></div>
+        <div class="room-tv-static" id="room-tv-static"></div>
+      </div>
     </div>
   </div>
 
@@ -6116,6 +6186,108 @@ function hideGuitarAudio(){
   });
 })();
 
+/* ═ ROOM — TV (DVD bounce ↔ Letterboxd channel) ═
+   Default: DVD logo drifts and bounces off the screen edges, starting
+   from a random spot/direction each load. Click flickers (static) to the
+   live Letterboxd feed. Click again while on Letterboxd → opens profile
+   in a new tab. 60s of no interaction → flickers back to the DVD. */
+(function(){
+  var screenEl = document.getElementById('room-tv');
+  var dvd      = document.getElementById('room-dvd');
+  var staticEl = document.getElementById('room-tv-static');
+  var lbEl     = document.getElementById('room-tv-lb');
+  if(!screenEl || !dvd) return;
+
+  /* ── DVD bounce ── */
+  var x, y, vx, vy, raf, lastT;
+  var SPEED = 38;   /* pixels per second — raise to speed the drift up */
+
+  function startBounce(){
+    var sw = screenEl.clientWidth, sh = screenEl.clientHeight;
+    var dw = dvd.offsetWidth || sw*0.26, dh = dvd.offsetHeight || dw*0.56;
+    x = Math.random()*(sw-dw);          /* random start position */
+    y = Math.random()*(sh-dh);
+    var ang = Math.random()*Math.PI*2;  /* random direction */
+    vx = Math.cos(ang)*SPEED;
+    vy = Math.sin(ang)*SPEED;
+    lastT = null;
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(step);
+  }
+  function step(t){
+    if(lastT==null) lastT=t;
+    var dt=(t-lastT)/1000; lastT=t;
+    var sw=screenEl.clientWidth, sh=screenEl.clientHeight;
+    var dw=dvd.offsetWidth, dh=dvd.offsetHeight;
+    x+=vx*dt; y+=vy*dt;
+    if(x<=0){ x=0; vx=Math.abs(vx); } else if(x+dw>=sw){ x=sw-dw; vx=-Math.abs(vx); }
+    if(y<=0){ y=0; vy=Math.abs(vy); } else if(y+dh>=sh){ y=sh-dh; vy=-Math.abs(vy); }
+    dvd.style.left=x+'px'; dvd.style.top=y+'px';
+    raf=requestAnimationFrame(step);
+  }
+  function stopBounce(){ cancelAnimationFrame(raf); }
+
+  /* ── Letterboxd feed (live fetch, same source as favorites TV) ── */
+  var lbLoaded=false;
+  function loadLetterboxd(){
+    if(lbLoaded) return; lbLoaded=true;
+    fetch('https://lb-embed-content.bokonon.dev?username=lethepdf')
+      .then(function(r){ return r.text(); })
+      .then(function(d){ if(lbEl) lbEl.innerHTML=d; })
+      .catch(function(){ if(lbEl) lbEl.textContent='(could not load Letterboxd)'; });
+  }
+
+  /* ── Channel state + idle timer ── */
+  var onLetterboxd=false, idleTimer=null;
+  function flicker(cb){           /* brief static burst, then run cb */
+    if(staticEl) staticEl.classList.add('on');
+    setTimeout(function(){
+      if(cb) cb();
+      setTimeout(function(){ if(staticEl) staticEl.classList.remove('on'); }, 90);
+    }, 110);
+  }
+  function toLetterboxd(){
+    loadLetterboxd();
+    flicker(function(){
+      onLetterboxd=true;
+      screenEl.classList.add('is-letterboxd');
+      stopBounce();
+    });
+    resetIdle();
+  }
+  function toDvd(){
+    flicker(function(){
+      onLetterboxd=false;
+      screenEl.classList.remove('is-letterboxd');
+      startBounce();
+    });
+  }
+  function resetIdle(){           /* 60s of no TV interaction → back to DVD */
+    clearTimeout(idleTimer);
+    idleTimer=setTimeout(function(){ if(onLetterboxd) toDvd(); }, 60000);
+  }
+
+  screenEl.addEventListener('click', function(){
+    if(!onLetterboxd){
+      toLetterboxd();                                  /* DVD → Letterboxd */
+    } else {
+      window.open('https://letterboxd.com/lethepdf/','_blank','noopener'); /* → profile */
+      resetIdle();
+    }
+  });
+  screenEl.addEventListener('keydown', function(e){
+    if(e.key==='Enter'||e.key===' '){ e.preventDefault(); screenEl.click(); }
+  });
+  /* moving the mouse over the screen counts as interaction (delays idle reset) */
+  screenEl.addEventListener('mousemove', function(){ if(onLetterboxd) resetIdle(); });
+
+  /* Start the DVD bounce once the logo image has dimensions. */
+  if(dvd.complete) startBounce();
+  else dvd.addEventListener('load', startBounce);
+  /* Recompute bounds if the room is resized. */
+  window.addEventListener('resize', function(){ if(!onLetterboxd) startBounce(); });
+})();
+   
 /* ═ DEV POSITIONING HELPER ═
    Visible ONLY when the URL has ?roomedit (e.g. lislecoombs.me/?roomedit).
    Shows live cursor coords as % inside the room, so you can read off
