@@ -340,12 +340,13 @@
 .room-tv-lb .letterboxd-embed-tc-content > div{
   display:contents!important;
 }
-/* Title / year / date / rating → right column, stacked beside the poster. */
-.room-tv-lb .letterboxd-embed-tc-title,
-.room-tv-lb .letterboxd-embed-tc-date,
-.room-tv-lb .letterboxd-embed-tc-rating{
-  grid-column:2!important;
-}
+/* Title / year / date / rating → right column, stacked TIGHT beside the
+   poster. Explicit row numbers keep them packed together instead of
+   spreading to fill the poster's taller height.
+   (title=row1, date=row2, rating=row3 — adjust row-gap above to space them.) */
+.room-tv-lb .letterboxd-embed-tc-title{  grid-column:2!important; grid-row:1!important; }
+.room-tv-lb .letterboxd-embed-tc-date{   grid-column:2!important; grid-row:2!important; align-self:start!important; margin:0!important; }
+.room-tv-lb .letterboxd-embed-tc-rating{ grid-column:2!important; grid-row:3!important; align-self:start!important; margin:0!important; }
 /* REVIEW → spans BOTH columns, dropping to a full-width row below. */
 .room-tv-lb .letterboxd-embed-tc-review{
   grid-column:1 / -1!important;
