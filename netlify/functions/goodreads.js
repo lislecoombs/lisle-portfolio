@@ -13,7 +13,7 @@
 // TO CHANGE HOW MANY BOOKS SHOW: edit NUM_BOOKS below.
 // TO POINT AT A DIFFERENT SHELF: edit the shelf= part of FEED_URL.
 
-const NUM_BOOKS = 3;  // how many recent books to return
+const NUM_BOOKS = 10;  // how many recent books to return
 
 const FEED_URL =
   "https://www.goodreads.com/review/list_rss/105653626?shelf=read&sort=date_read";
