@@ -299,49 +299,48 @@
 .room-tv-lb::-webkit-scrollbar-thumb{ background:rgba(180,140,80,.3); }
 .room-tv-lb a{ color:#c9a97a!important; text-decoration:none; }
 
-/* ── LETTERBOXD ENTRY LAYOUT (simple + solid) ──
-   Works WITH the embed's natural structure:
-     .diary-entry > .content(flex row) > [ .poster , <text wrapper> ]
-   Poster on the left at a fixed width; the text wrapper (title, date,
-   stars, review) flows in a tight column to its right, filling the space.
-   No grid / no display:contents / no negative margins — nothing fragile. */
+/* ── LETTERBOXD ENTRY LAYOUT (float-based) ──
+   Poster is a FIXED-SIZE box floated left. The title sits to its right;
+   date / stars / review flow naturally and wrap UNDER the poster once
+   they clear its bottom edge. Float is the reliable tool for "text wraps
+   around an image" — no grid coupling, no negative margins. */
 .room-tv-lb .letterboxd-embed-tc-diary-entry{
-  padding:3px 2px 0!important;
+  padding:4px 2px 2px!important;
+  overflow:hidden!important;       /* contains the float so entries don't bleed together */
 }
+/* The embed wraps everything in .content (a flex row by default). We undo
+   the flex so the float can do its job, making .content a plain block. */
 .room-tv-lb .letterboxd-embed-tc-content{
-  display:flex!important;
-  flex-direction:row!important;
-  gap:8px!important;              /* space between poster and text — tune here */
-  align-items:flex-start!important;  /* pin both to the top */
+  display:block!important;
   text-align:left!important;
 }
-/* POSTER — fixed width so every poster matches. Bigger: raise 60px. */
+/* POSTER — fixed box, floated left. width AND height fixed + object-fit
+   makes EVERY poster identical regardless of the image or text beside it.
+   This is the uniform-poster fix. Tune size via the two dimensions
+   (keep ~2:3 ratio, e.g. 56x84, 60x90, 64x96). */
 .room-tv-lb .letterboxd-embed-tc-poster{
-  flex:0 0 60px!important;        /* poster column width */
-  width:60px!important;
+  float:left!important;
+  width:58px!important;
+  margin:2px 8px 2px 0!important;  /* gap to the right + below the poster */
 }
 .room-tv-lb .letterboxd-embed-tc-poster img{
-  width:100%!important;
-  max-width:100%!important;
-  height:auto!important;
+  width:58px!important;
+  height:87px!important;           /* 58 x 87 = clean 2:3 movie-poster ratio */
+  max-width:none!important;        /* override the embed's max-width:unset */
+  object-fit:cover!important;      /* crop to fill the box uniformly */
   display:block!important;
   border-radius:3px!important;
 }
-/* TEXT WRAPPER (the unnamed div beside the poster) — tight vertical stack
-   of title → date → stars → review, filling the space to the poster's right. */
+/* The text wrapper is a plain block so its children flow normally:
+   title beside the poster, then date/stars/review wrapping below it. */
 .room-tv-lb .letterboxd-embed-tc-content > div{
-  flex:1 1 auto!important;
-  min-width:0!important;          /* lets long titles/reviews wrap instead of overflow */
-  display:flex!important;
-  flex-direction:column!important;
-  gap:2px!important;              /* spacing between title/date/stars/review — tune here */
+  display:block!important;
 }
-/* Clear stray margins so the gap above is the only spacing. */
 .room-tv-lb .letterboxd-embed-tc-title,
 .room-tv-lb .letterboxd-embed-tc-date,
 .room-tv-lb .letterboxd-embed-tc-rating,
 .room-tv-lb .letterboxd-embed-tc-review{
-  margin:0!important;
+  margin:0 0 2px 0!important;      /* tight, even spacing between lines */
 }
 /* TITLE — chunky retro caps, broadcast yellow. */
 .room-tv-lb .letterboxd-embed-tc-title{
