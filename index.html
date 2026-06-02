@@ -299,25 +299,35 @@
 .room-tv-lb::-webkit-scrollbar-thumb{ background:rgba(180,140,80,.3); }
 .room-tv-lb a{ color:#c9a97a!important; text-decoration:none; }
 
-/* ── LETTERBOXD ENTRY LAYOUT ──
-   Each entry is: [ poster | text-content ] in a flex row.
-   We force a fixed poster column so every entry looks identical
-   regardless of how much text/review it has. */
+/* ── LETTERBOXD ENTRY LAYOUT (2-zone grid) ──
+   Real DOM per entry:
+     .diary-entry > .content(row) > [ .poster ,  <unnamed text div> ]
+       the unnamed text div holds: title, date, rating, review
+   Goal: poster on the left; title/year/date/stars to its right; review
+   full-width BELOW the poster+meta.
+   How: make .content a 2-col grid. The unnamed text div is set to
+   display:contents so ITS children (title/date/rating/review) become
+   grid items of .content directly — letting us drop the review into a
+   full-width second row while title/date/rating sit in the right column. */
 .room-tv-lb .letterboxd-embed-tc-diary-entry{
-  display:flex!important;
-  gap:8px!important;
-  padding:2px 2px 0!important;
-  align-items:flex-start!important;
+  padding:3px 2px 0!important;
 }
-/* POSTER COLUMN — fixed width so all posters match. This is the real
-   size control (not max-width on the img). Bigger poster: raise 64px.
-   Smaller: lower it. */
+.room-tv-lb .letterboxd-embed-tc-content{
+  display:grid!important;
+  grid-template-columns:64px 1fr!important;   /* poster column | text column. Poster size = 64px */
+  grid-auto-rows:min-content!important;
+  column-gap:8px!important;
+  row-gap:2px!important;
+  align-items:start!important;
+  text-align:left!important;
+}
+/* POSTER — spans the full height of the top zone (left column, row 1),
+   so the title/year/date/stars stack to its right. */
 .room-tv-lb .letterboxd-embed-tc-poster{
-  flex:0 0 64px!important;     /* fixed poster column width */
+  grid-column:1!important;
+  grid-row:1!important;
   width:64px!important;
 }
-/* The poster image fills its fixed column. We override the embed's own
-   injected "max-width:unset" here so the image can't blow past the column. */
 .room-tv-lb .letterboxd-embed-tc-poster img{
   width:100%!important;
   max-width:100%!important;
@@ -325,13 +335,20 @@
   display:block!important;
   border-radius:3px!important;
 }
-/* TEXT COLUMN — takes the remaining space beside the poster. */
-.room-tv-lb .letterboxd-embed-tc-content{
-  flex:1 1 auto!important;
-  min-width:0!important;        /* lets long text wrap instead of overflowing */
-  display:flex!important;
-  flex-direction:column!important;
-  gap:2px!important;
+/* The unnamed text wrapper: display:contents makes its children
+   (title/date/rating/review) participate directly in the .content grid. */
+.room-tv-lb .letterboxd-embed-tc-content > div{
+  display:contents!important;
+}
+/* Title / year / date / rating → right column, stacked beside the poster. */
+.room-tv-lb .letterboxd-embed-tc-title,
+.room-tv-lb .letterboxd-embed-tc-date,
+.room-tv-lb .letterboxd-embed-tc-rating{
+  grid-column:2!important;
+}
+/* REVIEW → spans BOTH columns, dropping to a full-width row below. */
+.room-tv-lb .letterboxd-embed-tc-review{
+  grid-column:1 / -1!important;
 }
 /* TITLE — chunky retro caps, broadcast yellow. */
 .room-tv-lb .letterboxd-embed-tc-title{
