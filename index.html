@@ -335,21 +335,35 @@
   display:block!important;
   border-radius:3px!important;
 }
-/* The unnamed text wrapper: display:contents makes its children
-   (title/date/rating/review) participate directly in the .content grid. */
+/* The unnamed text wrapper sits in the RIGHT column (row 1) as a tight
+   vertical stack: title → date → stars, packed from the top with no
+   dependence on the poster's height. This is the fix for the gap —
+   the meta now follows the TITLE, not the bottom of the taller poster. */
 .room-tv-lb .letterboxd-embed-tc-content > div{
-  display:contents!important;
+  grid-column:2!important;
+  grid-row:1!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:2px!important;             /* spacing between title / date / stars — tune here */
+  align-self:start!important;    /* pack to the TOP, not stretched to poster height */
+  min-width:0!important;
 }
-/* Title / year / date / rating → right column, stacked TIGHT beside the
-   poster. Explicit row numbers keep them packed together instead of
-   spreading to fill the poster's taller height.
-   (title=row1, date=row2, rating=row3 — adjust row-gap above to space them.) */
-.room-tv-lb .letterboxd-embed-tc-title{  grid-column:2!important; grid-row:1!important; }
-.room-tv-lb .letterboxd-embed-tc-date{   grid-column:2!important; grid-row:2!important; align-self:start!important; margin:0!important; }
-.room-tv-lb .letterboxd-embed-tc-rating{ grid-column:2!important; grid-row:3!important; align-self:start!important; margin:0!important; }
-/* REVIEW → spans BOTH columns, dropping to a full-width row below. */
+/* No per-item row placement needed now — they stack naturally in the flex
+   column above. Just clear stray margins so the gap is even. */
+.room-tv-lb .letterboxd-embed-tc-title,
+.room-tv-lb .letterboxd-embed-tc-date,
+.room-tv-lb .letterboxd-embed-tc-rating{
+  margin:0!important;
+}
+/* REVIEW → still needs to span full width BELOW the poster + meta.
+   Since the review lives INSIDE the text wrapper (which is now in the right
+   column), we can't grid-span it from here. Instead the review breaks out
+   via negative margin to reclaim the poster's width on the left.
+   The -72px = poster column (64px) + column-gap (8px). If you change the
+   poster width above, update this to match (poster + 8). */
 .room-tv-lb .letterboxd-embed-tc-review{
-  grid-column:1 / -1!important;
+  margin-left:-72px!important;   /* = 64px poster + 8px gap — pulls review under the poster */
+  margin-top:4px!important;
 }
 /* TITLE — chunky retro caps, broadcast yellow. */
 .room-tv-lb .letterboxd-embed-tc-title{
