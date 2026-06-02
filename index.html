@@ -267,16 +267,27 @@
   user-select:none; -webkit-user-drag:none;
 }
 .room-tv-screen.is-letterboxd .room-dvd{ display:none; }   /* hide DVD when on Letterboxd */
-   /* TV hover cue — instead of scaling (the frame is baked into the base
-   image and can't grow), the screen gives a soft glow + slight brightness
-   lift on hover, like a CRT powering up — signaling it's clickable.
-   Only when NOT already on Letterboxd. */
-.room-tv-screen:not(.is-letterboxd){
-  transition:box-shadow .15s ease, filter .15s ease;
+   /* TV hover cue — a glow element sized to the WHOLE TV (frame included),
+   so the glow appears OUTSIDE the frame's edges rather than hugging the
+   inner screen. Lights up when the screen is hovered (and not on Letterboxd).
+   Coordinates are the TV's outer footprint in the room — tune to wrap the
+   bezel snugly. */
+.room-tv-glow{
+  position:absolute;
+  /* TV's outer frame box in the room (measured around the bezel).
+     Nudge these to hug the frame: left/top = top-left corner,
+     width/height = frame size. */
+  left:33%; top:13.5%; width:18%; height:22%;
+  border-radius:14px;
+  pointer-events:none;        /* never catches clicks — the screen button does */
+  opacity:0;
+  transition:opacity .15s ease;
+  z-index:34;                 /* just BELOW the screen (35) so glow sits behind */
+  box-shadow:0 0 22px 6px rgba(150,200,255,.5);   /* the glow — tune color/spread */
 }
-.room-tv-screen:not(.is-letterboxd):hover{
-  box-shadow:0 0 14px 3px rgba(150,200,255,.45);  /* faint screen glow — tune color/size */
-  filter:brightness(1.12);                         /* slight power-up brightness */
+/* Show the glow when the TV screen is hovered, only off-Letterboxd. */
+.room-tv-screen:not(.is-letterboxd):hover ~ .room-tv-glow{
+  opacity:1;
 }
 
 /* Letterboxd panel — hidden until the screen is clicked. */
@@ -4143,11 +4154,13 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
         <div class="room-tv-scanlines"></div>
         <div class="room-tv-static" id="room-tv-static"></div>
       </div>
+      <!-- TV glow — sibling of #room-tv, sized to the whole TV frame, so the
+           hover glow sits OUTSIDE the bezel. Behind the screen (z-index 34). -->
+      <div class="room-tv-glow" id="room-tv-glow"></div>
       <!-- TV hint — OUTSIDE #room-tv so the screen's overflow:hidden can't
            clip it. Positioned over the TV via CSS; shown only when Letterboxd
            is active (.hint-ready on the stage) and the TV is hovered. -->
       <div class="room-tv-hint" id="room-tv-hint">scroll on the tv to see more ✦</div>
-    </div>
   </div>
 
    <script>
