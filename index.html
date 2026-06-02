@@ -267,6 +267,19 @@
   user-select:none; -webkit-user-drag:none;
 }
 .room-tv-screen.is-letterboxd .room-dvd{ display:none; }   /* hide DVD when on Letterboxd */
+   /* TV hover cue — the screen swells slightly on hover to signal it's
+   clickable, matching the other room objects. transform:scale only
+   changes APPEARANCE, not clientWidth/Height, so the DVD bounce math
+   (which reads pixel size) is unaffected — the bounce path stays put.
+   Only active when NOT showing Letterboxd (no point cueing a click
+   when you're already on the channel). 1.04 = subtle; raise for more. */
+.room-tv-screen:not(.is-letterboxd){
+  transition:transform .12s ease;        /* quick, like the other hovers */
+  transform-origin:center center;        /* swells from its center */
+}
+.room-tv-screen:not(.is-letterboxd):hover{
+  transform:scale(1.04);
+}
 
 /* Letterboxd panel — hidden until the screen is clicked. */
 .room-tv-lb{
