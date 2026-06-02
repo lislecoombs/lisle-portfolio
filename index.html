@@ -258,7 +258,7 @@
        too wide   → shrink width by ~0.3%
        too far right → raise left by ~0.3% AND shrink width by ~0.3%
        too tall   → shrink height by ~0.3%  */
-  left:35.1%; top:16.7%; width:13.0%; height:14.7%;
+  left:35.1%; top:16.7%; width:13.6%; height:15.6%;
   overflow:hidden;
   background:#0b0b0b;
   /* Bigger radius = rounder corners, matching the Trinitron's curved glass.
@@ -286,21 +286,33 @@
   display:none;
   overflow-y:auto; overflow-x:hidden;
   background:#0b0b0b;
-  padding:3px 4px; box-sizing:border-box;
-  font-size:.5rem; line-height:1.2; color:#d4b896;
-  filter:sepia(.2) brightness(.88);
+  padding:4px 6px; box-sizing:border-box;
+  /* Chunky retro-TV type. VT323 is the monospace terminal font already
+     loaded on the site — reads as old broadcast text. */
+  font-family:'VT323',monospace;
+  font-size:.78rem; line-height:1.15; color:#7CFC9E;   /* phosphor green */
+  text-shadow:0 0 2px rgba(124,252,158,.5);            /* faint CRT glow */
+  filter:brightness(.95);
 }
 .room-tv-screen.is-letterboxd .room-tv-lb{ display:block; }
 .room-tv-lb::-webkit-scrollbar{ width:3px; }
 .room-tv-lb::-webkit-scrollbar-thumb{ background:rgba(180,140,80,.3); }
 .room-tv-lb a{ color:#c9a97a!important; text-decoration:none; }
-.room-tv-lb img{ max-width:50%; border-radius:2px; }
-.room-tv-lb .letterboxd-embed-tc-diary-entry{ gap:.2rem!important; padding:0 .15rem!important; }
+/* POSTER — much smaller so titles read easily. Bump max-width up/down to taste. */
+.room-tv-lb img{ max-width:28%!important; border-radius:2px; }
+.room-tv-lb .letterboxd-embed-tc-diary-entry{ gap:.3rem!important; padding:0 .15rem!important; }
 .room-tv-lb .letterboxd-embed-tc-content{ gap:.4rem!important; }
-.room-tv-lb .letterboxd-embed-tc-title{ font-size:.72rem!important; margin-bottom:0!important; line-height:1.1!important; }
-.room-tv-lb .letterboxd-embed-tc-year{ font-size:.5rem!important; }
-.room-tv-lb .letterboxd-embed-tc-date{ font-size:.55rem!important; margin-bottom:0!important; }
-.room-tv-lb .letterboxd-embed-tc-rating{ font-size:.65rem!important; line-height:1!important; }
+/* Title — chunky retro caps */
+.room-tv-lb .letterboxd-embed-tc-title{
+  font-family:'VT323',monospace!important;
+  font-size:1.05rem!important; line-height:1!important;
+  color:#FFE9A8!important;                 /* warm broadcast yellow */
+  text-transform:uppercase!important; letter-spacing:.5px!important;
+  margin-bottom:1px!important;
+}
+.room-tv-lb .letterboxd-embed-tc-year{ font-size:.7rem!important; color:#9a9a7a!important; }
+.room-tv-lb .letterboxd-embed-tc-date{ font-size:.72rem!important; margin-bottom:0!important; color:#8fd8a0!important; }
+.room-tv-lb .letterboxd-embed-tc-rating{ font-size:.9rem!important; line-height:1!important; color:#FFE9A8!important; }
 
 /* Scanlines + static overlay (always on top of whichever view shows). */
 /* Inner vignette — darkens the screen edges so they blend into the bezel
@@ -6214,7 +6226,7 @@ function hideGuitarAudio(){
 
   /* ── DVD bounce ── */
   var x, y, vx, vy, raf, lastT;
-  var SPEED = 38;   /* pixels per second — raise to speed the drift up */
+  var SPEED = 24;   /* pixels per second — raise to speed the drift up */
   var hue = 0;      /* current logo hue; bumped on every wall bounce */
   function bumpHue(){
     hue = (hue + 47) % 360;            /* 47° per hit = lively, non-repeating cycle */
