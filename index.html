@@ -252,11 +252,16 @@
    nudge if your base shifts. */
 .room-tv-screen{
   position:absolute;
-  left:30.2%; top:14.6%; width:19.2%; height:23.3%;   /* inside the bezel — tune here */
+  /* Tucked inside the glass opening (measured off room-base-2, inset ~10px).
+     If it still bleeds over the bezel on any side, nudge: shrink width/height
+     a touch and/or bump left/top in by ~0.2%. */
+  left:30.0%; top:14.5%; width:19.6%; height:23.6%;
   overflow:hidden;
   background:#0b0b0b;
-  z-index:35;
-  cursor:url('/cursors/pointer.png') 18 10, pointer;  /* whole screen is clickable */
+  border-radius:10px;          /* matches the bezel's rounded inner corners
+                                  so the screen doesn't square off into the frame */
+  z-index:35;                  /* sits ABOVE the base image; see note below */
+  cursor:url('/cursors/pointer.png') 18 10, pointer;
 }
 
 /* DVD logo bounce. JS sets the start position + velocity; the logo is
@@ -6201,6 +6206,11 @@ function hideGuitarAudio(){
   /* ── DVD bounce ── */
   var x, y, vx, vy, raf, lastT;
   var SPEED = 38;   /* pixels per second — raise to speed the drift up */
+  var hue = 0;      /* current logo hue; bumped on every wall bounce */
+  function bumpHue(){
+    hue = (hue + 47) % 360;            /* 47° per hit = lively, non-repeating cycle */
+    dvd.style.filter = 'hue-rotate(' + hue + 'deg)';
+  }
 
   function startBounce(){
     var sw = screenEl.clientWidth, sh = screenEl.clientHeight;
@@ -6220,8 +6230,12 @@ function hideGuitarAudio(){
     var sw=screenEl.clientWidth, sh=screenEl.clientHeight;
     var dw=dvd.offsetWidth, dh=dvd.offsetHeight;
     x+=vx*dt; y+=vy*dt;
-    if(x<=0){ x=0; vx=Math.abs(vx); } else if(x+dw>=sw){ x=sw-dw; vx=-Math.abs(vx); }
-    if(y<=0){ y=0; vy=Math.abs(vy); } else if(y+dh>=sh){ y=sh-dh; vy=-Math.abs(vy); }
+    /* Bounce off each edge and recolor on contact. Tracking whether we hit
+       this frame avoids double-bumping when landing exactly in a corner. */
+    var hit=false;
+    if(x<=0){ x=0; vx=Math.abs(vx); hit=true; } else if(x+dw>=sw){ x=sw-dw; vx=-Math.abs(vx); hit=true; }
+    if(y<=0){ y=0; vy=Math.abs(vy); hit=true; } else if(y+dh>=sh){ y=sh-dh; vy=-Math.abs(vy); hit=true; }
+    if(hit) bumpHue();
     dvd.style.left=x+'px'; dvd.style.top=y+'px';
     raf=requestAnimationFrame(step);
   }
