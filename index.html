@@ -463,43 +463,70 @@
    (1780222919). These rules are scoped to #goodreads-read-widget so
    they don't conflict with the existing currently-reading widget
    styling on the favorites card. */
-#goodreads-read-widget{ font-size:.7rem; line-height:1.3; }
-#goodreads-read-widget .gr_custom_container_1780222919{
-  background:transparent!important; border:none!important;
-  width:100%!important; padding:0!important; color:#3a2210!important;
+/* ── GOODREADS "RECENTLY READ" — themed, scrollable book list ──
+   Rendered from our Netlify function's JSON (not Goodreads' script).
+   Scrollable box showing up to 10 books, styled to match the room. */
+#goodreads-read-widget{
+  max-height:230px;            /* visible height before scrolling — tune */
+  overflow-y:auto;
+  overflow-x:hidden;
+  padding-right:4px;
+  /* Firefox scrollbar */
+  scrollbar-width:thin;
+  scrollbar-color:rgba(80,55,30,.35) transparent;
 }
-#goodreads-read-widget .gr_custom_header_1780222919{ display:none!important; }
-#goodreads-read-widget .gr_custom_each_container_1780222919{
-  border-bottom:1px dotted rgba(80,55,30,.25)!important;
-  padding-bottom:5px!important; margin-bottom:5px!important;
-  overflow:visible!important;
+/* Chrome/Safari scrollbar */
+#goodreads-read-widget::-webkit-scrollbar{ width:5px; }
+#goodreads-read-widget::-webkit-scrollbar-thumb{ background:rgba(80,55,30,.35); border-radius:3px; }
+/* Each book = cover on the left, info on the right. */
+.gr-read-card{
+  display:flex;
+  gap:9px;
+  align-items:flex-start;
+  padding:7px 0;
+  border-bottom:1px dotted rgba(80,55,30,.25);
+  text-decoration:none;
+  cursor:url('/cursors/pointer.png') 18 10, pointer;
 }
-#goodreads-read-widget .gr_custom_each_container_1780222919:last-of-type{ border:none!important; }
-#goodreads-read-widget .gr_custom_book_container_1780222919{
-  height:46px!important; width:30px!important;
-  float:left!important; margin-right:8px!important;
-  overflow:hidden!important;
-  border:1px solid rgba(80,55,30,.3)!important;
-  box-shadow:1px 2px 4px rgba(0,0,0,.3)!important;
-  transform:rotate(-1.5deg)!important;
+.gr-read-card:last-child{ border-bottom:none; }
+.gr-read-cover{
+  flex:0 0 38px;               /* fixed cover width so all match — tune */
+  width:38px; height:57px;     /* 2:3 poster ratio */
+  object-fit:cover;
+  border-radius:2px;
+  border:1px solid rgba(80,55,30,.3);
+  box-shadow:1px 2px 5px rgba(0,0,0,.35);
+  transform:rotate(-1.5deg);   /* slight scrapbook tilt */
 }
-#goodreads-read-widget .gr_custom_book_container_1780222919 img{
-  width:100%!important; height:100%!important;
-  object-fit:cover!important; display:block!important;
+.gr-read-info{ flex:1 1 auto; min-width:0; }
+.gr-read-title{
+  font-family:'Caveat',cursive;
+  font-size:1rem; line-height:1.05;
+  color:var(--cream);
+  margin-bottom:1px;
 }
-#goodreads-read-widget .gr_custom_title_1780222919 a{
-  font-family:'Lora',serif!important; font-size:.72rem!important;
-  line-height:1.2!important; color:#2a1808!important;
-  text-decoration:none!important; font-weight:600!important;
+.gr-read-author{
+  font-family:'Caveat',cursive;
+  font-size:.82rem; color:var(--mushroom);
+  margin-bottom:2px;
 }
-#goodreads-read-widget .gr_custom_author_1780222919{
-  font-family:'Lora',serif!important; font-size:.62rem!important;
-  color:#5a3a20!important; font-style:italic!important;
+.gr-read-stars{
+  display:block;
+  font-size:.72rem; color:var(--terra);
+  letter-spacing:1px; line-height:1;
+  margin-bottom:3px;
 }
-/* Hide the bits we don't need: rating, tags, Goodreads logo */
-#goodreads-read-widget .gr_custom_rating_1780222919,
-#goodreads-read-widget .gr_custom_tags_1780222919,
-#goodreads-read-widget center{ display:none!important; }
+.gr-read-review{
+  font-family:'Lora',serif;
+  font-size:.68rem; line-height:1.35;
+  color:#c4b89a;
+  font-style:italic;
+}
+.gr-read-empty{
+  font-family:'Caveat',cursive;
+  font-size:.95rem; color:var(--mushroom);
+  text-align:center; padding:14px 0;
+}
    
 /* ── COUNTER IMAGE BLEND ──
    The websiteout counter renders as an image with a solid (likely white)
@@ -4182,18 +4209,46 @@ function initRoomInteractions(){
   var bookHitBtn   = document.querySelector('.room-hit[data-target="room-book-stack"]');
   var bookLoaded   = false;
 
-  /* GOODREADS "RECENTLY READ" URL — modified from existing widget URL.
-     If this shows the wrong books or fails to load, create a new
-     custom widget on Goodreads for the "read" shelf and paste here. */
-  var GR_READ_URL = "https://www.goodreads.com/review/custom_widget/105653626.Lisle's%20bookshelf:%20read?cover_position=left&cover_size=small&num_books=3&order=d&shelf=read&show_author=1&show_cover=1&show_rating=1&show_review=1&show_tags=0&show_title=1&sort=date_added&widget_bg_color=FFFFFF&widget_bg_transparent=&widget_border_width=1&widget_id=1780222919&widget_text_color=000000&widget_title_size=small&widget_width=thin";
-
+  /* GOODREADS "RECENTLY READ" — fetches our own Netlify function, which
+     pulls the read-shelf RSS server-side and returns clean JSON. Renders
+     our own themed book cards. Mark a book "read" on Goodreads → it shows
+     here automatically (within the function's 1-hour cache window). */
   function loadGoodreadsRead(){
     if(bookLoaded) return;
     bookLoaded = true;
-    var s = document.createElement('script');
-    s.src = GR_READ_URL;
-    s.charset = 'utf-8';
-    document.getElementById('goodreads-read-widget').appendChild(s);
+    var box = document.getElementById('goodreads-read-widget');
+    fetch('/.netlify/functions/goodreads')
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if(!data.books || !data.books.length){
+          box.innerHTML = '<p class="gr-read-empty">no books yet — check back soon!</p>';
+          return;
+        }
+        box.innerHTML = data.books.map(renderBookCard).join('');
+      })
+      .catch(function(){
+        box.innerHTML = '<p class="gr-read-empty">(couldn\'t load books right now)</p>';
+      });
+  }
+
+  /* Builds one themed book card. Stars render as filled/empty so the
+     rating reads at a glance. Review is optional (some books have none). */
+  function renderBookCard(b){
+    function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+    var full = '★'.repeat(b.rating);
+    var empty = '☆'.repeat(5 - b.rating);
+    var stars = b.rating ? '<span class="gr-read-stars">' + full + empty + '</span>' : '';
+    var review = b.review ? '<div class="gr-read-review">' + esc(b.review) + '</div>' : '';
+    return ''
+      + '<a class="gr-read-card" href="' + esc(b.link) + '" target="_blank" rel="noopener">'
+      +   '<img class="gr-read-cover" src="' + esc(b.cover) + '" alt="' + esc(b.title) + ' cover" loading="lazy" />'
+      +   '<div class="gr-read-info">'
+      +     '<div class="gr-read-title">' + esc(b.title) + '</div>'
+      +     '<div class="gr-read-author">' + esc(b.author) + '</div>'
+      +     stars
+      +     review
+      +   '</div>'
+      + '</a>';
   }
 
   function toggleBookWidget(){
