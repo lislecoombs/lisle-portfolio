@@ -274,16 +274,18 @@
    bezel snugly. */
 .room-tv-glow{
   position:absolute;
-  /* TV's outer frame box in the room (measured around the bezel).
-     Nudge these to hug the frame: left/top = top-left corner,
-     width/height = frame size. */
-  left:33%; top:13.5%; width:18%; height:22%;
+  /* TV's outer frame box (measured from the bezel's outer corners). */
+  left:33.4%; top:13.9%; width:16.4%; height:23.8%;
   border-radius:14px;
   pointer-events:none;        /* never catches clicks — the screen button does */
   opacity:0;
   transition:opacity .15s ease;
   z-index:34;                 /* just BELOW the screen (35) so glow sits behind */
-  box-shadow:0 0 22px 6px rgba(150,200,255,.5);   /* the glow — tune color/spread */
+  /* Glow strongest at the TOP, fading toward the bottom — suits the CRT's
+     narrower base so the halo doesn't stick out past the bottom corners.
+     The negative vertical offset (-6px) pushes the glow upward; the
+     radial-gradient background fades it out toward the bottom. */
+  box-shadow:0 -6px 20px 5px rgba(150,200,255,.5);   /* glow biased upward — tune */
 }
 /* Show the glow when the TV screen is hovered, only off-Letterboxd. */
 .room-tv-screen:not(.is-letterboxd):hover ~ .room-tv-glow{
