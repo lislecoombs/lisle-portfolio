@@ -298,26 +298,66 @@
 .room-tv-lb::-webkit-scrollbar{ width:3px; }
 .room-tv-lb::-webkit-scrollbar-thumb{ background:rgba(180,140,80,.3); }
 .room-tv-lb a{ color:#c9a97a!important; text-decoration:none; }
-/* POSTER — fills its column. The embed lays each entry out as
-   [poster | text], so width here controls how much the poster takes.
-   Bigger poster: raise toward 48%. Smaller: lower. */
-.room-tv-lb img{
-  width:40%!important; max-width:40%!important;
-  height:auto!important; border-radius:2px;
+
+/* ── LETTERBOXD ENTRY LAYOUT ──
+   Each entry is: [ poster | text-content ] in a flex row.
+   We force a fixed poster column so every entry looks identical
+   regardless of how much text/review it has. */
+.room-tv-lb .letterboxd-embed-tc-diary-entry{
+  display:flex!important;
+  gap:8px!important;
+  padding:2px 2px 0!important;
+  align-items:flex-start!important;
 }
-.room-tv-lb .letterboxd-embed-tc-diary-entry{ gap:.3rem!important; padding:0 .15rem!important; }
-.room-tv-lb .letterboxd-embed-tc-content{ gap:.4rem!important; }
-/* Title — chunky retro caps */
+/* POSTER COLUMN — fixed width so all posters match. This is the real
+   size control (not max-width on the img). Bigger poster: raise 64px.
+   Smaller: lower it. */
+.room-tv-lb .letterboxd-embed-tc-poster{
+  flex:0 0 64px!important;     /* fixed poster column width */
+  width:64px!important;
+}
+/* The poster image fills its fixed column. We override the embed's own
+   injected "max-width:unset" here so the image can't blow past the column. */
+.room-tv-lb .letterboxd-embed-tc-poster img{
+  width:100%!important;
+  max-width:100%!important;
+  height:auto!important;
+  display:block!important;
+  border-radius:3px!important;
+}
+/* TEXT COLUMN — takes the remaining space beside the poster. */
+.room-tv-lb .letterboxd-embed-tc-content{
+  flex:1 1 auto!important;
+  min-width:0!important;        /* lets long text wrap instead of overflowing */
+  display:flex!important;
+  flex-direction:column!important;
+  gap:2px!important;
+}
+/* TITLE — chunky retro caps, broadcast yellow. */
 .room-tv-lb .letterboxd-embed-tc-title{
   font-family:'VT323',monospace!important;
   font-size:1.05rem!important; line-height:1!important;
-  color:#FFE9A8!important;                 /* warm broadcast yellow */
+  color:#FFE9A8!important;
   text-transform:uppercase!important; letter-spacing:.5px!important;
-  margin-bottom:1px!important;
+  margin:0 0 1px!important;
+  text-shadow:none!important;   /* no glow on the title */
 }
 .room-tv-lb .letterboxd-embed-tc-year{ font-size:.7rem!important; color:#9a9a7a!important; }
-.room-tv-lb .letterboxd-embed-tc-date{ font-size:.72rem!important; margin-bottom:0!important; color:#8fd8a0!important; }
-.room-tv-lb .letterboxd-embed-tc-rating{ font-size:.9rem!important; line-height:1!important; color:#FFE9A8!important; }
+.room-tv-lb .letterboxd-embed-tc-date{ font-size:.72rem!important; margin:0!important; color:#8fd8a0!important; }
+.room-tv-lb .letterboxd-embed-tc-rating{
+  font-size:.95rem!important; line-height:1!important;
+  color:#FFE9A8!important; margin:0!important;
+  text-shadow:none!important;   /* no glow on the stars */
+}
+/* REVIEW TEXT — the gauzy glow made small text hard to read, so we kill
+   the text-shadow here and bump the size/contrast for legibility. */
+.room-tv-lb .letterboxd-embed-tc-review{
+  font-size:.82rem!important;
+  line-height:1.25!important;
+  color:#cfe8c4!important;      /* soft readable green-white, not glowing */
+  text-shadow:none!important;   /* THE FIX: removes the blurry glow */
+  margin-top:2px!important;
+}
 
 /* Scanlines + static overlay (always on top of whichever view shows). */
 /* Inner vignette — darkens the screen edges so they blend into the bezel
