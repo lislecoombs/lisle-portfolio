@@ -28,18 +28,6 @@
      .room-stage. Because every object PNG was exported at full
      3200x2000 canvas size, stacking them like this auto-aligns them.
    ═══════════════════════════════════════════════════════════════════ */
-
-
-/* The label above the test — DELETE THIS RULE when removing the test */
-.room-test-label{
-  text-align:center;
-  font-family:'Caveat',cursive;
-  font-size:1.2rem;
-  color:var(--terra);
-  opacity:.65;
-  margin-bottom:14px;
-  letter-spacing:1px;
-}
    
 
 /* The container that holds the room. Scales as a single block. */
@@ -4019,7 +4007,8 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
        "END ROOM TEST" comment.
        ═══════════════════════════════════════════════════════════════════ -->
   <div class="reveal" style="margin-bottom:60px;">
-    <p class="room-test-label">★ ROOM TEST — base image loading &amp; scaling ★</p>
+    <span class="section-tag" style="display:block;text-align:center;">--&gt; welcome to...</span>
+    <h2 class="section-title" style="text-align:center;margin-bottom:14px;">My <em>"Room"!</em></h2>
     <div class="room-stage">
       <!-- BASE LAYER -->
       <img class="room-layer" src="images/room-base-2.webp" alt="Lisle's room" />
