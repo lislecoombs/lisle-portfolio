@@ -9,7 +9,7 @@
       "image": "/images/IMG_0875.jpeg"
     }
   ],
-  "blog_text": "For spring break, some of my friends and I are going to new orleans! so far I have been loving it here--its much more green than I expecting!",
+  "blog_text": "I FINISHED MY SOPHOMORE YEAR OF COLLEGE!!! YAYYYY!!!! im finally back in alaska and DANNNG its so good to be back! ",
   "paintings": [
     {
       "image": "/images/lower-half.jpg",
@@ -48,7 +48,7 @@
       "year": "2023"
     }
   ],
-  "blog_title": "Trip to NOLA!",
+  "blog_title": "back in talkeetna for the summer!",
   "portrait": [
     {
       "image": "/images/screenshot-2026-03-13-at-11.22.27 am-medium.jpeg"
@@ -103,22 +103,9 @@
     }
   ],
   "cat_caption": "this is my cat Maggie! ",
-  "blog_updated": "3/16/26",
+  "blog_updated": "6/4/26",
   "blog_photos": [
-    {
-      "image1": "/images/img_2986.jpeg",
-      "blog_caption": "",
-      "image2": ""
-    },
-    {
-      "image1": "/images/img_2990.jpeg",
-      "blog_caption": "fancy old houses...",
-      "image2": "/images/img_2989.jpeg"
-    },
-    {
-      "image1": "/images/img_2988.jpeg",
-      "image2": ""
-    }
+    {}
   ],
   "about_text": ""
 }
