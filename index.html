@@ -435,15 +435,28 @@
   inset:0;
   z-index:460;                  /* above the room; below the space-kitty journal */
   display:flex;
+  flex-direction:column;        /* stacks the "reading log" title above the book */
   align-items:center;
   justify-content:center;
   background:rgba(7,12,5,.85);  /* dim backdrop */
   opacity:0;
   pointer-events:none;
   transition:opacity .3s ease;
-  padding:40px 20px;
+  padding:30px 20px;
 }
 #book-modal.open{ opacity:1; pointer-events:auto; }
+
+/* "reading log" title floating above the book. */
+.book-modal-title{
+  font-family:'Caveat',cursive;
+  font-size:2.3rem;             /* title size — tune */
+  color:var(--cream);
+  margin-bottom:14px;           /* gap between the title and the book */
+  letter-spacing:1px;
+  transform:rotate(-1.5deg);    /* slight scrapbook tilt */
+  text-shadow:0 2px 10px rgba(0,0,0,.6);
+  text-align:center;
+}
 
 /* Perspective wrapper — gives the page flip its 3D depth. */
 .book-stage{
@@ -473,7 +486,7 @@
   background:
     repeating-linear-gradient(0deg, rgba(120,80,40,.035) 0 1px, transparent 1px 26px),
     linear-gradient(180deg, #f6efdb 0%, #efe4c8 100%);
-  padding:30px 30px 26px;       /* inner page margins — tune */
+  padding:34px 34px 30px;       /* inner page margins — tune (match .book-flip-face) */
 }
 .book-page-left{
   left:0;
@@ -510,9 +523,9 @@
 /* Small handwritten title at the top of each page. */
 .book-page-kicker{
   font-family:'Caveat',cursive;
-  font-size:1.15rem;            /* size of the "currently reading" / "recently finished" line */
+  font-size:1.4rem;             /* "currently reading" / "recently finished" line */
   color:var(--terra);
-  margin-bottom:10px;
+  margin-bottom:16px;
   letter-spacing:.5px;
   line-height:1.1;
 }
@@ -520,18 +533,18 @@
 .book-cover-link{
   display:block;
   position:relative;
-  margin-bottom:12px;
+  margin-bottom:18px;
   cursor:url('/cursors/pointer.png') 18 10, pointer;
 }
 .book-cover-img{
   display:block;
-  width:96px;                   /* cover size — tune (height keeps ~2:3 ratio) */
-  height:144px;
+  width:150px;                  /* cover size — THE main "make it bigger" lever */
+  height:225px;                 /* keep ~2:3 of the width */
   object-fit:cover;
   border:1px solid rgba(80,55,30,.35);
   box-shadow:2px 4px 9px rgba(0,0,0,.4);
-  transform:rotate(-1.5deg);    /* slight tilt */
   background:#d8cba8;           /* shows if a cover fails to load */
+  /* (tilt is set per-book inline by the JS, so each cover leans differently) */
 }
 .book-cover-link:hover .book-cover-img{ filter:brightness(1.05); }
 /* Washi-tape accent strips holding the cover corners (CSS-only, within the page). */
@@ -539,47 +552,47 @@
 .book-cover-link::after{
   content:"";
   position:absolute;
-  width:42px; height:16px;
+  width:50px; height:18px;
   background:rgba(201,132,122,.32);                 /* rose washi */
   border-left:1px dashed rgba(255,255,255,.35);
   border-right:1px dashed rgba(255,255,255,.35);
   z-index:2;
 }
-.book-cover-link::before{ top:-7px;  left:-8px;  transform:rotate(-24deg); }
-.book-cover-link::after { bottom:-5px; right:-8px; transform:rotate(-26deg);
+.book-cover-link::before{ top:-8px;  left:-10px;  transform:rotate(-24deg); }
+.book-cover-link::after { bottom:-6px; right:-10px; transform:rotate(-26deg);
   background:rgba(122,158,126,.32); }               /* sage washi */
 
 .book-title{
   font-family:'Caveat',cursive;
-  font-size:1.3rem;
+  font-size:1.6rem;
   line-height:1.1;
   color:var(--terra);
-  margin-bottom:2px;
+  margin-bottom:3px;
   text-decoration:none;
 }
 a.book-title{ cursor:url('/cursors/pointer.png') 18 10, pointer; }
 a.book-title:hover{ color:var(--gold); }
 .book-author{
   font-family:'Caveat',cursive;
-  font-size:1rem;
+  font-size:1.15rem;
   color:var(--mushroom);
-  margin-bottom:6px;
+  margin-bottom:8px;
 }
 .book-stars{
-  font-size:.95rem;
+  font-size:1.2rem;
   color:var(--terra);
   letter-spacing:2px;
   line-height:1;
-  margin-bottom:8px;
+  margin-bottom:10px;
 }
 .book-review{
   font-family:'Lora',serif;
   font-style:italic;
-  font-size:.8rem;
-  line-height:1.45;
+  font-size:.9rem;
+  line-height:1.5;
   color:#6a513a;
   overflow-y:auto;              /* long reviews scroll within the page */
-  max-height:30%;
+  max-height:32%;
   padding:0 2px;
   scrollbar-width:thin;                              /* Firefox */
   scrollbar-color:rgba(80,55,30,.3) transparent;
@@ -589,7 +602,7 @@ a.book-title:hover{ color:var(--gold); }
 /* "currently reading" pages have no rating yet — small note instead. */
 .book-note{
   font-family:'Caveat',cursive;
-  font-size:.95rem;
+  font-size:1.15rem;
   color:var(--sage);
   margin-top:2px;
 }
@@ -631,7 +644,7 @@ a.book-title:hover{ color:var(--gold); }
   box-sizing:border-box;
   backface-visibility:hidden;
   -webkit-backface-visibility:hidden;
-  padding:30px 30px 26px;       /* must match .book-page padding */
+  padding:34px 34px 30px;       /* must match .book-page padding */
   background:
     repeating-linear-gradient(0deg, rgba(120,80,40,.035) 0 1px, transparent 1px 26px),
     linear-gradient(180deg, #f6efdb 0%, #efe4c8 100%);
@@ -4219,9 +4232,9 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
               aria-label="Listen to my recent radio show" type="button"></button>
 
       <button class="room-hit" data-target="room-book-stack"
-              data-tip="recently finished ✦"
+              data-tip="reading log"
               style="left:9%;top:24.5%;width:11.5%;height:15.5%;"
-              aria-label="See my recently finished books" type="button"></button>
+              aria-label="Open my reading log" type="button"></button>
 
       <button class="room-hit" data-target="room-cd-stack"
               data-tip="some fav songs ♪"
@@ -4348,7 +4361,7 @@ function initRoomInteractions(){
     overlay.classList.add('open');
   }
 
- /* ─── BOOK STACK → FLIP-BOOK MODAL ───
+/* ─── BOOK STACK → FLIP-BOOK MODAL ───
      Clicking the book stack opens a centered "book" popup. Currently-
      reading books come first (one per page), then recently-finished. Two
      pages show at once; the corner arrows flip forward / back with a 3D
@@ -4389,6 +4402,10 @@ function initRoomInteractions(){
     return escHtml(d);
   }
 
+  /* A small cycle of cover tilts so each book leans a little differently.
+     Tweak / add angles freely. */
+  var COVER_TILTS = [-2.5, 1.8, -1.2, 2.6, -3, 1.2, -1.8, 3];
+
   /* Builds the flat page list: currently-reading first, then read. Pads
      with one blank page if the total is odd, so every spread has two faces. */
   function buildBookPages(data){
@@ -4396,6 +4413,7 @@ function initRoomInteractions(){
     (data.currentlyReading || []).forEach(function(b){ pages.push({ shelf:'currently', book:b }); });
     (data.read || []).forEach(function(b){ pages.push({ shelf:'read', book:b }); });
     if(pages.length % 2 === 1) pages.push({ shelf:'blank' });
+    pages.forEach(function(p, i){ p.tilt = COVER_TILTS[i % COVER_TILTS.length]; });  /* per-book lean */
     return pages;
   }
 
@@ -4410,6 +4428,7 @@ function initRoomInteractions(){
     var cover   = escHtml(b.cover || '');
     var title   = cleanText(b.title);
     var author  = cleanText(b.author);
+    var tilt    = (typeof page.tilt === 'number') ? page.tilt : -1.5;   /* per-book cover lean */
 
     var stars = '';
     if(page.shelf === 'read' && b.rating){
@@ -4427,7 +4446,7 @@ function initRoomInteractions(){
       + '<div class="book-page-inner">'
       +   '<div class="book-page-kicker">' + kicker + '</div>'
       +   '<a class="book-cover-link" href="' + link + '" target="_blank" rel="noopener" aria-label="' + title + ' on Goodreads">'
-      +     '<img class="book-cover-img" src="' + cover + '" alt="' + title + ' cover" loading="lazy" onerror="this.style.visibility=\'hidden\'" />'
+      +     '<img class="book-cover-img" src="' + cover + '" alt="' + title + ' cover" loading="lazy" style="transform:rotate(' + tilt + 'deg)" onerror="this.style.visibility=\'hidden\'" />'
       +   '</a>'
       +   '<a class="book-title" href="' + link + '" target="_blank" rel="noopener">' + title + '</a>'
       +   '<div class="book-author">' + author + '</div>'
@@ -4591,6 +4610,7 @@ if(document.readyState === 'loading'){
      Netlify function. -->
 <div id="book-modal" role="dialog" aria-label="Lisle's books">
   <button class="book-close" id="book-close" aria-label="Close" type="button">&times;</button>
+  <div class="book-modal-title">reading log</div>
   <div class="book-stage">
     <div class="book" id="book">
       <!-- Two static pages = the current spread -->
