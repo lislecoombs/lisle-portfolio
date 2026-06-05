@@ -422,132 +422,262 @@
    AND the TV screen is hovered. */
 .room-stage.hint-ready #room-tv:hover ~ .room-tv-hint{ opacity:1; }
 
+/* ─── BOOK MODAL (currently reading + recently read, as a flip-book) ───
+   A centered popup over the room (dim behind, click-outside closes), built
+   like an aged book: two CSS-drawn cream pages with a center spine. One
+   book per page; corner arrows flip forward / back with a 3D page turn
+   (same technique as the space kitty journal). Data comes from the Netlify
+   Goodreads function — currently-reading pages first, then recently-read. */
 
-/* ─── BOOK WIDGET OVERLAY ───
-   The container is full-canvas like other room layers (for alignment),
-   but the VISIBLE widget frame inside it is positioned over the book
-   stack area. */
-.book-widget-overlay{ pointer-events:none; }
-.book-widget-overlay[hidden]{ display:none; }
+/* Full-screen dim overlay (matches the spotify / journal overlay pattern). */
+#book-modal{
+  position:fixed;
+  inset:0;
+  z-index:460;                  /* above the room; below the space-kitty journal */
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(7,12,5,.85);  /* dim backdrop */
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .3s ease;
+  padding:40px 20px;
+}
+#book-modal.open{ opacity:1; pointer-events:auto; }
 
-.book-widget-frame{
+/* Perspective wrapper — gives the page flip its 3D depth. */
+.book-stage{
+  position:relative;
+  perspective:2200px;           /* higher = subtler 3D, lower = more dramatic */
+  transform:rotate(-1deg);      /* slight scrapbook tilt for the whole book */
+}
+
+/* The open book. width = overall size; aspect-ratio = spread shape. */
+.book{
+  position:relative;
+  width:min(840px, 88vw);       /* overall book width — tune */
+  aspect-ratio:1.5 / 1;         /* spread shape (wider than tall) */
+  transform-style:preserve-3d;
+  filter:drop-shadow(6px 14px 28px rgba(0,0,0,.55));   /* sits on the "desk" */
+}
+
+/* ── The two visible (static) pages, side by side under the flipper ── */
+.book-page{
   position:absolute;
-  /* Where the widget appears in the room — slightly larger than the
-     book stack itself so titles & covers fit. Adjust left/top/width
-     to reposition. */
-  left:8%;
-  top:24%;
-  width:18%;
-  background:linear-gradient(135deg,#f4ecd6 0%, #e6d9b8 100%);
-  border:1px solid rgba(80,55,30,.4);
-  box-shadow:3px 5px 12px rgba(0,0,0,.5);
-  padding:8px 10px 6px;
+  top:0;
+  width:50%;                    /* each page = half the book */
+  height:100%;
+  box-sizing:border-box;
+  overflow:hidden;
+  /* Aged cream paper with a faint horizontal grain. */
+  background:
+    repeating-linear-gradient(0deg, rgba(120,80,40,.035) 0 1px, transparent 1px 26px),
+    linear-gradient(180deg, #f6efdb 0%, #efe4c8 100%);
+  padding:30px 30px 26px;       /* inner page margins — tune */
+}
+.book-page-left{
+  left:0;
+  box-shadow:inset -16px 0 24px -16px rgba(80,55,30,.5);  /* spine shadow, inner edge */
+  border-radius:5px 2px 2px 5px;
+}
+.book-page-right{
+  left:50%;
+  box-shadow:inset 16px 0 24px -16px rgba(80,55,30,.5);   /* spine shadow, inner edge */
+  border-radius:2px 5px 5px 2px;
+}
+
+/* Center spine seam down the middle. */
+.book-spine{
+  position:absolute;
+  top:0; bottom:0; left:50%;
+  width:2px;
+  transform:translateX(-1px);
+  background:linear-gradient(90deg, rgba(80,55,30,0), rgba(80,55,30,.45), rgba(80,55,30,0));
+  z-index:6;                    /* above static pages, below the flipper */
+  pointer-events:none;
+}
+
+/* ── Page content (shared by static pages AND the flipper faces) ── */
+.book-page-inner{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  height:100%;
+  text-align:center;
   font-family:'Lora',serif;
   color:#2a1808;
-  pointer-events:auto;        /* widget itself is clickable (book links etc.) */
-  transform:rotate(-1.5deg);  /* slight tilt for the scrapbook feel */
+}
+/* Small handwritten title at the top of each page. */
+.book-page-kicker{
+  font-family:'Caveat',cursive;
+  font-size:1.15rem;            /* size of the "currently reading" / "recently finished" line */
+  color:var(--terra);
+  margin-bottom:10px;
+  letter-spacing:.5px;
+  line-height:1.1;
+}
+/* Cover photo, taped down like a little scrapbook polaroid. */
+.book-cover-link{
+  display:block;
+  position:relative;
+  margin-bottom:12px;
+  cursor:url('/cursors/pointer.png') 18 10, pointer;
+}
+.book-cover-img{
+  display:block;
+  width:96px;                   /* cover size — tune (height keeps ~2:3 ratio) */
+  height:144px;
+  object-fit:cover;
+  border:1px solid rgba(80,55,30,.35);
+  box-shadow:2px 4px 9px rgba(0,0,0,.4);
+  transform:rotate(-1.5deg);    /* slight tilt */
+  background:#d8cba8;           /* shows if a cover fails to load */
+}
+.book-cover-link:hover .book-cover-img{ filter:brightness(1.05); }
+/* Washi-tape accent strips holding the cover corners (CSS-only, within the page). */
+.book-cover-link::before,
+.book-cover-link::after{
+  content:"";
+  position:absolute;
+  width:42px; height:16px;
+  background:rgba(201,132,122,.32);                 /* rose washi */
+  border-left:1px dashed rgba(255,255,255,.35);
+  border-right:1px dashed rgba(255,255,255,.35);
   z-index:2;
 }
-.book-widget-title{
+.book-cover-link::before{ top:-7px;  left:-8px;  transform:rotate(-24deg); }
+.book-cover-link::after { bottom:-5px; right:-8px; transform:rotate(-26deg);
+  background:rgba(122,158,126,.32); }               /* sage washi */
+
+.book-title{
+  font-family:'Caveat',cursive;
+  font-size:1.3rem;
+  line-height:1.1;
+  color:var(--terra);
+  margin-bottom:2px;
+  text-decoration:none;
+}
+a.book-title{ cursor:url('/cursors/pointer.png') 18 10, pointer; }
+a.book-title:hover{ color:var(--gold); }
+.book-author{
+  font-family:'Caveat',cursive;
+  font-size:1rem;
+  color:var(--mushroom);
+  margin-bottom:6px;
+}
+.book-stars{
+  font-size:.95rem;
+  color:var(--terra);
+  letter-spacing:2px;
+  line-height:1;
+  margin-bottom:8px;
+}
+.book-review{
+  font-family:'Lora',serif;
+  font-style:italic;
+  font-size:.8rem;
+  line-height:1.45;
+  color:#6a513a;
+  overflow-y:auto;              /* long reviews scroll within the page */
+  max-height:30%;
+  padding:0 2px;
+  scrollbar-width:thin;                              /* Firefox */
+  scrollbar-color:rgba(80,55,30,.3) transparent;
+}
+.book-review::-webkit-scrollbar{ width:4px; }
+.book-review::-webkit-scrollbar-thumb{ background:rgba(80,55,30,.3); border-radius:2px; }
+/* "currently reading" pages have no rating yet — small note instead. */
+.book-note{
+  font-family:'Caveat',cursive;
+  font-size:.95rem;
+  color:var(--sage);
+  margin-top:2px;
+}
+/* Blank trailing page (shown when the book count is odd). */
+.book-page-blank{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  height:100%;
   font-family:'Caveat',cursive;
   font-size:1.1rem;
-  color:var(--terra);
-  text-align:center;
-  margin-bottom:4px;
-  letter-spacing:.5px;
-  border-bottom:1px dashed rgba(80,55,30,.3);
-  padding-bottom:3px;
+  color:rgba(80,55,30,.4);
+  line-height:1.4;
 }
-/* The clickable heading → Lisle's Goodreads profile. Inherits the
-   heading color/font; brightens slightly on hover. */
-.book-widget-title-link{
-  color:inherit;
-  text-decoration:none;
-  cursor:url('/cursors/pointer.png') 18 10, pointer;
-  transition:color .2s;
-}
-.book-widget-title-link:hover{ color:var(--gold); }
-.book-widget-close{
-  position:absolute;
-  top:2px; right:6px;
-  background:none; border:none;
-  font-family:'Caveat',cursive; font-size:1.3rem; line-height:1;
-  color:#5a3a20;
-  padding:0 4px;
-  cursor:url('/cursors/pointer.png') 18 10, pointer;
-  z-index:3;
-}
-.book-widget-close:hover{ color:var(--terra); }
 
-/* Styling for the Goodreads-injected markup inside our overlay.
-   Goodreads injects elements with class names ending in the widget_id
-   (1780222919). These rules are scoped to #goodreads-read-widget so
-   they don't conflict with the existing currently-reading widget
-   styling on the favorites card. */
-/* ── GOODREADS "RECENTLY READ" — themed, scrollable book list ──
-   Rendered from our Netlify function's JSON (not Goodreads' script).
-   Scrollable box showing up to 10 books, styled to match the room. */
-#goodreads-read-widget{
-  max-height:230px;            /* visible height before scrolling — tune */
-  overflow-y:auto;
-  overflow-x:hidden;
-  padding-right:4px;
-  /* Firefox scrollbar */
-  scrollbar-width:thin;
-  scrollbar-color:rgba(80,55,30,.35) transparent;
+/* ── The flipping page ── one reusable sheet, reused for every turn.
+   Two faces: front = the page you're leaving, back = the page you land on.
+   JS positions it over the right half (forward) or left half (back) and
+   rotates it around the spine. */
+.book-flip{
+  position:absolute;
+  top:0;
+  width:50%;
+  height:100%;
+  transform-style:preserve-3d;
+  z-index:8;                    /* above static pages + spine during a turn */
+  pointer-events:none;
+  display:none;                 /* hidden until a flip is in progress */
 }
-/* Chrome/Safari scrollbar */
-#goodreads-read-widget::-webkit-scrollbar{ width:5px; }
-#goodreads-read-widget::-webkit-scrollbar-thumb{ background:rgba(80,55,30,.35); border-radius:3px; }
-/* Each book = cover on the left, info on the right. */
-.gr-read-card{
+.book-flip.flipping{ display:block; }
+.book-flip.flip-forward{ left:50%; transform-origin:left center;  }  /* right → left */
+.book-flip.flip-back   { left:0;   transform-origin:right center; }  /* left → right */
+.book-flip.animate{ transition:transform .8s cubic-bezier(.42,0,.58,1); }  /* flip speed */
+.book-flip-face{
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+  box-sizing:border-box;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  padding:30px 30px 26px;       /* must match .book-page padding */
+  background:
+    repeating-linear-gradient(0deg, rgba(120,80,40,.035) 0 1px, transparent 1px 26px),
+    linear-gradient(180deg, #f6efdb 0%, #efe4c8 100%);
+}
+.book-flip-front{ transform:rotateY(0deg);   }
+.book-flip-back { transform:rotateY(180deg); }
+
+/* ── Arrows (hang off the outer corners) ── */
+.book-arrow{
+  position:absolute;
+  bottom:10px;
+  width:40px; height:40px;
+  background:rgba(244,237,216,.85);
+  border:1.5px solid rgba(80,55,30,.4);
+  border-radius:50%;
+  font-family:'Caveat',cursive;
+  font-size:1.5rem;
+  line-height:1;
+  color:#5a3a20;
   display:flex;
-  gap:9px;
-  align-items:flex-start;
-  padding:7px 0;
-  border-bottom:1px dotted rgba(80,55,30,.25);
-  text-decoration:none;
+  align-items:center;
+  justify-content:center;
   cursor:url('/cursors/pointer.png') 18 10, pointer;
+  z-index:10;                   /* above everything in the book */
+  box-shadow:2px 3px 7px rgba(0,0,0,.3);
+  transition:background .2s, transform .2s;
 }
-.gr-read-card:last-child{ border-bottom:none; }
-.gr-read-cover{
-  flex:0 0 38px;               /* fixed cover width so all match — tune */
-  width:38px; height:57px;     /* 2:3 poster ratio */
-  object-fit:cover;
-  border-radius:2px;
-  border:1px solid rgba(80,55,30,.3);
-  box-shadow:1px 2px 5px rgba(0,0,0,.35);
-  transform:rotate(-1.5deg);   /* slight scrapbook tilt */
-}
-.gr-read-info{ flex:1 1 auto; min-width:0; }
-.gr-read-title{
+.book-arrow:hover{ background:#fff; transform:scale(1.08); }
+.book-arrow-prev{ left:-20px;  }   /* hangs off the left edge */
+.book-arrow-next{ right:-20px; }   /* hangs off the right edge */
+.book-arrow[disabled]{ opacity:0; pointer-events:none; }   /* hidden on first / last spread */
+
+/* Close X (top-right of the modal, like the other overlays). */
+.book-close{
+  position:absolute;
+  top:18px; right:28px;
   font-family:'Caveat',cursive;
-  font-size:1rem; line-height:1.05;
-  color:var(--terra);
-  margin-bottom:1px;
+  font-size:2rem;
+  color:var(--mushroom);
+  background:none; border:none;
+  cursor:url('/cursors/pointer.png') 18 10, pointer;
+  transition:color .3s, transform .3s;
+  z-index:12;
 }
-.gr-read-author{
-  font-family:'Caveat',cursive;
-  font-size:.82rem; color:var(--mushroom);
-  margin-bottom:2px;
-}
-.gr-read-stars{
-  display:block;
-  font-size:.72rem; color:var(--terra);
-  letter-spacing:1px; line-height:1;
-  margin-bottom:3px;
-}
-.gr-read-review{
-  font-family:'Lora',serif;
-  font-size:.68rem; line-height:1.35;
-  color:#c4b89a;
-  font-style:italic;
-}
-.gr-read-empty{
-  font-family:'Caveat',cursive;
-  font-size:.95rem; color:var(--mushroom);
-  text-align:center; padding:14px 0;
-}
+.book-close:hover{ color:var(--cream); transform:rotate(90deg); }
+
    
 /* ── COUNTER IMAGE BLEND ──
    The websiteout counter renders as an image with a solid (likely white)
@@ -4071,16 +4201,8 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
       <img class="room-layer room-obj" id="room-book-stack" src="images/book-stack.png" alt="" />
       <img class="room-layer room-obj" id="room-cd-stack" src="images/cd-stack.png" alt="" />
 
-      <!-- ─── BOOK WIDGET OVERLAY ───
-           Hidden by default. Shown when the book stack is clicked.
-           Replaces the book stack image in place. -->
-      <div class="room-layer book-widget-overlay" id="book-widget-overlay" hidden>
-        <div class="book-widget-frame">
-          <button class="book-widget-close" aria-label="Close" type="button">×</button>
-          <div class="book-widget-title"><a href="https://www.goodreads.com/user/show/105653626-lisle" target="_blank" rel="noopener" class="book-widget-title-link">recently read ✦</a></div>
-          <div id="goodreads-read-widget">Loading...</div>
-        </div>
-      </div>
+<!-- (The book popup now lives as a centered modal (#book-modal),
+           added just after this section; opened by the book-stack hit zone.) -->
 
       <!-- ─── HIT ZONES ─── 
            Transparent buttons sized to each object's bounding box.
@@ -4090,6 +4212,7 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
            If you move an object in Procreate and re-export, you'll
            need to update the matching left/top/width/height here.
            (Same percentages work because the room scales as a block.) -->
+       
       <button class="room-hit" data-target="room-radio"
               data-tip="my radio show ♪"
               style="left:8%;top:5%;width:12%;height:20.5%;"
@@ -4199,7 +4322,7 @@ function initRoomInteractions(){
       if(targetId === 'room-radio'){
         openRadio();
       } else if(targetId === 'room-book-stack'){
-        toggleBookWidget();
+        openBookModal();
       } else if(targetId === 'room-cd-stack'){
         openSpotifyOverlay();
       }
@@ -4225,77 +4348,229 @@ function initRoomInteractions(){
     overlay.classList.add('open');
   }
 
-  /* ─── BOOK STACK ↔ WIDGET TOGGLE ─── 
-     Click toggles between the book stack photo and the Goodreads
-     "recently read" widget. The widget loads lazily on first show. */
-  var bookStackImg = document.getElementById('room-book-stack');
-  var bookOverlay  = document.getElementById('book-widget-overlay');
-  var bookHitBtn   = document.querySelector('.room-hit[data-target="room-book-stack"]');
-  var bookLoaded   = false;
+ /* ─── BOOK STACK → FLIP-BOOK MODAL ───
+     Clicking the book stack opens a centered "book" popup. Currently-
+     reading books come first (one per page), then recently-finished. Two
+     pages show at once; the corner arrows flip forward / back with a 3D
+     page turn. Data is fetched once (lazily) from our Netlify Goodreads
+     function and cached for the session. */
+  var bookModal    = document.getElementById('book-modal');
+  var pageLeftEl   = document.getElementById('book-page-left');
+  var pageRightEl  = document.getElementById('book-page-right');
+  var flipEl       = document.getElementById('book-flip');
+  var flipFrontEl  = document.getElementById('book-flip-front');
+  var flipBackEl   = document.getElementById('book-flip-back');
+  var prevBtn      = document.getElementById('book-prev');
+  var nextBtn      = document.getElementById('book-next');
+  var bookCloseBtn = document.getElementById('book-close');
 
-  /* GOODREADS "RECENTLY READ" — fetches our own Netlify function, which
-     pulls the read-shelf RSS server-side and returns clean JSON. Renders
-     our own themed book cards. Mark a book "read" on Goodreads → it shows
-     here automatically (within the function's 1-hour cache window). */
-  function loadGoodreadsRead(){
-    if(bookLoaded) return;
-    bookLoaded = true;
-    var box = document.getElementById('goodreads-read-widget');
+  var bookPages   = null;   /* flat array: one entry per page (a book, or a blank) */
+  var spreadIndex = 0;      /* which 2-page spread is showing */
+  var bookFetched = false;  /* only fetch the Goodreads data once per session */
+  var isFlipping  = false;  /* locks out new flips while one is animating */
+
+  /* Decode HTML entities (e.g. &apos; → ') using the browser's own parser,
+     then re-escape before inserting — so display is correct AND XSS-safe. */
+  function decodeEntities(s){
+    if(!s) return '';
+    var t = document.createElement('textarea');
+    t.innerHTML = s;
+    return t.value;
+  }
+  function escHtml(s){
+    return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  /* Title / author: decode entities, then escape for safe insertion. */
+  function cleanText(s){ return escHtml(decodeEntities(s)); }
+  /* Review: decode, strip any stray tags (e.g. Goodreads' </spoiler>),
+     collapse whitespace, then escape. */
+  function cleanReview(s){
+    var d = decodeEntities(s).replace(/<\/?[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+    return escHtml(d);
+  }
+
+  /* Builds the flat page list: currently-reading first, then read. Pads
+     with one blank page if the total is odd, so every spread has two faces. */
+  function buildBookPages(data){
+    var pages = [];
+    (data.currentlyReading || []).forEach(function(b){ pages.push({ shelf:'currently', book:b }); });
+    (data.read || []).forEach(function(b){ pages.push({ shelf:'read', book:b }); });
+    if(pages.length % 2 === 1) pages.push({ shelf:'blank' });
+    return pages;
+  }
+
+  /* Returns the inner HTML for one page. */
+  function renderPage(page){
+    if(!page || page.shelf === 'blank'){
+      return '<div class="book-page-blank">⋆ ˚｡⋆<br>the end (for now!)</div>';
+    }
+    var b = page.book;
+    var kicker  = (page.shelf === 'currently') ? "I'm currently reading:" : "I've recently finished:";
+    var link    = escHtml(b.link || '#');
+    var cover   = escHtml(b.cover || '');
+    var title   = cleanText(b.title);
+    var author  = cleanText(b.author);
+
+    var stars = '';
+    if(page.shelf === 'read' && b.rating){
+      stars = '<div class="book-stars">' + '★'.repeat(b.rating) + '☆'.repeat(5 - b.rating) + '</div>';
+    }
+    var extra;
+    if(page.shelf === 'currently'){
+      extra = '<div class="book-note">reading now ✦</div>';
+    } else {
+      var rev = cleanReview(b.review);
+      extra = rev ? '<div class="book-review">' + rev + '</div>' : '';
+    }
+
+    return ''
+      + '<div class="book-page-inner">'
+      +   '<div class="book-page-kicker">' + kicker + '</div>'
+      +   '<a class="book-cover-link" href="' + link + '" target="_blank" rel="noopener" aria-label="' + title + ' on Goodreads">'
+      +     '<img class="book-cover-img" src="' + cover + '" alt="' + title + ' cover" loading="lazy" onerror="this.style.visibility=\'hidden\'" />'
+      +   '</a>'
+      +   '<a class="book-title" href="' + link + '" target="_blank" rel="noopener">' + title + '</a>'
+      +   '<div class="book-author">' + author + '</div>'
+      +   stars
+      +   extra
+      + '</div>';
+  }
+
+  /* Highest valid spread index (each spread = 2 pages). */
+  function lastSpread(){ return Math.max(0, Math.ceil(bookPages.length / 2) - 1); }
+
+  function updateArrows(){
+    prevBtn.disabled = (spreadIndex <= 0);
+    nextBtn.disabled = (spreadIndex >= lastSpread());
+  }
+
+  /* Draws the current spread into the two static pages + updates arrows. */
+  function renderSpread(){
+    pageLeftEl.innerHTML  = renderPage(bookPages[spreadIndex * 2]);
+    pageRightEl.innerHTML = renderPage(bookPages[spreadIndex * 2 + 1]);
+    updateArrows();
+  }
+
+  /* Flip one spread. dir = +1 (next) or -1 (prev). Uses the single
+     flipper sheet: its front face is the page you're leaving, its back
+     face is the page you land on, and the destination's other page is
+     revealed underneath. */
+  function flip(dir){
+    if(isFlipping || !bookPages || bookPages.length === 0) return;
+    if(dir > 0 && spreadIndex >= lastSpread()) return;
+    if(dir < 0 && spreadIndex <= 0) return;
+    isFlipping = true;
+
+    var curLeft   = bookPages[spreadIndex * 2];
+    var curRight  = bookPages[spreadIndex * 2 + 1];
+    var destIndex = spreadIndex + dir;
+    var destLeft  = bookPages[destIndex * 2];
+    var destRight = bookPages[destIndex * 2 + 1];
+
+    if(dir > 0){
+      /* FORWARD: right page turns onto the left.
+         front = current right, back = destination left.
+         Reveal destination RIGHT underneath (hidden behind the flipper
+         until it rotates away); left stays the current page. */
+      flipFrontEl.innerHTML = renderPage(curRight);
+      flipBackEl.innerHTML  = renderPage(destLeft);
+      pageRightEl.innerHTML = renderPage(destRight);
+      flipEl.className = 'book-flip flip-forward flipping';
+    } else {
+      /* BACK: left page turns onto the right.
+         front = current left, back = destination right.
+         Reveal destination LEFT underneath; right stays the current page. */
+      flipFrontEl.innerHTML = renderPage(curLeft);
+      flipBackEl.innerHTML  = renderPage(destRight);
+      pageLeftEl.innerHTML  = renderPage(destLeft);
+      flipEl.className = 'book-flip flip-back flipping';
+    }
+
+    /* Commit the starting rotation, force a reflow, THEN add the transition
+       + target rotation — otherwise the browser skips straight to the end. */
+    flipEl.style.transform = 'rotateY(0deg)';
+    void flipEl.offsetWidth;
+    flipEl.classList.add('animate');
+    flipEl.style.transform = (dir > 0) ? 'rotateY(-180deg)' : 'rotateY(180deg)';
+
+    if(typeof play === 'function' && typeof SND !== 'undefined' && SND.paper) play(SND.paper);  /* page-turn sound */
+
+    var done = function(){
+      flipEl.removeEventListener('transitionend', done);
+      spreadIndex = destIndex;
+      renderSpread();                 /* commit the new spread to the static pages */
+      /* Reset the flipper invisibly for the next turn. */
+      flipEl.className = 'book-flip';  /* removes animate/flipping/direction → display:none */
+      flipEl.style.transform = '';
+      flipFrontEl.innerHTML = '';
+      flipBackEl.innerHTML  = '';
+      isFlipping = false;
+    };
+    flipEl.addEventListener('transitionend', done);
+    /* Safety net: if transitionend never fires, finish anyway (just over
+       the .8s flip duration). */
+    setTimeout(function(){ if(isFlipping) done(); }, 950);
+  }
+
+  /* Fetch the Goodreads data once, then run cb(). */
+  function loadBooks(cb){
+    if(bookFetched){ cb(); return; }
     fetch('/.netlify/functions/goodreads')
       .then(function(r){ return r.json(); })
       .then(function(data){
-        if(!data.books || !data.books.length){
-          box.innerHTML = '<p class="gr-read-empty">no books yet — check back soon!</p>';
-          return;
-        }
-        box.innerHTML = data.books.map(renderBookCard).join('');
+        bookFetched = true;
+        bookPages = buildBookPages(data || {});
+        cb();
       })
       .catch(function(){
-        box.innerHTML = '<p class="gr-read-empty">(couldn\'t load books right now)</p>';
+        bookFetched = true;
+        bookPages = [];               /* empty → friendly message below */
+        cb();
       });
   }
 
-  /* Builds one themed book card. Stars render as filled/empty so the
-     rating reads at a glance. Review is optional (some books have none). */
-  function renderBookCard(b){
-    function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-    var full = '★'.repeat(b.rating);
-    var empty = '☆'.repeat(5 - b.rating);
-    var stars = b.rating ? '<span class="gr-read-stars">' + full + empty + '</span>' : '';
-    var review = b.review ? '<div class="gr-read-review">' + esc(b.review) + '</div>' : '';
-    return ''
-      + '<a class="gr-read-card" href="' + esc(b.link) + '" target="_blank" rel="noopener">'
-      +   '<img class="gr-read-cover" src="' + esc(b.cover) + '" alt="' + esc(b.title) + ' cover" loading="lazy" />'
-      +   '<div class="gr-read-info">'
-      +     '<div class="gr-read-title">' + esc(b.title) + '</div>'
-      +     '<div class="gr-read-author">' + esc(b.author) + '</div>'
-      +     stars
-      +     review
-      +   '</div>'
-      + '</a>';
-  }
-
-  function toggleBookWidget(){
-    var isShowing = !bookOverlay.hidden;
-    if(isShowing){
-      bookOverlay.hidden = true;
-      if(bookHitBtn) bookHitBtn.style.pointerEvents = '';
-    } else {
-      loadGoodreadsRead();
-      bookOverlay.hidden = false;
-      /* book stack stays visible — widget pops up over/beside it */
-      if(bookHitBtn) bookHitBtn.style.pointerEvents = 'none';
+  function openBookModal(){
+    /* Show the book right away so the click feels responsive; if data
+       isn't cached yet, display a brief loading page until it arrives. */
+    bookModal.classList.add('open');
+    if(!bookFetched){
+      pageLeftEl.innerHTML  = '<div class="book-page-blank">loading books…</div>';
+      pageRightEl.innerHTML = '<div class="book-page-blank">⋆ ˚｡⋆</div>';
+      prevBtn.disabled = true;
+      nextBtn.disabled = true;
     }
-  }
-
-  /* Close button on the book widget */
-  var closeBtn = document.querySelector('.book-widget-close');
-  if(closeBtn){
-    closeBtn.addEventListener('click', function(e){
-      e.stopPropagation();
-      toggleBookWidget();
+    loadBooks(function(){
+      spreadIndex = 0;
+      if(!bookPages || bookPages.length === 0){
+        pageLeftEl.innerHTML  = '<div class="book-page-blank">no books to show<br>right now :(</div>';
+        pageRightEl.innerHTML = '<div class="book-page-blank">⋆ ˚｡⋆</div>';
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
+      } else {
+        renderSpread();
+      }
     });
   }
+
+  function closeBookModal(){
+    bookModal.classList.remove('open');
+  }
+
+  /* Wire up controls (stopPropagation so arrow/close clicks don't reach the
+     backdrop-close handler below). */
+  if(prevBtn)      prevBtn.addEventListener('click', function(e){ e.stopPropagation(); flip(-1); });
+  if(nextBtn)      nextBtn.addEventListener('click', function(e){ e.stopPropagation(); flip(1);  });
+  if(bookCloseBtn) bookCloseBtn.addEventListener('click', function(e){ e.stopPropagation(); closeBookModal(); });
+  if(bookModal){
+    /* Click the dim backdrop (outside the book) to close. */
+    bookModal.addEventListener('click', function(e){ if(e.target === bookModal) closeBookModal(); });
+  }
+  document.addEventListener('keydown', function(e){
+    if(!bookModal || !bookModal.classList.contains('open')) return;
+    if(e.key === 'Escape')          closeBookModal();
+    else if(e.key === 'ArrowLeft')  flip(-1);
+    else if(e.key === 'ArrowRight') flip(1);
+  });
 }
 
 /* Fire init now if DOM is already parsed, otherwise wait. */
@@ -4308,6 +4583,32 @@ if(document.readyState === 'loading'){
    
   <!-- ═══════════ END ROOM TEST ═══════════ -->
 </section>
+
+<!-- ─── BOOK MODAL (currently reading + recently read flip-book) ───
+     Centered popup over the room. Opened by clicking the book stack in the
+     room; closed by the X, Escape, the dim backdrop, or arrow keys to flip.
+     Pages are CSS-drawn; content is filled in by JS from the Goodreads
+     Netlify function. -->
+<div id="book-modal" role="dialog" aria-label="Lisle's books">
+  <button class="book-close" id="book-close" aria-label="Close" type="button">&times;</button>
+  <div class="book-stage">
+    <div class="book" id="book">
+      <!-- Two static pages = the current spread -->
+      <div class="book-page book-page-left"  id="book-page-left"></div>
+      <div class="book-page book-page-right" id="book-page-right"></div>
+      <!-- Center spine seam -->
+      <div class="book-spine"></div>
+      <!-- The single reusable flipping sheet (two faces) -->
+      <div class="book-flip" id="book-flip">
+        <div class="book-flip-face book-flip-front" id="book-flip-front"></div>
+        <div class="book-flip-face book-flip-back"  id="book-flip-back"></div>
+      </div>
+      <!-- Page-turn arrows (hang off the outer edges) -->
+      <button class="book-arrow book-arrow-prev" id="book-prev" aria-label="Previous page" type="button">&lsaquo;</button>
+      <button class="book-arrow book-arrow-next" id="book-next" aria-label="Next page" type="button">&rsaquo;</button>
+    </div>
+  </div>
+</div>
    
 <!-- Letter overlay (replaces blog section) -->
 <div id="letter-overlay">
