@@ -4186,19 +4186,19 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
     <h2 class="section-title" style="text-align:center;margin-bottom:14px;">My "Room"!</h2>
     <div class="room-stage">
       <!-- BASE LAYER -->
-      <img class="room-layer" src="images/room-base-2.webp" alt="Lisle's room" />
+      <img class="room-layer" src="images/room-base-2.webp" loading="lazy" alt="Lisle's room" />
 
       <!-- ─── VHS TAPES (visual layers) ───
            Full-canvas transparent PNGs, each placed where you exported it.
            Order = left-to-right on the shelf. Visual only; the .room-vhs-hit
            buttons below handle hover/click for the interactive ones. -->
-      <img class="room-vhs" id="room-vhs-wwdits"      src="images/vhs-WWDITS.png" alt="" />
-      <img class="room-vhs" id="room-vhs-perfectblue" src="images/vhs-perfectblue.png" alt="" />
-      <img class="room-vhs" id="room-vhs-hailmary"    src="images/vhs-hailmary.png" alt="" />
-      <img class="room-vhs" id="room-vhs-surfsup"     src="images/vhs-surfsup.png" alt="" />
-      <img class="room-vhs" id="room-vhs-mobpsycho"   src="images/vhs-mobpsycho100.png" alt="" />
-      <img class="room-vhs" id="room-vhs-tlou"        src="images/vhs-TLOU.png" alt="" />
-      <img class="room-vhs" id="room-vhs-jjba"        src="images/vhs-jjba.png" alt="" />
+      <img class="room-vhs" id="room-vhs-wwdits"      src="images/vhs-WWDITS.webp" loading="lazy" alt="" />
+      <img class="room-vhs" id="room-vhs-perfectblue" src="images/vhs-perfectblue.webp" loading="lazy" alt="" />
+      <img class="room-vhs" id="room-vhs-hailmary"    src="images/vhs-hailmary.webp" loading="lazy" alt="" />
+      <img class="room-vhs" id="room-vhs-surfsup"     src="images/vhs-surfsup.webp" loading="lazy" alt="" />
+      <img class="room-vhs" id="room-vhs-mobpsycho"   src="images/vhs-mobpsycho100.webp" loading="lazy" alt="" />
+      <img class="room-vhs" id="room-vhs-tlou"        src="images/vhs-TLOU.webp" loading="lazy" alt="" />
+      <img class="room-vhs" id="room-vhs-jjba"        src="images/vhs-jjba.webp" loading="lazy" alt="" />
 
       <!-- ─── VHS HIT ZONES (interactive tapes only) ───
            Transparent buttons over the 3 interactive tapes, padded a touch
@@ -4218,9 +4218,9 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
            Each is a full-canvas PNG layered over the base. The
            transform-origin in CSS (per #id) keeps the hover-grow
            centered on the actual object, not the canvas center. -->
-      <img class="room-layer room-obj" id="room-radio" src="images/radio.png" alt="" />
-      <img class="room-layer room-obj" id="room-book-stack" src="images/book-stack.png" alt="" />
-      <img class="room-layer room-obj" id="room-cd-stack" src="images/cd-stack.png" alt="" />
+      <img class="room-layer room-obj" id="room-radio" src="images/radio.webp" loading="lazy" alt="" />
+      <img class="room-layer room-obj" id="room-book-stack" src="images/book-stack.webp" loading="lazy" alt="" />
+      <img class="room-layer room-obj" id="room-cd-stack" src="images/cd-stack.webp" loading="lazy" alt="" />
 
 <!-- (The book popup now lives as a centered modal (#book-modal),
            added just after this section; opened by the book-stack hit zone.) -->
@@ -4254,23 +4254,23 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
 
       <!-- FROG PHONE — hover opens, mouse-away closes, click = ribbit. -->
       <div class="room-swap" id="room-frog">
-        <img class="swap-closed" src="images/frog-closed.png" alt="" />
-        <img class="swap-open"   src="images/frog-open.png"   alt="" />
+        <img class="swap-closed" src="images/frog-closed.webp" loading="lazy" alt="" />
+        <img class="swap-open"   src="images/frog-open.webp"   loading="lazy" alt="" />
       </div>
 
       <!-- GUITAR CASE — hover opens; click latches open + plays sodom.mp3
            with an audio bar; click again closes + stops. -->
       <div class="room-swap" id="room-guitar">
-        <img class="swap-closed" src="images/guitar-closed.png" alt="" />
-        <img class="swap-open"   src="images/guitar-open.png"   alt="" />
+        <img class="swap-closed" src="images/guitar-closed.webp" loading="lazy" alt="" />
+        <img class="swap-open"   src="images/guitar-open.webp"   loading="lazy" alt="" />
       </div>
 
       <!-- KARMA GAME — hover opens; click latches open + shows cards;
            click again closes + hides cards. -->
       <div class="room-swap" id="room-karma">
-        <img class="swap-closed" src="images/karma-closed.png" alt="" />
-        <img class="swap-open"   src="images/karma-open.png"   alt="" />
-        <img class="swap-extra"  src="images/karma-cards.png"  alt="" />
+        <img class="swap-closed" src="images/karma-closed.webp" loading="lazy" alt="" />
+        <img class="swap-open"   src="images/karma-open.webp"   loading="lazy" alt="" />
+        <img class="swap-extra"  src="images/karma-cards.webp"  loading="lazy" alt="" />
       </div>
 
       <!-- Guitar audio bar (native player, themed). Hidden until opened. -->
@@ -4295,7 +4295,7 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
            1 min idle returns to the DVD bounce. -->
       <div class="room-tv-screen" id="room-tv" role="button" tabindex="0"
            aria-label="TV — recently watched on Letterboxd">
-        <img class="room-dvd" id="room-dvd" src="images/dvd-icon.png" alt="" />
+        <img class="room-dvd" id="room-dvd" src="images/dvd-icon.webp" loading="lazy" alt="" />
         <div class="room-tv-lb" id="room-tv-lb">Loading...</div>
         <div class="room-tv-scanlines"></div>
         <div class="room-tv-static" id="room-tv-static"></div>
