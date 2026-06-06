@@ -578,6 +578,14 @@ a.book-title:hover{ color:var(--gold); }
   color:var(--mushroom);
   margin-bottom:8px;
 }
+/* Finish date line (read pages only). */
+.book-date{
+  font-family:'Caveat',cursive;
+  font-size:.95rem;
+  color:var(--mushroom);
+  opacity:.85;
+  margin-bottom:8px;
+}
 .book-stars{
   font-size:1.2rem;
   color:var(--terra);
@@ -4401,6 +4409,15 @@ function initRoomInteractions(){
     var d = decodeEntities(s).replace(/<\/?[^>]+>/g, '').replace(/\s+/g, ' ').trim();
     return escHtml(d);
   }
+  /* Formats Goodreads' finish date (e.g. "Sat, 12 Oct 2024 …") into
+     "Oct 12, 2024". Returns '' if the date is missing or unparseable.
+     To show just month + year, drop `day:'numeric'` below. */
+  function formatReadDate(s){
+    if(!s) return '';
+    var d = new Date(s);
+    if(isNaN(d.getTime())) return '';
+    return d.toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' });
+  }
 
   /* A small cycle of cover tilts so each book leans a little differently.
      Tweak / add angles freely. */
@@ -4434,6 +4451,12 @@ function initRoomInteractions(){
     if(page.shelf === 'read' && b.rating){
       stars = '<div class="book-stars">' + '★'.repeat(b.rating) + '☆'.repeat(5 - b.rating) + '</div>';
     }
+    /* Finish date — read pages only, and only if Goodreads has one. */
+    var dateLine = '';
+    if(page.shelf === 'read'){
+      var fd = formatReadDate(b.readAt);
+      if(fd) dateLine = '<div class="book-date">finished ✦ ' + fd + '</div>';
+    }
     var extra;
     if(page.shelf === 'currently'){
       extra = '<div class="book-note">reading now ✦</div>';
@@ -4450,6 +4473,7 @@ function initRoomInteractions(){
       +   '</a>'
       +   '<a class="book-title" href="' + link + '" target="_blank" rel="noopener">' + title + '</a>'
       +   '<div class="book-author">' + author + '</div>'
+      +   dateLine
       +   stars
       +   extra
       + '</div>';
