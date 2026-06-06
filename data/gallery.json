@@ -12,8 +12,10 @@
   "blog_text": "I FINISHED MY SOPHOMORE YEAR OF COLLEGE!!! YAYYYY!!!! im finally back in alaska and DANNNG its so good to be back! photos coming soon!",
   "paintings": [
     {
-      "image": "/images/lower-half.jpg",
-      "title": "Lower Half"
+      "image": "/images/lower-half.webp",
+      "title": "Lower Half",
+      "year": "2023",
+      "medium": "Gouache"
     },
     {
       "image": "/images/frontal-lobe.jpg",
