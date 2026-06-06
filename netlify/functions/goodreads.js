@@ -66,6 +66,7 @@ function parseBooks(xml, limit) {
       rating: parseInt(getTag(item, "user_rating"), 10) || 0,  // 0–5 stars
       cover:  cover,
       link:   getTag(item, "link"),   // the book's Goodreads page
+      readAt: getTag(item, "user_read_at"),  // date finished (may be empty)
       review: review
     };
   });
