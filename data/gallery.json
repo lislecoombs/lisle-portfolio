@@ -26,21 +26,26 @@
     {
       "image": "/images/img_0751.webp",
       "title": "Golden Bayou",
-      "medium": "Oil on Canvas"
+      "medium": "Oil on Canvas",
+      "year": "2021"
     },
     {
       "image": "/images/entropy.webp",
-      "title": "Entropy"
+      "title": "Entropy",
+      "medium": "Oil on Canvas",
+      "year": "2024"
     },
     {
       "image": "/images/bigredcoat.webp",
       "title": "Big Red Coat",
-      "year": "2022"
+      "year": "2022",
+      "medium": "Gouache"
     },
     {
       "image": "/images/portrait-of-tracy.jpg",
       "title": "Portrait of Tracey",
-      "year": "2023"
+      "year": "2023",
+      "medium": "Gouache"
     }
   ],
   "drawings": [
