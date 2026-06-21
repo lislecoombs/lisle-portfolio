@@ -3735,7 +3735,7 @@ a.book-title:hover{ color:var(--gold); }
 .ipod-np-bar-fill{position:absolute;top:0;left:0;height:100%;width:0%;background:linear-gradient(180deg,#7a92ac 0%,#3a5272 100%);border-right:1px solid rgba(0,0,0,.25);}
 /* Spotify popup */
 #spotify-overlay{position:fixed;inset:0;z-index:450;display:flex;align-items:center;justify-content:center;background:rgba(7,12,5,.88);padding:40px 20px;opacity:0;pointer-events:none;transition:opacity .35s ease;}
-#spotify-overlay.open{opacity:1;pointer-events:all;}
+#spotify-overlay.open{opacity:1;pointer-events:all;cursor:url('/cursors/pointer.png') 18 10,pointer;} /* backdrop uses the pointer cursor to signal "click outside to close" */
 #spotify-modal{width:100%;max-width:400px;transform:scale(.92) rotate(-2deg);opacity:0;transition:transform .5s cubic-bezier(.22,1,.36,1),opacity .35s ease;}
 #spotify-overlay.open #spotify-modal{transform:scale(1) rotate(0);opacity:1;}
 #spotify-modal iframe{width:100%;height:500px;border:none;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.7);display:block;background:#181818;}
@@ -6839,8 +6839,22 @@ if(tardisFirstAppear){
   setTimeout(appear,5000);
 })();
 
-/* iPod Now Playing */
-(function(){
+/* ─── SPOTIFY POPUP — CLOSE CONTROLLER ───
+   The Spotify popup is OPENED by the room's CD stack (openSpotifyOverlay,
+   in the room script above). This block only handles CLOSING it:
+     • the X button in the corner
+     • clicking the dim area outside the widget
+     • the Escape key
+   Each handler is null-guarded, so a missing element can never blank the
+   page (which is exactly what used to happen here).
+
+   NOTE: this replaces the old "iPod Now Playing" widget, which was removed
+   when the room replaced the old "things I love" section. Your curated
+   song list from that widget is archived just below — it no longer shows
+   anywhere on the site, so it's safe to DELETE, or reuse if you add a
+   music widget back later. */
+
+/* (ARCHIVED) old iPod "now playing" song list — not displayed anywhere now:
   var tracks=[
     {title:'Weird Fishes', artist:'Lianne La Havas', album:'Weird Fishes'},
     {title:'Caint Use My Phone (Suite)', artist:'Erykah Badu', album:'But You Caint Use My Phone'},
@@ -6862,96 +6876,31 @@ if(tardisFirstAppear){
     {title:'Doves In The Wind', artist:'SZA, Kendrick Lamar', album:'Ctrl'},
     {title:'Ms. Fat Booty', artist:'Mos Def', album:'Black On Both Sides'}
   ];
-  var i=0, duration=15000;
-  var title=document.getElementById('ipod-np-title');
-  var artistEl=document.getElementById('ipod-np-artist');
-  var album=document.getElementById('ipod-np-album');
-  var fill=document.getElementById('ipod-np-bar-fill');
-  var headerNum=document.getElementById('ipod-np-header-num');
-  var infoEls=[title,artistEl,album];
+*/
 
-  function setText(el, text){
-    el.innerHTML='';
-    var span=document.createElement('span');
-    span.className='ipod-np-text';
-    span.textContent=text;
-    el.appendChild(span);
-  }
-  function checkMarquee(el){
-    var inner=el.querySelector('.ipod-np-text');
-    if(!inner) return;
-    el.classList.remove('marquee');
-    inner.style.removeProperty('--marquee-translate');
-    inner.style.removeProperty('--marquee-duration');
-    void el.offsetWidth;
-    var overflow=inner.offsetWidth-el.clientWidth;
-    if(overflow>4){
-      var dur=Math.min(12,Math.max(4,4+overflow*0.04));
-      inner.style.setProperty('--marquee-translate',-(overflow+6)+'px');
-      inner.style.setProperty('--marquee-duration',dur+'s');
-      el.classList.add('marquee');
-    }
-  }
-  function showTrack(idx, immediate){
-    var t=tracks[idx];
-    function apply(){
-      setText(title,t.title);
-      setText(artistEl,t.artist);
-      setText(album,t.album);
-      headerNum.textContent=(idx+1)+' of '+tracks.length;
-      infoEls.forEach(function(el){el.style.opacity='1';});
-      checkMarquee(title);
-      checkMarquee(artistEl);
-      checkMarquee(album);
-    }
-    if(immediate){apply();}
-    else {
-      infoEls.forEach(function(el){el.style.opacity='0';});
-      setTimeout(apply,300);
-    }
-    fill.style.transition='none';
-    fill.style.width='0%';
-    requestAnimationFrame(function(){
-      requestAnimationFrame(function(){
-        fill.style.transition='width '+duration+'ms linear';
-        fill.style.width='100%';
-      });
-    });
-  }
+(function(){
+  var overlay  = document.getElementById('spotify-overlay');
+  var closeBtn = document.getElementById('spotify-close');
+  if(!overlay) return;                  /* popup not on page → do nothing */
 
-  function nextIdx(){
-    if(tracks.length<2) return 0;
-    var n;
-    do { n=Math.floor(Math.random()*tracks.length); } while(n===i);
-    return n;
-  }
-
-  i=Math.floor(Math.random()*tracks.length);
-  showTrack(i,true);
-  setInterval(function(){
-    i=nextIdx();
-    showTrack(i,false);
-  }, duration);
-
-  /* Popup */
-  var ipodScreen=document.getElementById('ipod-screen');
-  var overlay=document.getElementById('spotify-overlay');
-  var iframe=document.getElementById('spotify-iframe');
-  var loaded=false, isOpen=false;
-  function openSpotify(){
-    if(!loaded){iframe.src=iframe.getAttribute('data-src');loaded=true;}
-    overlay.classList.add('open'); isOpen=true;
-  }
   function closeSpotify(){
-    overlay.classList.remove('open'); isOpen=false;
+    overlay.classList.remove('open');   /* hides the popup */
   }
-  ipodScreen.addEventListener('click',openSpotify);
-  ipodScreen.addEventListener('keydown',function(e){
-    if(e.key==='Enter'||e.key===' '){e.preventDefault();openSpotify();}
+
+  /* X button in the corner */
+  if(closeBtn) closeBtn.addEventListener('click', closeSpotify);
+
+  /* Click the dim backdrop (anywhere outside the widget) to close.
+     e.target === overlay means the click landed on the backdrop itself,
+     not on the widget sitting on top of it. */
+  overlay.addEventListener('click', function(e){
+    if(e.target === overlay) closeSpotify();
   });
-  document.getElementById('spotify-close').addEventListener('click',closeSpotify);
-  overlay.addEventListener('click',function(e){if(e.target===overlay)closeSpotify();});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&isOpen)closeSpotify();});
+
+  /* Escape key — only acts while the popup is actually open. */
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && overlay.classList.contains('open')) closeSpotify();
+  });
 })();
 </script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
@@ -8640,5 +8589,4 @@ if(document.readyState === 'loading'){
 </script>
 </body>
 </html>
-
 
