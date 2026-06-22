@@ -10,7 +10,7 @@ show_preview_links: true
 collections:
 
   - name: "site_content"
-    label: "My Site 🌿"
+    label: "My Site"
     files:
 
       # One entry that holds EVERYTHING — About, Maggie, Blog, and Portfolio.
