@@ -3,29 +3,80 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lisle's Admin Panel 🌿</title>
+  <title>Lisle's Admin Panel</title>
+
+  <!-- Fonts to match the main site (Lora = body, Playfair = headings, Caveat = handwritten loading text) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet" />
+
   <style>
-    /* Small loading screen while CMS boots */
-    body { margin: 0; background: #0e1409; font-family: sans-serif; }
-    #loading {
-      position: fixed; inset: 0;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      background: #0e1409; color: #7a9e7e;
-      font-size: 1.1rem; gap: 12px; z-index: 999;
+    /* ============================================================
+       ADMIN THEME — colors + fonts only. Kept deliberately light so
+       Decap's editor doesn't glitch. To recolor the whole panel,
+       just change the values in :root below.
+       ============================================================ */
+    :root{
+      --admin-bg:    #efe7d6;  /* page background — warm cream */
+      --admin-ink:   #2f3a2a;  /* main text color — dark green-brown */
+      --admin-green: #0e1409;  /* deep green — loading screen */
+      --admin-sage:  #7a9e7e;  /* sage — focus rings + loading text */
+      --admin-terra: #c06b3e;  /* terra cotta — link accent */
     }
-    #loading.hidden { display: none; }
+
+    /* ---- page base ---- */
+    body{
+      margin:0;
+      background:var(--admin-bg);
+      color:var(--admin-ink);
+      font-family:'Lora',Georgia,serif;   /* readable body font */
+    }
+
+    /* ---- headings: collection title + section names ---- */
+    h1,h2,h3,h4{
+      font-family:'Playfair Display',Georgia,serif;
+      color:var(--admin-green);
+    }
+
+    /* ---- form fields (real <input>/<textarea>/<select>, so this reliably applies) ---- */
+    input,textarea,select{
+      font-family:'Lora',Georgia,serif;
+      color:var(--admin-ink);
+    }
+    input:focus,textarea:focus,select:focus{
+      outline:2px solid var(--admin-sage);  /* sage focus ring instead of the default blue */
+      outline-offset:1px;
+    }
+
+    /* ---- buttons + links: gentle warm accent ----
+       Decap may override some of these with its own styles — that's expected, not broken. */
+    button{ font-family:'Lora',Georgia,serif; }
+    a{ color:var(--admin-terra); }
+
+    /* ---- loading screen (fully ours — shows while the CMS boots) ---- */
+    #loading{
+      position:fixed; inset:0;
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      background:var(--admin-green);
+      color:var(--admin-sage);
+      font-family:'Caveat',cursive;   /* handwritten, matches the site */
+      font-size:1.5rem; gap:14px; z-index:999;
+    }
+    #loading.hidden{ display:none; }
   </style>
 </head>
 <body>
-  <div id="loading" id="loading">
-    <span style="font-size:2rem">🌿</span>
+  <!-- Boot screen, hidden once the CMS loads -->
+  <div id="loading">
     Loading your admin panel...
   </div>
+
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   <script>
-    // Hide loading screen once CMS mounts
+    // Hide the loading screen shortly after the page finishes loading.
+    // Bump the 800 (milliseconds) up if you ever see the editor flash in late.
     window.addEventListener('load', () => {
       setTimeout(() => {
         const l = document.getElementById('loading');
