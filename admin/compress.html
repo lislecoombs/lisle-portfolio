@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Compressor</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       Palette pulled straight from your site, so this matches.
+       Change any color here and it updates everywhere below.
+       ============================================================ */
+    :root{
+      --cream:#f4edd8;
+      --sage:#7a9e7e;
+      --terra:#b8734a;
+      --mushroom:#9e8a72;
+      --wheat:#d4b896;
+      --gold:#c4973a;
+      --rose:#c9847a;
+      --night:#0e1409;
+      --deep:#070c05;
+
+      --card:#16200f;     /* card background — a touch lighter than the page */
+      --line:rgba(212,184,150,.22);  /* hairline borders (wheat, faint) */
+    }
+
+    *{ margin:0; padding:0; box-sizing:border-box; }
+
+    body{
+      background:var(--deep);
+      color:var(--cream);
+      font-family:'Lora',serif;
+      line-height:1.6;
+      padding:48px 20px 80px;
+    }
+
+    .wrap{ max-width:680px; margin:0 auto; }   /* whole-tool width — widen/narrow here */
+
+    /* ---- header ---- */
+    h1{
+      font-family:'Playfair Display',serif;
+      font-style:italic;
+      font-weight:600;
+      font-size:2.4rem;
+      color:var(--wheat);
+      line-height:1.05;
+    }
+    .tagline{
+      font-family:'Caveat',cursive;
+      font-size:1.35rem;
+      color:var(--sage);
+      margin-top:2px;
+    }
+    .intro{
+      font-size:.95rem;
+      color:var(--mushroom);
+      margin:14px 0 28px;
+      max-width:520px;
+    }
+
+    /* ---- settings ---- */
+    .settings{
+      display:flex;
+      flex-wrap:wrap;
+      gap:22px;
+      align-items:flex-end;
+      margin-bottom:6px;
+    }
+    .setting{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      font-size:.8rem;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      color:var(--wheat);
+    }
+    .setting input[type=number]{
+      width:120px;
+      background:var(--card);
+      border:1px solid var(--line);
+      color:var(--cream);
+      font-family:'Lora',serif;
+      font-size:1rem;
+      padding:8px 10px;
+      border-radius:2px;
+    }
+    .setting input[type=range]{ width:200px; accent-color:var(--terra); }
+    .setting input:focus{ outline:2px solid var(--sage); outline-offset:2px; }
+    .note{ font-size:.82rem; color:var(--mushroom); margin:10px 0 26px; }
+
+    /* ---- drop zone (a label wrapping a hidden file input, so it's keyboard-friendly) ---- */
+    .drop{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      text-align:center;
+      padding:46px 24px;                  /* drop-zone height — make taller/shorter here */
+      border:2px dashed var(--line);
+      border-radius:6px;
+      background:rgba(122,158,126,.05);
+      transition:border-color .2s, background .2s;
+    }
+    .drop:hover{ border-color:var(--terra); }
+    .drop.dragover{ border-color:var(--terra); background:rgba(184,115,74,.12); }
+    .drop:focus-within{ outline:2px solid var(--sage); outline-offset:3px; }
+    .drop input[type=file]{          /* hidden but still focusable for keyboard users */
+      position:absolute; width:1px; height:1px; opacity:0; pointer-events:none;
+    }
+    .drop-big{
+      font-family:'Playfair Display',serif;
+      font-style:italic;
+      font-size:1.4rem;
+      color:var(--cream);
+    }
+    .drop-sub{ font-size:.9rem; color:var(--mushroom); }
+
+    /* ---- results ---- */
+    .results-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin:34px 0 12px;
+      font-family:'Caveat',cursive;
+      font-size:1.3rem;
+      color:var(--sage);
+    }
+    .clearbtn{
+      background:none;
+      border:1px solid var(--line);
+      color:var(--mushroom);
+      font-family:'Lora',serif;
+      font-size:.85rem;
+      padding:5px 14px;
+      border-radius:2px;
+      transition:color .2s, border-color .2s;
+    }
+    .clearbtn:hover{ color:var(--cream); border-color:var(--terra); }
+    .clearbtn:focus{ outline:2px solid var(--sage); outline-offset:2px; }
+
+    .card{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:4px;
+      padding:12px;
+      margin-bottom:12px;
+    }
+    .card.skipped{ opacity:.78; }
+    .thumb{
+      width:64px; height:64px;        /* preview size */
+      flex-shrink:0;
+      border-radius:3px;
+      background:rgba(0,0,0,.25);
+      overflow:hidden;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .info{ flex:1; min-width:0; }
+    .fname{
+      font-size:.98rem;
+      color:var(--cream);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;   /* long names don't break layout */
+    }
+    .meta{ font-size:.85rem; color:var(--mushroom); margin-top:3px; }
+    .action{ flex-shrink:0; }
+
+    .btn{
+      display:inline-block;
+      background:var(--terra);
+      color:var(--night);
+      font-family:'Lora',serif;
+      font-size:.9rem;
+      text-decoration:none;
+      padding:9px 16px;
+      border-radius:3px;
+      transition:filter .2s;
+    }
+    .btn:hover{ filter:brightness(1.08); }
+    .btn:focus{ outline:2px solid var(--wheat); outline-offset:2px; }
+
+    /* Respect "reduce motion" system setting. */
+    @media (prefers-reduced-motion: reduce){
+      *{ transition:none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <h1>image compressor</h1>
+    <div class="tagline">drop photos in, get small .webp files out</div>
+    <p class="intro">
+      Each image is resized and saved as a lighter .webp — iPhone .heic files included,
+      no exporting needed. Your original filename is kept (only the ending changes to
+      .webp). Download them here, then upload through the admin the way you normally do.
+    </p>
+
+    <div class="settings">
+      <label class="setting">
+        Longest edge (px)
+        <input type="number" id="maxEdge" value="1600" min="200" max="6000" step="50" />
+      </label>
+      <label class="setting">
+        Quality <span id="qVal">80</span>
+        <input type="range" id="quality" value="80" min="40" max="100" step="1" />
+      </label>
+    </div>
+    <p class="note">These apply to images you add next. Defaults match your portfolio: 1600px, quality 80.</p>
+
+    <label class="drop" id="drop">
+      <input type="file" id="file" accept="image/*,.heic,.heif" multiple />
+      <span class="drop-big">Drop images here</span>
+      <span class="drop-sub">or click to choose — add as many as you like</span>
+    </label>
+
+    <div class="results-head" id="resultsHead" hidden>
+      <span id="count"></span>
+      <button type="button" id="clear" class="clearbtn">Clear all</button>
+    </div>
+    <div id="results"></div>
+
+  </div>
+
+  <!-- HEIC decoder (loads from CDN, only matters when you add a .heic/.heif file).
+       Pinned to a fixed version for stability. -->
+  <script src="https://cdn.jsdelivr.net/npm/heic-to@1.5.2/dist/iife/heic-to.js"></script>
+
+  <script>
+    /* =========================================================
+       Image compressor — all client-side, nothing is uploaded.
+       Resize longest edge -> draw to canvas -> export WebP.
+       ========================================================= */
+
+    const fileInput   = document.getElementById('file');
+    const drop        = document.getElementById('drop');
+    const results     = document.getElementById('results');
+    const resultsHead = document.getElementById('resultsHead');
+    const countEl     = document.getElementById('count');
+    const clearBtn    = document.getElementById('clear');
+    const maxEdgeInput= document.getElementById('maxEdge');
+    const qualityInput= document.getElementById('quality');
+    const qVal        = document.getElementById('qVal');
+
+    let made = 0;            // how many downloadable files are showing
+    const urls = [];         // object URLs to clean up on "Clear all"
+
+    // Live quality readout next to the slider
+    qualityInput.addEventListener('input', () => { qVal.textContent = qualityInput.value; });
+
+    // --- file picker ---
+    fileInput.addEventListener('change', () => {
+      handleFiles(fileInput.files);
+      fileInput.value = '';   // reset so the same file can be added again
+    });
+
+    // --- drag and drop ---
+    ['dragenter','dragover'].forEach(ev =>
+      drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('dragover'); }));
+    ['dragleave','drop'].forEach(ev =>
+      drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('dragover'); }));
+    drop.addEventListener('drop', e => { handleFiles(e.dataTransfer.files); });
+
+    // --- clear everything ---
+    clearBtn.addEventListener('click', () => {
+      results.innerHTML = '';
+      urls.forEach(u => URL.revokeObjectURL(u));
+      urls.length = 0;
+      made = 0;
+      updateHead();
+    });
+
+    function updateHead(){
+      resultsHead.hidden = results.children.length === 0;   // show whenever any card exists
+      countEl.textContent = made + (made === 1 ? ' image ready' : ' images ready');
+    }
+
+    // Process a batch one at a time (gentle on memory; cards appear as each finishes)
+    async function handleFiles(fileList){
+      const files = Array.from(fileList);
+      for (const file of files){
+        const heic = looksHeic(file);
+        if (!file.type.startsWith('image/') && !heic) continue;   // ignore non-image drops
+        const card = addCard(file);
+
+        if (file.type === 'image/gif'){                  // keep GIFs animated — don't flatten them
+          fillSkipped(card, "GIF — left alone so the animation stays. Upload it as-is.");
+          continue;
+        }
+
+        // HEIC (iPhone) files get decoded to JPEG first, then run the normal path.
+        let decodeBlob = file;
+        if (heic){
+          if (typeof HeicTo !== 'function'){
+            fillSkipped(card, "HEIC support didn't load — refresh the page, or export this one as JPEG.");
+            continue;
+          }
+          setMeta(card, 'converting HEIC… (a few seconds)');
+          try {
+            let out = await HeicTo({ blob: file, type: 'image/jpeg', quality: 0.92 }); // high quality in; final webp uses your slider
+            if (Array.isArray(out)) out = out[0];        // bursts/live photos return several — use the first
+            decodeBlob = out;
+          } catch (err){
+            fillSkipped(card, "Couldn't read this HEIC — export it as JPEG and try again.");
+            continue;
+          }
+        }
+
+        setMeta(card, 'compressing…');
+        try {
+          const { blob, w, h } = await compress(decodeBlob);
+          if (!blob){ fillSkipped(card, "Couldn't convert this one — try re-saving it first."); continue; }
+          fillDone(card, file, blob, w, h);
+        } catch (err){
+          fillSkipped(card, "Couldn't read this one — it may be an unusual format.");
+        }
+      }
+    }
+
+    // Decode the file, honoring EXIF rotation so phone photos aren't sideways.
+    async function loadBitmap(file){
+      try {
+        return await createImageBitmap(file, { imageOrientation: 'from-image' });
+      } catch (e){
+        // Fallback for browsers without that option (returns a plain <img>)
+        return await new Promise((res, rej) => {
+          const img = new Image();
+          const u = URL.createObjectURL(file);
+          img.onload  = () => res(img);
+          img.onerror = () => { URL.revokeObjectURL(u); rej(new Error('load failed')); };
+          img.src = u;
+        });
+      }
+    }
+
+    async function compress(decodeBlob){
+      const maxEdge = clampInt(parseInt(maxEdgeInput.value, 10), 200, 6000, 1600);
+      const quality = clampInt(parseInt(qualityInput.value, 10), 40, 100, 80) / 100;
+
+      const bmp  = await loadBitmap(decodeBlob);
+      const srcW = bmp.width  || bmp.naturalWidth;
+      const srcH = bmp.height || bmp.naturalHeight;
+
+      const longest = Math.max(srcW, srcH);
+      const scale = longest > maxEdge ? maxEdge / longest : 1;   // shrink only, never enlarge
+      const w = Math.max(1, Math.round(srcW * scale));
+      const h = Math.max(1, Math.round(srcH * scale));
+
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(bmp, 0, 0, w, h);
+
+      // free the decoded image
+      if (bmp.close) bmp.close();
+      else if (bmp.src) URL.revokeObjectURL(bmp.src);
+
+      const blob = await new Promise(res => canvas.toBlob(res, 'image/webp', quality));
+      return { blob, w, h };
+    }
+
+    // --- card builders ---
+    function addCard(file){
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML =
+        '<div class="thumb" aria-hidden="true"></div>' +
+        '<div class="info"><div class="fname"></div><div class="meta">compressing…</div></div>' +
+        '<div class="action"></div>';
+      card.querySelector('.fname').textContent = file.name;
+      results.prepend(card);   // newest on top
+      updateHead();
+      return card;
+    }
+
+    function fillDone(card, file, blob, w, h){
+      const base = file.name.replace(/\.[^.]+$/, '');   // drop old extension, keep your name
+      const outName = base + '.webp';
+      const url = URL.createObjectURL(blob);
+      urls.push(url);
+
+      const img = document.createElement('img');
+      img.src = url; img.alt = '';
+      card.querySelector('.thumb').appendChild(img);
+
+      const pct = file.size ? Math.round((1 - blob.size / file.size) * 100) : 0;
+      const tail = (pct > 0 ? '−' + pct + '%' : 'already small') + ', ' + w + '×' + h;
+      card.querySelector('.meta').textContent = fmt(file.size) + '  →  ' + fmt(blob.size) + '   (' + tail + ')';
+
+      const a = document.createElement('a');
+      a.className = 'btn';
+      a.href = url;
+      a.download = outName;
+      a.textContent = 'Download .webp';
+      card.querySelector('.action').appendChild(a);
+
+      made++; updateHead();
+    }
+
+    function fillSkipped(card, msg){
+      card.classList.add('skipped');
+      card.querySelector('.meta').textContent = msg;
+      updateHead();
+    }
+
+    function setMeta(card, msg){ card.querySelector('.meta').textContent = msg; }
+
+    // HEIC files often report an empty MIME type, so check the extension too.
+    function looksHeic(file){
+      const t = (file.type || '').toLowerCase();
+      if (t === 'image/heic' || t === 'image/heif') return true;
+      return /\.(heic|heif)$/i.test(file.name);
+    }
+
+    // --- helpers ---
+    function clampInt(v, min, max, fallback){
+      if (!Number.isFinite(v)) return fallback;
+      return Math.min(max, Math.max(min, v));
+    }
+    function fmt(bytes){
+      if (bytes >= 1024 * 1024) return (bytes / 1024 / 1024).toFixed(2) + ' MB';
+      return Math.max(1, Math.round(bytes / 1024)) + ' KB';
+    }
+  </script>
+</body>
+</html>
