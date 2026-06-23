@@ -114,7 +114,18 @@
   "cat_caption": "this is my cat Maggie! ",
   "blog_updated": "6/4/26",
   "blog_photos": [
-    {}
+    {
+      "image1": "/images/img_3559.webp",
+      "blog_caption": "long lines at work!"
+    },
+    {
+      "image1": "/images/img_3635.webp",
+      "blog_caption": "sahai climbing a stop sign"
+    },
+    {
+      "image1": "/images/img_3778.webp",
+      "blog_caption": "adventures with poppy"
+    }
   ],
   "about_text": ""
 }
