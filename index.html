@@ -6,8 +6,34 @@
 <title>Lisle Coombs</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;1,400&family=Caveat:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
-<!-- Onionring stylesheet — needed for the Apple Lovers and Women of the Internet webrings -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;1,400&family=Caveat:wght@400;600;700&family=VT323&family=Pixelify+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   WILLOW BODY PASS — applies Willow to the body-text bits.
+   !important is used on purpose so this wins over the existing
+   per-element fonts (Lora/Caveat) AND the inline font styles,
+   regardless of where they sit in the file.
+   To revert one element: delete its selector line below.
+   To undo everything: delete this whole <style> block.
+   ============================================================ */
+@font-face{
+  font-family:'Willow';
+  src:url('/fonts/willow.woff2') format('woff2'); /* put willow.woff2 in a /fonts/ folder at your site root */
+  font-display:swap;
+}
+.hero-sub,            /* paintings · drawings / sculpture · photography */
+.scroll-hint,         /* scroll down ↓ */
+#about-text-cms,      /* the "my name is pronounced…" paragraph */
+#lb-desc,             /* artwork descriptions in the lightbox (NOT titles) */
+.gallery-tab span,    /* the category tab labels */
+.talkeetna-line,      /* "based in beautiful Talkeetna, Alaska" */
+.contact-fast,        /* "this is the fastest way to reach me!" */
+#site-footer p{       /* footer: name line, disclaimer, konami hint */
+  font-family:'Willow','Pixelify Sans',sans-serif !important;
+  font-style:normal !important;  /* see note below — pixel fonts have no real italic */
+}
+</style>
+   <!-- Onionring stylesheet — needed for the Apple Lovers and Women of the Internet webrings -->
 <link rel="stylesheet" href="https://poempuppy.neocities.org/webring/onionring.css">
 <style>
 
@@ -4100,7 +4126,7 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
     </div>
     <div class="hero-right">
       <div class="typewriter-wrap"><span class="typewriter" id="tw"></span></div>
-      <p style="font-family:'Lora',serif;font-style:italic;font-size:.95rem;color:var(--mushroom);line-height:1.8;max-width:280px;">
+      <p class="talkeetna-line" style="font-family:'Lora',serif;font-style:italic;font-size:.95rem;color:var(--mushroom);line-height:1.8;max-width:280px;">
         based in beautiful <a href="https://en.wikipedia.org/wiki/Talkeetna%2C_Alaska" target="_blank" style="color:var(--mushroom);text-decoration:underline dotted;transition:color .2s;">Talkeetna, Alaska</a><br><span style="font-style:normal;letter-spacing:.1em;">𓆝 𓆟 𓆞 𓆝 𓆟</span>
       </p>
     </div>
@@ -4703,7 +4729,7 @@ if(document.readyState === 'loading'){
     <div class="reveal" style="text-align:center;margin-bottom:40px;">
       <span class="section-tag">--&gt; leave a note</span>
       <h2 class="section-title"> °❀⋆.ೃ࿔*:･ Guestbook  ❀⋆.ೃ࿔*:･ </h2>
-      <p style="font-family:'Lora',serif;font-style:italic;font-size:.95rem;color:var(--mushroom);margin-top:-16px;"> this is the fastest way to reach me! </p>
+      <p class="contact-fast" style="font-family:'Lora',serif;font-style:italic;font-size:.95rem;color:var(--mushroom);margin-top:-16px;"> this is the fastest way to reach me! </p>
     </div>
  
     <!-- ============================================================
