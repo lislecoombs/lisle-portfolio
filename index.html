@@ -32,6 +32,11 @@
   src:url('/fonts/pixel-gothic.woff2') format('woff2');
   font-display:swap;
 }
+@font-face{
+  font-family:'PixelTypewriter';
+  src:url('/fonts/pixel-typewriter.woff2') format('woff2');
+  font-display:swap;
+}
 .hero-sub,            /* paintings · drawings / sculpture · photography */
 .scroll-hint,         /* scroll down ↓ */
 #about-text-cms,      /* the "my name is pronounced…" paragraph */
@@ -8674,9 +8679,13 @@ if(document.readyState === 'loading'){
     ['Jacquarda Bastarda 9',"jacquarda-bastarda-9,serif"],
     ['P22 Typewriter',"p22-typewriter,monospace"],
     ['PF Pixelscript',"pf-pixelscript,cursive"],
+    ['Pixel Typewriter',"'PixelTypewriter',monospace"],
     ['Playfair Display',"'Playfair Display',serif"],
     ['Lora',"'Lora',serif"],
-    ['Caveat',"'Caveat',cursive"]
+    ['Caveat',"'Caveat',cursive"],
+    ['VT323',"'VT323',monospace"],
+    ['Monaco (guestbook)',"'Monaco','Courier New',monospace"],
+    ['Courier New',"'Courier New',monospace"]
   ];
   var KEY='lc-fontlab-', root=document.documentElement;
   var panel=document.getElementById('font-lab'); panel.hidden=false;
@@ -8688,6 +8697,7 @@ if(document.readyState === 'loading'){
     var sel=document.createElement('select');
     FONTS.forEach(function(f){
       var o=document.createElement('option'); o.value=f[1]; o.textContent=f[0];
+      if(f[1]) o.style.fontFamily=f[1]; /* preview each name in its own font */
       if(f[1]===saved) o.selected=true; sel.appendChild(o);
     });
     sel.addEventListener('change',function(){
