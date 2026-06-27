@@ -8633,91 +8633,137 @@ if(document.readyState === 'loading'){
   SpaceKitty.init();
 }
 </script>
+<style id="font-zones-css">
+#site-notice{font-family:var(--font-ov-banner, 'Caveat',cursive)!important;}
+#logo-btn{font-family:var(--font-ov-logo, 'Playfair Display',serif)!important;}
+.nav-links a{font-family:var(--font-ov-nav, 'Caveat',cursive)!important;}
+#hero [data-tip]::after{font-family:var(--font-hero-tip, 'Caveat',cursive)!important;}
+.float-title.line1, .float-title.line2{font-family:var(--font-hero-title, 'RuneScape Quill',serif)!important;}
+.hero-sub{font-family:var(--font-hero-cats, 'Willow','Pixelify Sans',sans-serif)!important;}
+.portrait-label{font-family:var(--font-hero-thatsme, 'Caveat',cursive)!important;}
+.talkeetna-line{font-family:var(--font-hero-loc, 'Willow','Pixelify Sans',sans-serif)!important;}
+.typewriter-wrap{font-family:var(--font-hero-typewriter, 'Caveat',cursive)!important;}
+.scroll-hint{font-family:var(--font-hero-scroll, 'Willow','Pixelify Sans',sans-serif)!important;}
+#about [data-tip]::after{font-family:var(--font-about-tip, 'Caveat',cursive)!important;}
+#about-text-cms{font-family:var(--font-about-body, 'Willow','Pixelify Sans',sans-serif)!important;}
+#about .section-title{font-family:var(--font-about-title, 'RuneScape Quill',serif)!important;}
+#about .section-tag{font-family:var(--font-about-tag, 'Caveat',cursive)!important;}
+#about .cat-caption{font-family:var(--font-about-catcap, 'Caveat',cursive)!important;}
+#letter-title-el{font-family:var(--font-about-blogtitle, 'Playfair Display',serif)!important;}
+#letter-date-el{font-family:var(--font-about-blogdate, 'Caveat',cursive)!important;}
+#letter-body-el{font-family:var(--font-about-blogbody, 'Lora',serif)!important;}
+.pol-cap{font-family:var(--font-about-polcap, 'Caveat',cursive)!important;}
+#gallery [data-tip]::after{font-family:var(--font-port-tip, 'Caveat',cursive)!important;}
+#gallery .section-tag{font-family:var(--font-port-tag, 'Caveat',cursive)!important;}
+.portfolio-float{font-family:var(--font-port-title, 'RuneScape Quill',serif)!important;}
+.gallery-tab span{font-family:var(--font-port-cats, 'Willow','Pixelify Sans',sans-serif)!important;}
+.gallery-caption{font-family:var(--font-port-caption, 'Caveat',cursive)!important;}
+#lb-title{font-family:var(--font-port-worktitle, 'Playfair Display',serif)!important;}
+.lb-meta .lbl{font-family:var(--font-port-metalabel, 'Willow','Pixelify Sans',sans-serif)!important;}
+.lb-meta, #lb-desc{font-family:var(--font-port-metatext, 'Willow','Pixelify Sans',sans-serif)!important;}
+.room-hit[data-tip]::after{font-family:var(--font-room-tip, 'Caveat',cursive)!important;}
+.book-page-kicker{font-family:var(--font-rl-kicker, 'Caveat',cursive)!important;}
+.book-note, .book-date{font-family:var(--font-rl-indicator, 'Caveat',cursive)!important;}
+.book-title{font-family:var(--font-rl-title, 'Caveat',cursive)!important;}
+.book-author{font-family:var(--font-rl-author, 'Caveat',cursive)!important;}
+.book-stars{font-family:var(--font-rl-rating, inherit)!important;}
+.book-review{font-family:var(--font-rl-review, 'Lora',serif)!important;}
+#favorites .section-tag{font-family:var(--font-room-tag, 'Caveat',cursive)!important;}
+#favorites .section-title{font-family:var(--font-room-title, 'RuneScape Quill',serif)!important;}
+#guestbook .section-tag{font-family:var(--font-gb-tag, 'Caveat',cursive)!important;}
+#guestbook .section-title{font-family:var(--font-gb-title, 'RuneScape Quill',serif)!important;}
+.contact-fast{font-family:var(--font-gb-subtitle, 'Willow','Pixelify Sans',sans-serif)!important;}
+#contact .section-title{font-family:var(--font-links-title, 'RuneScape Quill',serif)!important;}
+#site-footer p{font-family:var(--font-footer, 'Willow','Pixelify Sans',sans-serif)!important;}
+</style>
 <!-- ============================================================
-     FONT LAB (dev-only switcher) — visible ONLY when the URL ends in ?fonts
-     Lets you try a font per zone live; choices persist via localStorage.
-     Visitors never see it. To remove permanently: delete this whole block
-     (and, if you like, the --font-* lines in :root once you've baked your picks in).
+     FONT LAB v2 (dev-only) — visible ONLY at ?fonts. Organized by
+     section: pick a section, then set a font per element. Each control
+     drives a --font-<key> variable in the #font-zones-css block above,
+     which falls back to the element's current font when unset.
+     To remove everything: delete this block AND the
+     <style id="font-zones-css"> block directly above it.
      ============================================================ -->
 <div id="font-lab" hidden>
-  <div id="fl-head"><strong>font lab</strong><button id="fl-min" type="button" aria-label="collapse">&ndash;</button></div>
+  <div id="fl-head"><strong>font lab</strong><button id="fl-min" type="button">&ndash;</button></div>
+  <label id="fl-seclabel">Section</label>
+  <select id="fl-section"></select>
   <div id="fl-rows"></div>
   <div id="fl-act"><button id="fl-copy" type="button">copy config</button><button id="fl-reset" type="button">reset</button></div>
 </div>
 <style>
-  #font-lab{position:fixed;bottom:16px;right:16px;z-index:99999;width:228px;background:var(--night,#0e1409);
-    border:1px solid var(--terra,#b8734a);border-radius:6px;padding:10px 12px;color:var(--cream,#f4edd8);
-    font-family:'Pixelify Sans',monospace;font-size:12px;box-shadow:0 6px 24px rgba(0,0,0,.55);}
-  #font-lab.min #fl-rows,#font-lab.min #fl-act{display:none;}
+  #font-lab{position:fixed;bottom:16px;right:16px;z-index:99999;width:236px;max-height:86vh;overflow-y:auto;
+    background:var(--night,#0e1409);border:1px solid var(--terra,#b8734a);border-radius:6px;padding:10px 12px;
+    color:var(--cream,#f4edd8);font-family:'Pixelify Sans',monospace;font-size:12px;box-shadow:0 6px 24px rgba(0,0,0,.55);}
+  #font-lab.min #fl-rows,#font-lab.min #fl-act,#font-lab.min #fl-section,#font-lab.min #fl-seclabel{display:none;}
   #fl-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
   #fl-head strong{letter-spacing:1px;color:var(--terra,#b8734a);text-transform:uppercase;font-size:11px;}
   #font-lab label{display:block;margin:7px 0 2px;color:var(--sage,#7a9e7e);font-size:11px;letter-spacing:.4px;}
+  #fl-seclabel{color:var(--terra,#b8734a);text-transform:uppercase;}
   #font-lab select{width:100%;background:#1a2113;color:var(--cream,#f4edd8);border:1px solid rgba(244,237,216,.2);
     border-radius:3px;padding:3px 4px;font-size:12px;font-family:inherit;cursor:url('/cursors/pointer.png') 18 10, pointer;}
+  #fl-section{border-color:var(--terra,#b8734a);}
   #font-lab button{background:#1a2113;color:var(--cream,#f4edd8);border:1px solid rgba(244,237,216,.2);border-radius:3px;
     padding:4px 8px;font-family:inherit;font-size:11px;cursor:url('/cursors/pointer.png') 18 10, pointer;}
   #fl-act{display:flex;gap:6px;margin-top:10px;}
   #fl-act button{flex:1;}
   #fl-min{width:22px;padding:0;line-height:1;}
+  #fl-rows{margin-top:4px;}
 </style>
 <script>
 (function(){
-  if(!/[?&]fonts(\b|=)/.test(location.search)) return; /* only at ?fonts */
-  var ZONES=[['hero','Hero name'],['heading','Section headings'],['body','Body'],['accent','Accents'],['small','Small / tooltips']];
-  var FONTS=[
-    ['\u2014 default \u2014',''],
-    ['Willow',"'Willow',sans-serif"],
-    ['RuneScape Quill',"'RuneScape Quill',serif"],
-    ['Pixel Gothic',"'Pixel Gothic Font',sans-serif"],
-    ['Pixelify Sans',"'Pixelify Sans',sans-serif"],
-    ['Jacquard 24',"'Jacquard 24',serif"],
-    ['Silkscreen',"'Silkscreen',sans-serif"],
-    ['Press Start 2P',"'Press Start 2P',monospace"],
-    ['Handjet',"'Handjet',sans-serif"],
-    ['Beth Ellen',"beth-ellen,cursive"],
-    ['Emmascript MVB',"emmascript-mvb-std,cursive"],
-    ['Jacquarda Bastarda 9',"jacquarda-bastarda-9,serif"],
-    ['P22 Typewriter',"p22-typewriter,monospace"],
-    ['PF Pixelscript',"pf-pixelscript,cursive"],
-    ['Pixel Typewriter',"'PixelTypewriter',monospace"],
-    ['Playfair Display',"'Playfair Display',serif"],
-    ['Lora',"'Lora',serif"],
-    ['Caveat',"'Caveat',cursive"],
-    ['VT323',"'VT323',monospace"],
-    ['Monaco (guestbook)',"'Monaco','Courier New',monospace"],
-    ['Courier New',"'Courier New',monospace"]
-  ];
+  if(!/[?&]fonts(\b|=)/.test(location.search)) return;
+  var SECTIONS=[["Overall", [["Volume banner", "ov-banner"], ["Nav logo", "ov-logo"], ["Nav links", "ov-nav"]]], ["Hero", [["Tooltips", "hero-tip"], ["Title (Lisle Coombs)", "hero-title"], ["Categories", "hero-cats"], ["That's me", "hero-thatsme"], ["Location line", "hero-loc"], ["Typewriter", "hero-typewriter"], ["Scroll down", "hero-scroll"]]], ["About", [["Tooltips", "about-tip"], ["Body text", "about-body"], ["Title", "about-title"], ["Over-title", "about-tag"], ["Cat caption", "about-catcap"], ["Blog title", "about-blogtitle"], ["Blog date", "about-blogdate"], ["Blog body", "about-blogbody"], ["Polaroid caption", "about-polcap"]]], ["Portfolio", [["Tooltips", "port-tip"], ["Over-title", "port-tag"], ["Title (Portfolio)", "port-title"], ["Categories", "port-cats"], ["Grid captions", "port-caption"], ["Work title", "port-worktitle"], ["Meta labels", "port-metalabel"], ["Meta + description", "port-metatext"]]], ["Room", [["Tooltips", "room-tip"], ["Reading kicker", "rl-kicker"], ["Reading indicator", "rl-indicator"], ["Book title", "rl-title"], ["Book author", "rl-author"], ["Rating", "rl-rating"], ["Review", "rl-review"], ["Over-title", "room-tag"], ["Title", "room-title"]]], ["Guestbook", [["Over-title", "gb-tag"], ["Title", "gb-title"], ["Subtitle", "gb-subtitle"]]], ["Links", [["Title", "links-title"]]], ["Footer", [["All text", "footer"]]]];
+  var FONTS=[["\u2014 default \u2014", ""], ["Willow", "'Willow',sans-serif"], ["RuneScape Quill", "'RuneScape Quill',serif"], ["Pixel Gothic", "'Pixel Gothic Font',sans-serif"], ["Pixel Typewriter", "'PixelTypewriter',monospace"], ["Pixelify Sans", "'Pixelify Sans',sans-serif"], ["Jacquard 24", "'Jacquard 24',serif"], ["Silkscreen", "'Silkscreen',sans-serif"], ["Press Start 2P", "'Press Start 2P',monospace"], ["Handjet", "'Handjet',sans-serif"], ["Beth Ellen", "beth-ellen,cursive"], ["Emmascript MVB", "emmascript-mvb-std,cursive"], ["Jacquarda Bastarda 9", "jacquarda-bastarda-9,serif"], ["P22 Typewriter", "p22-typewriter,monospace"], ["PF Pixelscript", "pf-pixelscript,cursive"], ["Playfair Display", "'Playfair Display',serif"], ["Lora", "'Lora',serif"], ["Caveat", "'Caveat',cursive"], ["VT323", "'VT323',monospace"], ["Monaco (guestbook)", "'Monaco','Courier New',monospace"], ["Courier New", "'Courier New',monospace"]];
   var KEY='lc-fontlab-', root=document.documentElement;
+  SECTIONS.forEach(function(sec){ sec[1].forEach(function(el){
+    var v=localStorage.getItem(KEY+el[1]); if(v) root.style.setProperty('--font-'+el[1], v);
+  });});
   var panel=document.getElementById('font-lab'); panel.hidden=false;
   var rows=document.getElementById('fl-rows');
-  ZONES.forEach(function(z){
-    var id=z[0], saved=localStorage.getItem(KEY+id)||'';
-    if(saved) root.style.setProperty('--font-'+id, saved);
-    var l=document.createElement('label'); l.textContent=z[1]; rows.appendChild(l);
+  var secSel=document.getElementById('fl-section');
+  SECTIONS.forEach(function(sec,i){
+    var o=document.createElement('option'); o.value=i; o.textContent=sec[0]; secSel.appendChild(o);
+  });
+  function fontSelect(key){
+    var saved=localStorage.getItem(KEY+key)||'';
     var sel=document.createElement('select');
     FONTS.forEach(function(f){
       var o=document.createElement('option'); o.value=f[1]; o.textContent=f[0];
-      if(f[1]) o.style.fontFamily=f[1]; /* preview each name in its own font */
+      if(f[1]) o.style.fontFamily=f[1];
       if(f[1]===saved) o.selected=true; sel.appendChild(o);
     });
     sel.addEventListener('change',function(){
-      if(this.value){ root.style.setProperty('--font-'+id,this.value); localStorage.setItem(KEY+id,this.value); }
-      else { root.style.removeProperty('--font-'+id); localStorage.removeItem(KEY+id); }
+      if(this.value){ root.style.setProperty('--font-'+key,this.value); localStorage.setItem(KEY+key,this.value); }
+      else { root.style.removeProperty('--font-'+key); localStorage.removeItem(KEY+key); }
     });
-    rows.appendChild(sel);
-  });
+    return sel;
+  }
+  function renderSection(i){
+    rows.innerHTML='';
+    SECTIONS[i][1].forEach(function(el){
+      var l=document.createElement('label'); l.textContent=el[0]; rows.appendChild(l);
+      rows.appendChild(fontSelect(el[1]));
+    });
+  }
+  secSel.addEventListener('change',function(){ renderSection(+this.value); });
+  renderSection(0);
   document.getElementById('fl-min').addEventListener('click',function(){
     panel.classList.toggle('min'); this.innerHTML=panel.classList.contains('min')?'+':'&ndash;';
   });
   document.getElementById('fl-copy').addEventListener('click',function(){
-    var out=ZONES.map(function(z){
-      return '--font-'+z[0]+': '+getComputedStyle(root).getPropertyValue('--font-'+z[0]).trim()+';';
-    }).join('\n');
-    if(navigator.clipboard) navigator.clipboard.writeText(out);
-    alert('Current config (copied to clipboard):\n\n'+out);
+    var out=[];
+    SECTIONS.forEach(function(sec){ sec[1].forEach(function(el){
+      var v=localStorage.getItem(KEY+el[1]); if(v) out.push('--font-'+el[1]+': '+v+';');
+    });});
+    var txt=out.length?out.join('\n'):'(nothing changed yet)';
+    if(navigator.clipboard) navigator.clipboard.writeText(txt);
+    alert('Your changes (copied):\n\n'+txt);
   });
   document.getElementById('fl-reset').addEventListener('click',function(){
-    ZONES.forEach(function(z){ root.style.removeProperty('--font-'+z[0]); localStorage.removeItem(KEY+z[0]); });
+    SECTIONS.forEach(function(sec){ sec[1].forEach(function(el){
+      root.style.removeProperty('--font-'+el[1]); localStorage.removeItem(KEY+el[1]);
+    });});
     location.reload();
   });
 })();
