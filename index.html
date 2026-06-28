@@ -8633,6 +8633,79 @@ if(document.readyState === 'loading'){
   SpaceKitty.init();
 }
 </script>
+<style id="site-font-defaults">
+  /* ============================================================
+     SITE FONT DEFAULTS — your font-lab picks, set as the default
+     values the lab falls back to. The lab still works: at ?fonts
+     your live picks override these; on the real site (and for all
+     visitors) these are what render. To change one permanently,
+     edit its value below. Paste this block right BEFORE the
+     <style id="font-zones-css"> block.
+     ============================================================ */
+  :root{
+    /* OVERALL */
+    --font-ov-banner:'Willow','Pixelify Sans',sans-serif;  /* volume banner */
+    --font-ov-logo:beth-ellen,cursive;  /* nav logo */
+    --font-ov-nav:beth-ellen,cursive;  /* nav links */
+
+    /* HERO */
+    --font-hero-tip:'Willow','Pixelify Sans',sans-serif;  /* tooltips */
+    --font-hero-title:pf-pixelscript,cursive;  /* title (Lisle Coombs) */
+    --font-hero-cats:'Willow','Pixelify Sans',sans-serif;  /* categories line  (unchanged) */
+    --font-hero-thatsme:beth-ellen,cursive;  /* that's me */
+    --font-hero-loc:'Willow','Pixelify Sans',sans-serif;  /* location  (unchanged) */
+    --font-hero-typewriter:'PixelTypewriter',monospace;  /* typewriter */
+    --font-hero-scroll:'PixelTypewriter',monospace;  /* scroll down */
+
+    /* ABOUT */
+    --font-about-tip:'Willow','Pixelify Sans',sans-serif;  /* tooltips */
+    --font-about-body:'Willow','Pixelify Sans',sans-serif;  /* body text */
+    --font-about-title:pf-pixelscript,cursive;  /* title */
+    --font-about-tag:'PixelTypewriter',monospace;  /* over-title */
+    --font-about-catcap:'Willow','Pixelify Sans',sans-serif;  /* cat caption */
+    --font-about-blogtitle:beth-ellen,cursive;  /* blog title */
+    --font-about-blogdate:emmascript-mvb-std,cursive;  /* blog date */
+    --font-about-blogbody:emmascript-mvb-std,cursive;  /* blog body */
+    --font-about-polcap:beth-ellen,cursive;  /* polaroid caption */
+
+    /* PORTFOLIO */
+    --font-port-tip:'Willow','Pixelify Sans',sans-serif;  /* tooltips */
+    --font-port-tag:'PixelTypewriter',monospace;  /* over-title */
+    --font-port-title:pf-pixelscript,cursive;  /* title (Portfolio) */
+    --font-port-cats:beth-ellen,cursive;  /* category tabs */
+    --font-port-caption:'Willow','Pixelify Sans',sans-serif;  /* grid captions */
+    --font-port-worktitle:beth-ellen,cursive;  /* work title (clicked) */
+    --font-port-metalabel:'Willow','Pixelify Sans',sans-serif;  /* meta labels */
+    --font-port-metatext:'PixelTypewriter',monospace;  /* meta values + description */
+
+    /* ROOM */
+    --font-room-tip:'Willow','Pixelify Sans',sans-serif;  /* tooltips (not TV) */
+    --font-rl-kicker:'Caveat',cursive;  /* reading kicker */
+    --font-rl-indicator:'Caveat',cursive;  /* reading indicator */
+    --font-rl-title:emmascript-mvb-std,cursive;  /* book title */
+    --font-rl-author:'Caveat',cursive;  /* book author  (unchanged) */
+    --font-rl-rating:'VT323',monospace;  /* rating */
+    --font-rl-review:'Caveat',cursive;  /* review */
+    --font-room-tag:p22-typewriter,monospace;  /* over-title */
+    --font-room-title:pf-pixelscript,cursive;  /* title */
+
+    /* GUESTBOOK */
+    --font-gb-tag:'PixelTypewriter',monospace;  /* over-title */
+    --font-gb-title:pf-pixelscript,cursive;  /* title */
+    --font-gb-subtitle:'Willow','Pixelify Sans',sans-serif;  /* subtitle */
+
+    /* LINKS */
+    --font-links-title:pf-pixelscript,cursive;  /* title */
+
+    /* FOOTER */
+    --font-footer:'PixelTypewriter',monospace;  /* all footer text */
+  }
+
+  /* music player toggle (bottom-left) — its tooltip, set to Willow.
+     Not wired to the lab; change here if you ever want it different. */
+  #music-btn[data-tip]::after{font-family:'Willow','Pixelify Sans',sans-serif !important;}
+</style>
+   
 <style id="font-zones-css">
 #site-notice{font-family:var(--font-ov-banner, 'Caveat',cursive)!important;}
 #logo-btn{font-family:var(--font-ov-logo, 'Playfair Display',serif)!important;}
