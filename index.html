@@ -2987,10 +2987,10 @@ a.book-title:hover{ color:var(--gold); }
   /* HERO */
   #hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;padding:100px 52px 60px;}
   .hero-layout{display:grid;grid-template-columns:1fr auto 1fr;gap:60px;align-items:center;max-width:1100px;width:100%;}
-  .hero-left{text-align:right;}
+  .hero-left{text-align:right;min-width:0; /* lets Lisle overflow into the empty space at left instead of widening the column */}
   /* FLOATING LETTERS */
-  .float-title{display:flex;flex-wrap:wrap;}
-  .float-title.line1{font-family:var(--font-hero);font-style:normal;font-size:clamp(4rem,8vw,7rem);color:var(--parchment);line-height:1.0;justify-content:flex-end;}
+  .float-title{display:flex;flex-wrap:wrap;-webkit-user-select:none;user-select:none; /* stop title letters being text-highlighted when clicking near them */}
+  .float-title.line1{font-family:var(--font-hero);font-style:normal;font-size:clamp(3.5rem,4.5vw,7rem); /* hero "Lisle": scales to fit one line. Middle number (4.5vw) = size at normal widths — raise for bigger (may wrap/clip on small screens), lower if it ever gets cut off on the left. Last number (7rem) = cap on wide screens. */flex-wrap:nowrap; /* keep Lisle on one line */color:var(--parchment);line-height:1.0;justify-content:flex-end;}
   .float-title.line2{font-family:var(--font-hero);font-style:normal;font-weight:normal;font-size:clamp(2.4rem,5vw,4.4rem);color:var(--wheat);line-height:1.0;justify-content:flex-end;margin-top:4px;}
   .portfolio-float{display:flex;justify-content:center;flex-wrap:nowrap;font-family:var(--font-hero);font-weight:normal;font-size:clamp(2.8rem,5.5vw,5rem);color:var(--parchment);line-height:1;margin-bottom:8px;}
   /* position:relative + z-index:1 establishes a stacking context for each letter
@@ -3079,8 +3079,8 @@ a.book-title:hover{ color:var(--gold); }
   #guestbook{position:relative;}
   #gallery .inner{max-width:1200px;margin:0 auto;}
   .gallery-header{text-align:center;margin-bottom:48px;}
-  .gallery-tabs{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-top:20px;align-items:flex-end;}
-  .gallery-tab{background:none;border:none;padding:4px 8px;cursor:url('/cursors/pointer.png') 18 10, pointer;opacity:.45;transition:opacity .3s,transform .3s;position:relative;}
+  .gallery-tabs{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-top:34px; /* space below the Portfolio title so the tabs are easy to click */ align-items:flex-end;}
+  .gallery-tab{background:none;border:none;padding:8px 12px; /* click area — bigger padding = easier to hit */ cursor:url('/cursors/pointer.png') 18 10, pointer;opacity:.45;transition:opacity .3s,transform .3s;position:relative;}
   .gallery-tab::after{content:'';position:absolute;bottom:-5px;left:10%;right:10%;height:1px;background:var(--rose);transform:scaleX(0);transition:transform .3s;transform-origin:left;}
   .gallery-tab img{display:block;image-rendering:auto;height:58px;width:auto;transition:transform .2s;filter:drop-shadow(0 1px 4px rgba(0,0,0,.2));}
   .gallery-tab[data-cat="photography"] img{height:78px;}
@@ -3879,6 +3879,9 @@ a.book-title:hover{ color:var(--gold); }
 .ipod-wrap[data-tip]::after{bottom:calc(100% - 30px);}
 #envelope-wrap[data-tip]::after{bottom:auto;top:calc(100% + 10px);transform:translateX(-50%) translateY(-5px);}
 #envelope-wrap[data-tip]:hover::after{transform:translateX(-50%) translateY(0);}
+/* bottom-left music button: anchor its tooltip to the button's LEFT edge so it extends rightward and never clips off-screen */
+#music-btn[data-tip]::after{left:0;transform:translateX(0) translateY(5px);}
+#music-btn[data-tip]:hover::after{transform:translateX(0) translateY(0);}
 
 /* ── GOODREADS WIDGET SCRAPBOOK RESTYLE ── */
 .fav-card-books a{cursor:url('/cursors/pointer.png') 18 10,pointer!important;}
