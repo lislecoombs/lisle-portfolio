@@ -2992,7 +2992,7 @@ a.book-title:hover{ color:var(--gold); }
   .float-title{display:flex;flex-wrap:wrap;-webkit-user-select:none;user-select:none; /* stop title letters being text-highlighted when clicking near them */}
   .float-title.line1{font-family:var(--font-hero);font-style:normal;font-size:clamp(3.5rem,4.5vw,7rem); /* hero "Lisle": scales to fit one line. Middle number (4.5vw) = size at normal widths — raise for bigger (may wrap/clip on small screens), lower if it ever gets cut off on the left. Last number (7rem) = cap on wide screens. */flex-wrap:nowrap; /* keep Lisle on one line */color:var(--parchment);line-height:1.0;justify-content:flex-end;}
   .float-title.line2{font-family:var(--font-hero);font-style:normal;font-weight:normal;font-size:clamp(2.4rem,5vw,4.4rem);color:var(--wheat);line-height:1.0;justify-content:flex-end;margin-top:4px;}
-  .portfolio-float{display:flex;justify-content:center;flex-wrap:nowrap;font-family:var(--font-hero);font-weight:normal;font-size:clamp(2.8rem,5.5vw,5rem);color:var(--parchment);line-height:1;margin-bottom:8px;}
+  .portfolio-float{display:flex;justify-content:center;flex-wrap:nowrap;font-family:var(--font-hero);font-weight:normal;font-size:var(--title-big);color:var(--parchment);line-height:1;margin-bottom:8px;}
   /* position:relative + z-index:1 establishes a stacking context for each letter
      so the :hover z-index bump below can lift the hovered letter above its
      neighbors. Without position:relative, z-index has no effect on inline-block. */
@@ -3033,7 +3033,10 @@ a.book-title:hover{ color:var(--gold); }
   .divider{text-align:center;padding:16px;font-size:.95rem;letter-spacing:14px;color:var(--sage);opacity:.3;font-family:'Caveat',cursive;}
   section{padding:90px 52px;}
   .section-tag{font-family:var(--font-accent);font-size:.95rem;color:var(--terra);letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:10px;}
+  :root{--title-big:clamp(2.8rem,5.5vw,5rem);} /* shared size for the big section titles (Portfolio, Room, Guestbook, Links). Change this one value to resize all four. */
   .section-title{font-family:var(--font-heading);font-size:clamp(2rem,4vw,3.2rem);color:var(--cream);line-height:1.1;margin-bottom:32px;}
+  /* make Room / Guestbook / Links titles match Portfolio's bigger size (About is intentionally left at the smaller size above) */
+  #favorites .section-title,#guestbook .section-title,#contact .section-title{font-size:var(--title-big);}
   .section-title em{color:var(--wheat);font-style:italic;}
   .card{background:rgba(244,237,216,.03);border:1px solid rgba(244,237,216,.08);border-radius:3px;padding:44px;position:relative;backdrop-filter:blur(3px);}
   .card-tape{position:absolute;width:52px;height:16px;background:rgba(212,176,150,.18);border-radius:1px;top:-8px;left:28px;transform:rotate(-2deg);}
@@ -8689,7 +8692,7 @@ if(document.readyState === 'loading'){
     --font-rl-author:'Caveat',cursive;  /* book author  (unchanged) */
     --font-rl-rating:'VT323',monospace;  /* rating */
     --font-rl-review:'Caveat',cursive;  /* review */
-    --font-room-tag:p22-typewriter,monospace;  /* over-title */
+    --font-room-tag:'PixelTypewriter',monospace;  /* over-title */
     --font-room-title:pf-pixelscript,cursive;  /* title */
 
     /* GUESTBOOK */
