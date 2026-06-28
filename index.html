@@ -3033,10 +3033,10 @@ a.book-title:hover{ color:var(--gold); }
   .divider{text-align:center;padding:16px;font-size:.95rem;letter-spacing:14px;color:var(--sage);opacity:.3;font-family:'Caveat',cursive;}
   section{padding:90px 52px;}
   .section-tag{font-family:var(--font-accent);font-size:.95rem;color:var(--terra);letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:10px;}
-  :root{--title-big:clamp(2.8rem,5.5vw,5rem);} /* shared size for the big section titles (Portfolio, Room, Guestbook, Links). Change this one value to resize all four. */
+  :root{--title-big:clamp(2.4rem,4.75vw,4rem);} /* shared size for the big section titles (Portfolio, Room, Guestbook, Links). Change this one value to resize all four. */
   .section-title{font-family:var(--font-heading);font-size:clamp(2rem,4vw,3.2rem);color:var(--cream);line-height:1.1;margin-bottom:32px;}
   /* make Room / Guestbook / Links titles match Portfolio's bigger size (About is intentionally left at the smaller size above) */
-  #favorites .section-title,#guestbook .section-title,#contact .section-title{font-size:var(--title-big);}
+  #favorites .section-title,#guestbook .section-title,#contact .section-title{font-size:var(--title-big);white-space:nowrap;}
   .section-title em{color:var(--wheat);font-style:italic;}
   .card{background:rgba(244,237,216,.03);border:1px solid rgba(244,237,216,.08);border-radius:3px;padding:44px;position:relative;backdrop-filter:blur(3px);}
   .card-tape{position:absolute;width:52px;height:16px;background:rgba(212,176,150,.18);border-radius:1px;top:-8px;left:28px;transform:rotate(-2deg);}
