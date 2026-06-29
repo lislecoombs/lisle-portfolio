@@ -18,16 +18,16 @@
       "medium": "Gouache"
     },
     {
-      "image": "/images/frontallobe.webp",
-      "title": "Frontal Lobe",
-      "medium": "Gouache",
-      "year": "2024"
-    },
-    {
       "image": "/images/img_0751.webp",
       "title": "Golden Bayou",
       "medium": "Oil on Canvas",
       "year": "2021"
+    },
+    {
+      "image": "/images/frontallobe.webp",
+      "title": "Frontal Lobe",
+      "medium": "Gouache",
+      "year": "2024"
     },
     {
       "image": "/images/entropy.webp",
