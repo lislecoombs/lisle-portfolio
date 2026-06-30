@@ -115,9 +115,17 @@
 #room-book-stack  { transform-origin: 15%  32.5%; }
 #room-cd-stack    { transform-origin: 8%   47%;   }
 
-/* The grow itself — toggled by JS on the image when its hit zone is hovered */
 .room-obj.room-obj-hover{
-  transform:scale(1.08);    /* how much bigger on hover — bump up/down to taste */
+  animation:roomFloat 3s ease-in-out infinite;  /* slow continuous bob; bigger duration = slower */
+  z-index:50;               /* lift the floating object above its neighbours */
+}
+
+/* The float shared by .room-obj and .room-vhs on hover. Rises and settles
+   forever. FLOAT HEIGHT = the -10px (more negative = floats higher);
+   SPEED is set per-rule via the animation duration above. */
+@keyframes roomFloat{
+  0%,100%{ transform:translateY(0); }
+  50%    { transform:translateY(-10px); }   /* peak of the float */
 }
 
 /* When the book widget is showing, fade out the book stack image */
@@ -153,13 +161,6 @@
   left:50%;
   transform:translate(-50%, -50%);
 
-  /* FONT — keeps Caveat for handwritten feel + consistency with
-     existing tooltips (iPod, envelope, TV).
-     For a chunkier display look closer to ribo.zone's INFO/CONTACT, try:
-       font-family:'Playfair Display',serif;
-       font-weight:700;
-       text-transform:uppercase;
-       letter-spacing:.04em; */
   font-family:'Caveat',cursive;
   font-size:1.8rem;                /* tune size here */
   font-weight:700;
@@ -217,7 +218,7 @@
 
 /* The hover snap. 1.07 = "slightly bigger" — tune to taste.
    z-index lift keeps the growing tape above its neighbours. */
-.room-vhs.is-hover{ transform:scale(1.07); z-index:50; }
+.room-vhs.is-hover{ animation:roomFloat 3s ease-in-out infinite; z-index:50; }  /* float instead of grow */
 
 /* Invisible hit buttons for the interactive tapes only. Separate class
    from .room-hit so the old room-test handlers don't grab these. */
@@ -4052,7 +4053,7 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
     <h2 class="section-title" style="text-align:center;margin-bottom:14px;">My "Room"!</h2>
     <div class="room-stage">
       <!-- BASE LAYER -->
-      <img class="room-layer" src="images/room-base-2.webp" loading="lazy" alt="Lisle's room" />
+      <img class="room-layer" src="images/room-base-3.webp" loading="lazy" alt="Lisle's room" />
 
       <!-- ─── VHS TAPES (visual layers) ───
            Full-canvas transparent PNGs, each placed where you exported it.
@@ -4070,9 +4071,9 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
            Transparent buttons over the 3 interactive tapes, padded a touch
            wider than the tape so they're easy to hit. Tune the % values, or
            add ?roomedit to the URL to read exact coords as you mouse around. -->
-      <button class="room-vhs-hit" data-target="room-vhs-wwdits"
-              style="left:49.0%;top:25.4%;width:3.2%;height:13.7%;"
-              aria-label="Play a What We Do in the Shadows clip" type="button"></button>
+      <button class="room-vhs-hit" data-target="room-vhs-jjba"
+              style="left:58.5%;top:26.8%;width:2.5%;height:13.8%;"
+              aria-label="JoJo's Bizarre Adventure" type="button"></button>
       <button class="room-vhs-hit" data-target="room-vhs-surfsup"
               style="left:53.6%;top:25.4%;width:2.6%;height:13.7%;"
               aria-label="Play a Surf's Up clip" type="button"></button>
@@ -4086,7 +4087,7 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
            centered on the actual object, not the canvas center. -->
       <img class="room-layer room-obj" id="room-radio" src="images/radio.webp" loading="lazy" alt="" />
       <img class="room-layer room-obj" id="room-book-stack" src="images/book-stack.webp" loading="lazy" alt="" />
-      <img class="room-layer room-obj" id="room-cd-stack" src="images/cd-stack.webp" loading="lazy" alt="" />
+      <img class="room-layer room-obj" id="room-cd-stack" src="images/cd.webp" loading="lazy" alt="" />
 
 <!-- (The book popup now lives as a centered modal (#book-modal),
            added just after this section; opened by the book-stack hit zone.) -->
@@ -4112,7 +4113,7 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
 
       <button class="room-hit" data-target="room-cd-stack"
               data-tip="some fav songs ♪"
-              style="left:4%;top:39%;width:8%;height:16%;"
+              style="left:4.7%;top:40.8%;width:7.6%;height:11.3%;"
               aria-label="Open my Spotify playlist" type="button"></button>
        <!-- ═══ ROOM SWAP OBJECTS — frog / guitar / karma ═══
            Each is a full-canvas wrapper of stacked state images, driven
