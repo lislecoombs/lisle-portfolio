@@ -56,8 +56,7 @@
 
    
 /* ═══════════════════════════════════════════════════════════════════
-   ROOM TEST / ROOM STAGE (TEMPORARY for now, will become the
-   permanent "things I love" replacement)
+   ROOM STAGE — the interactive "My Room" section.
    
    How the scaling works:
    - clamp(MIN, FLUID, MAX) sets the room's width:
@@ -3067,28 +3066,6 @@ a.book-title:hover{ color:var(--gold); }
   .cat-caption{text-align:center;margin-top:14px;font-family:'Caveat',cursive;font-size:1.1rem;color:var(--mushroom);}
   .cat-caption span{color:var(--rose);}
   #guestbook{position:relative;}
-  /* FAVORITES BULLETIN BOARD */
-  .fav-board{display:grid;grid-template-columns:1fr 1fr;gap:28px 20px;margin-top:32px;padding-bottom:8px;}
-  .fav-card{position:relative;background:rgba(244,237,216,.04);border:1px solid rgba(244,237,216,.1);border-radius:2px;padding:14px 16px 14px;padding-top:22px;font-family:'Caveat',cursive;transform:rotate(var(--rot,0deg));box-shadow:2px 3px 14px rgba(0,0,0,.45);transition:transform .25s,box-shadow .25s;width:100%;}
-  .fav-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--terra),var(--rose),transparent);border-radius:2px 2px 0 0;opacity:.45;}
-  .fav-card:hover{transform:rotate(0deg) scale(1.04);z-index:10!important;box-shadow:4px 8px 24px rgba(0,0,0,.65);}
-  .fav-tape{position:absolute;top:-9px;left:50%;transform:translateX(-50%) rotate(-2deg);width:38px;height:12px;background:rgba(212,184,150,.18);border-radius:1px;z-index:2;}
-  .fav-heading{font-size:1.1rem;font-weight:600;color:var(--terra);margin-bottom:6px;letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap;}
-  .fav-link{color:var(--mushroom);font-size:1.1rem;text-decoration:underline dotted;transition:color .2s;}
-  .fav-link:hover{color:var(--wheat);}
-  .fav-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:2px;}
-  .fav-list li{font-size:.95rem;color:var(--mushroom);line-height:1.5;padding-left:1em;text-indent:-1em;}
-  .fav-list li em{color:var(--wheat);font-style:italic;}
-  .fav-item{position:relative;cursor:url('/cursors/default.png') 8 10,auto;display:inline-flex;align-items:center;gap:6px;}
-  .fav-item .fav-text{transition:opacity .15s;}
-  .fav-item .fav-hover-img{position:absolute;left:0;top:50%;transform:translateY(-50%);height:44px;width:auto;object-fit:contain;opacity:0;pointer-events:none;transition:opacity .15s;image-rendering:auto;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5));}
-  .fav-item:hover .fav-text{opacity:0;}
-  .fav-item:hover .fav-hover-img{opacity:1;pointer-events:auto;}
-  .fav-surfsup{cursor:url('/cursors/pointer.png') 18 10,pointer;}
-  .fav-jojo{cursor:url('/cursors/pointer.png') 18 10,pointer;transition:color .2s,text-shadow .2s;}
-  .fav-jojo.jojo-active{color:#b47aff;text-shadow:0 0 8px rgba(180,0,255,.5);}
-  @media(max-width:900px){.fav-board{grid-template-columns:1fr;gap:20px;}.fav-card{transform:none!important;width:auto;}}
-  #guestbook{position:relative;}
   #gallery .inner{max-width:1200px;margin:0 auto;}
   .gallery-header{text-align:center;margin-bottom:48px;}
   .gallery-tabs{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-top:34px; /* space below the Portfolio title so the tabs are easy to click */ align-items:flex-end;}
@@ -3735,59 +3712,6 @@ a.book-title:hover{ color:var(--gold); }
 }
 .cat-polaroid-wrap .cat-caption span{color:var(--rose);}
 
-.fav-board-scatter-wrap{margin-top:42px;}
-.fav-board-scatter-wrap .fav-board{grid-template-columns:repeat(3,1fr);gap:22px;}
-.fav-board-scatter-wrap .fav-card:nth-child(1){--rot:-5deg;margin-top:0;}
-.fav-board-scatter-wrap .fav-card:nth-child(2){--rot:2.5deg;margin-top:-20px;}
-.fav-board-scatter-wrap .fav-card:nth-child(3){--rot:-1.5deg;margin-top:10px;}
-
-.diary-stamp{display:inline-block;font-family:'Courier New',monospace;font-size:.75rem;rgba(0, 1, 7, 0.9);border:2px solid rgba(0, 1, 7, 0.9);padding:4px 12px;transform:rotate(-2.5deg);letter-spacing:2px;text-transform:uppercase;margin-top:8px;opacity:.85;}
-
-/* ── retro devices row ── */
-.devices-row{margin-top:58px;display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:center;gap:40px;}
-.device-unit{display:flex;flex-direction:column;align-items:center;gap:10px;}
-.device-label{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--mushroom);letter-spacing:2px;text-transform:uppercase;opacity:.85;display:inline-block;}
-/* TV */
-.tv-wrap{position:relative;width:420px;max-width:100%;}
-.tv-screen{position:absolute;left:7.7%;top:10.7%;right:27.2%;bottom:16%;overflow:hidden;background:#0b0b0b;border-radius:4px;z-index:1;}
-.tv-scanlines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.2) 3px,rgba(0,0,0,.2) 4px);pointer-events:none;z-index:3;}
-.tv-img{width:100%;display:block;pointer-events:none;position:relative;z-index:2;mix-blend-mode:multiply;}
-#letterboxd-embed-wrapper-tc{width:100%;height:100%;overflow-y:auto;overflow-x:hidden;font-size:.55rem;line-height:1.25;color:#d4b896;background:#0b0b0b;padding:4px 5px;box-sizing:border-box;filter:sepia(0.2) brightness(0.88);position:relative;z-index:2;}
-#letterboxd-embed-wrapper-tc::-webkit-scrollbar{width:3px;}
-#letterboxd-embed-wrapper-tc::-webkit-scrollbar-thumb{background:rgba(180,140,80,.3);}
-#letterboxd-embed-wrapper-tc a{color:#c9a97a!important;text-decoration:none;}
-#letterboxd-embed-wrapper-tc img{max-width:55%;border-radius:2px;}
-#letterboxd-embed-wrapper-tc #letterboxd-embed-tc{gap:.35rem!important;font-size:inherit!important;}
-#letterboxd-embed-wrapper-tc .letterboxd-embed-tc-diary-entry{gap:.2rem!important;padding:0 .15rem!important;}
-#letterboxd-embed-wrapper-tc .letterboxd-embed-tc-content{gap:.5rem!important;}
-#letterboxd-embed-wrapper-tc .letterboxd-embed-tc-title{font-size:.78rem!important;margin-bottom:0!important;line-height:1.1!important;}
-#letterboxd-embed-wrapper-tc .letterboxd-embed-tc-year{font-size:.55rem!important;}
-#letterboxd-embed-wrapper-tc .letterboxd-embed-tc-date{font-size:.6rem!important;margin-bottom:0!important;}
-#letterboxd-embed-wrapper-tc .letterboxd-embed-tc-rating{font-size:.7rem!important;line-height:1!important;}
-#letterboxd-embed-wrapper-tc .letterboxd-embed-tc-review{font-size:.6rem!important;margin-top:.1rem!important;}
-#letterboxd-embed-wrapper-tc .letterboxd-embed-tc-footer{font-size:.55rem!important;}
-/* iPod */
-.ipod-wrap{position:relative;width:360px;max-width:100%;transform:rotate(-6deg);}
-.ipod-headphones{position:absolute;left:-162px;top:-112px;width:290px;z-index:0;pointer-events:none;filter:drop-shadow(2px 4px 8px rgba(0,0,0,.45));}
-.ipod-screen{position:absolute;left:104px;top:58px;width:141px;height:113px;overflow:hidden;border-radius:3px;background:linear-gradient(180deg,#e4ecf4 0%,#b8c8d8 100%);z-index:2;cursor:url('/cursors/pointer.png') 18 10,pointer;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12);}
-.ipod-img{width:100%;display:block;pointer-events:none;position:relative;z-index:1;}
-.ipod-np{position:relative;width:100%;height:100%;display:flex;flex-direction:column;font-family:'VT323',monospace;color:#0f1a2a;line-height:1;}
-.ipod-np-header{position:relative;height:13px;flex:0 0 13px;background:linear-gradient(180deg,#9cb4cc 0%,#5c7894 100%);border-bottom:1px solid rgba(0,0,0,.28);display:flex;align-items:center;justify-content:space-between;padding:0 5px;color:#fff;font-size:9px;letter-spacing:.02em;text-shadow:0 1px 0 rgba(0,0,0,.4);}
-.ipod-np-header::before{content:'';position:absolute;top:0;left:0;right:0;height:55%;background:linear-gradient(180deg,rgba(255,255,255,.45) 0%,rgba(255,255,255,0) 100%);pointer-events:none;}
-.ipod-np-header span{position:relative;z-index:1;}
-.ipod-np-row{flex:1;display:flex;min-height:0;gap:5px;padding:5px 6px 0;}
-.ipod-np-art{width:60px;height:60px;flex:0 0 60px;background-image:url('images/albums.png');background-size:100% 100%;background-position:center;box-shadow:0 1px 2px rgba(0,0,0,.4),inset 0 0 0 1px rgba(0,0,0,.3);}
-.ipod-np-info{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;overflow:hidden;padding-top:2px;}
-.ipod-np-title{font-size:11px;line-height:1.05;margin-bottom:2px;white-space:nowrap;overflow:hidden;transition:opacity .3s ease;color:#0a1422;}
-.ipod-np-artist{font-size:9.5px;color:#384858;line-height:1.1;margin-bottom:1px;white-space:nowrap;overflow:hidden;transition:opacity .3s ease;}
-.ipod-np-album{font-size:9.5px;color:#6a7a8a;line-height:1.1;white-space:nowrap;overflow:hidden;transition:opacity .3s ease;}
-.ipod-np-text{display:inline-block;white-space:nowrap;}
-.ipod-np-title.marquee .ipod-np-text,.ipod-np-artist.marquee .ipod-np-text,.ipod-np-album.marquee .ipod-np-text{animation:ipodMarquee var(--marquee-duration,7s) ease-in-out infinite;}
-@keyframes ipodMarquee{0%,12%{transform:translateX(0);}45%,55%{transform:translateX(var(--marquee-translate,0));}88%,100%{transform:translateX(0);}}
-.ipod-np-bar-wrap{display:flex;align-items:center;gap:4px;padding:3px 6px 5px;flex:0 0 auto;}
-.ipod-np-icon{font-size:7px;color:#384858;line-height:1;}
-.ipod-np-bar{flex:1;height:3px;background:linear-gradient(180deg,rgba(0,0,0,.18) 0%,rgba(0,0,0,.08) 100%);border-radius:2px;position:relative;overflow:hidden;border:1px solid rgba(0,0,0,.22);box-shadow:inset 0 1px 1px rgba(0,0,0,.18);}
-.ipod-np-bar-fill{position:absolute;top:0;left:0;height:100%;width:0%;background:linear-gradient(180deg,#7a92ac 0%,#3a5272 100%);border-right:1px solid rgba(0,0,0,.25);}
 /* Spotify popup */
 #spotify-overlay{position:fixed;inset:0;z-index:450;display:flex;align-items:center;justify-content:center;background:rgba(7,12,5,.88);padding:40px 20px;opacity:0;pointer-events:none;transition:opacity .35s ease;}
 #spotify-overlay.open{opacity:1;pointer-events:all;cursor:url('/cursors/pointer.png') 18 10,pointer;} /* backdrop uses the pointer cursor to signal "click outside to close" */
@@ -3810,7 +3734,6 @@ a.book-title:hover{ color:var(--gold); }
 #yt-static{position:absolute;inset:0;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><filter id='n'><feTurbulence baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='200' height='200' filter='url(%23n)' opacity='.95'/></svg>");background-size:280px 280px;opacity:1;animation:ytStaticCycle .16s steps(8) infinite;pointer-events:none;transition:opacity .5s ease-out;mix-blend-mode:screen;}
 #yt-screen.loaded #yt-static{opacity:0;}
 @keyframes ytStaticCycle{0%{background-position:0% 0%;}20%{background-position:-30% 30%;}40%{background-position:30% -30%;}60%{background-position:-50% 50%;}80%{background-position:50% -50%;}100%{background-position:0% 0%;}}
-@media(max-width:700px){.devices-row{flex-direction:column;align-items:center;}.tv-wrap,.ipod-wrap{max-width:100%;}}
 
 /* Envelope sits in the lower-left of the about section. Negative bottom pushes
    it below the notebook card so only the top portion overlaps the white paper.
@@ -3888,124 +3811,12 @@ a.book-title:hover{ color:var(--gold); }
   opacity:1;
   transform:translateX(-50%) translateY(0);
 }
-.ipod-wrap[data-tip]::after{bottom:calc(100% - 30px);}
 #envelope-wrap[data-tip]::after{bottom:auto;top:calc(100% + 10px);transform:translateX(-50%) translateY(-5px);}
 #envelope-wrap[data-tip]:hover::after{transform:translateX(-50%) translateY(0);}
 /* bottom-left music button: anchor its tooltip to the button's LEFT edge so it extends rightward and never clips off-screen */
 #music-btn[data-tip]::after{left:0;transform:translateX(0) translateY(5px);}
 #music-btn[data-tip]:hover::after{transform:translateX(0) translateY(0);}
 
-/* ── GOODREADS WIDGET SCRAPBOOK RESTYLE ── */
-.fav-card-books a{cursor:url('/cursors/pointer.png') 18 10,pointer!important;}
-.fav-card-books .gr_custom_container_1780222919{
-  background:transparent!important;
-  border:none!important;
-  width:100%!important;
-  padding:0!important;
-  color:var(--mushroom)!important;
-}
-.fav-card-books .gr_custom_header_1780222919{display:none!important;}
-.fav-card-books .gr_custom_each_container_1780222919{
-  border-bottom:1px solid rgba(244,237,216,.08)!important;
-  padding-bottom:10px!important;
-  margin-bottom:10px!important;
-  overflow:visible!important;
-}
-.fav-card-books .gr_custom_each_container_1780222919:last-of-type{border-bottom:none!important;}
-.fav-card-books .gr_custom_book_container_1780222919{
-  height:55px!important;
-  width:36px!important;
-  overflow:hidden!important;
-  float:left!important;
-  margin-right:10px!important;
-  border:1px solid rgba(244,237,216,.12)!important;
-  box-shadow:2px 2px 8px rgba(0,0,0,.4)!important;
-  transform:rotate(-2deg)!important;
-  border-radius:1px!important;
-}
-.fav-card-books .gr_custom_book_container_1780222919 img{
-  width:100%!important;height:100%!important;object-fit:cover!important;display:block!important;
-}
-.fav-card-books .gr_custom_title_1780222919 a{
-  font-family:'Caveat',cursive!important;
-  font-size:1rem!important;
-  color:var(--cream)!important;
-  text-decoration:none!important;
-  transition:color .2s!important;
-}
-.fav-card-books .gr_custom_title_1780222919 a:hover{color:var(--wheat)!important;}
-.fav-card-books .gr_custom_author_1780222919{
-  font-family:'Caveat',cursive!important;
-  font-size:.85rem!important;
-  color:var(--mushroom)!important;
-}
-.fav-card-books .gr_custom_author_1780222919 a{
-  color:var(--sage)!important;
-  text-decoration:underline dotted!important;
-  transition:color .2s!important;
-}
-.fav-card-books .gr_custom_author_1780222919 a:hover{color:var(--wheat)!important;}
-.fav-card-books .gr_custom_tags_1780222919{
-  font-family:'Caveat',cursive!important;
-  font-size:.75rem!important;
-  color:var(--sage)!important;
-  opacity:.5!important;
-}
-.fav-card-books .gr_custom_rating_1780222919{display:none!important;}
-.fav-card-books div[style*="text-align: center"] ,
-.fav-card-books center{
-  margin-top:8px!important;
-}
-.fav-card-books center img{opacity:.3!important;filter:invert(1)!important;height:14px!important;}
-
-/* ── SPOTIFY SCRAPBOOK CARD ── */
-.spotify-scrap{
-  position:absolute;
-  top:-30px;
-  left:60px;
-  width:300px;
-  padding:16px 14px 12px;
-  background:rgba(244,237,216,.04);
-  border:1px solid rgba(244,237,216,.1);
-  border-radius:2px;
-  transform:rotate(-3deg);
-  box-shadow:3px 5px 18px rgba(0,0,0,.5);
-  transition:transform .25s,box-shadow .25s;
-  z-index:5;
-}
-.spotify-scrap:hover{
-  transform:rotate(0deg) scale(1.03);
-  box-shadow:5px 10px 28px rgba(0,0,0,.65);
-  z-index:15;
-}
-@media(max-width:900px){
-  .spotify-scrap{position:relative;top:auto;left:auto;width:100%;max-width:340px;margin:0 auto 24px;transform:rotate(-1.5deg);}
-}
-.spotify-scrap::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(to right,var(--sage),var(--wheat),transparent);
-  border-radius:2px 2px 0 0;opacity:.45;
-}
-.spotify-tape{
-  position:absolute;top:-9px;left:50%;
-  transform:translateX(-50%) rotate(2.5deg);
-  width:48px;height:13px;
-  background:rgba(255,245,160,.4);
-  border:1px solid rgba(240,215,60,.2);
-  border-radius:1px;z-index:2;pointer-events:none;
-}
-.spotify-label{
-  font-family:'Caveat',cursive;
-  font-size:1rem;color:var(--sage);
-  text-align:center;margin-bottom:10px;
-  letter-spacing:.5px;
-}
-.spotify-scrap iframe{
-  border-radius:8px!important;
-  opacity:.9;transition:opacity .2s;
-  cursor:url('/cursors/default.png') 8 10,auto;
-}
-.spotify-scrap:hover iframe{opacity:1;}
 html.cursor-click *,html.cursor-click{cursor:url('/cursors/click.png') 8 10,auto!important;}
 html.cursor-pointer-click *,html.cursor-pointer-click{cursor:url('/cursors/pointer-click.png') 18 10,pointer!important;}
 html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbing!important;}
@@ -4231,14 +4042,11 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
 </section>
 <div class="divider">— — —</div>
 <section id="favorites">
-  <!-- ═══════════════════════════════════════════════════════════════════
-       ROOM TEST (temporary) — verifying base loads & scales correctly.
-       Sits ABOVE the current things-i-love card section. Once we've
-       confirmed the room works (scaling, alignment, easter-egg parity),
-       we'll delete the original card section + devices-row below this.
-       TO REMOVE THIS TEST: delete from this comment down to the matching
-       "END ROOM TEST" comment.
-       ═══════════════════════════════════════════════════════════════════ -->
+  <!-- ═══════════════ MY "ROOM" ═══════════════
+       Interactive illustrated room (ribo.zone-inspired). Each piece is a
+       full-canvas transparent WebP layered over room-base-2.webp, with
+       invisible hit-zone buttons over the objects. The .room-stage CSS
+       (top of <style>) controls how all the layers scale together. -->
   <div class="reveal" style="margin-bottom:60px;">
     <span class="section-tag" style="display:block;text-align:center;">--&gt; welcome to...</span>
     <h2 class="section-title" style="text-align:center;margin-bottom:14px;">My "Room"!</h2>
@@ -4682,7 +4490,6 @@ if(document.readyState === 'loading'){
 }
 </script>
    
-  <!-- ═══════════ END ROOM TEST ═══════════ -->
 </section>
 
 <!-- ─── BOOK MODAL (currently reading + recently read flip-book) ───
