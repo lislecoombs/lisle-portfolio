@@ -324,11 +324,20 @@
   opacity:0;
   transition:opacity .15s ease;
   z-index:34;                 /* just BELOW the screen (35) so glow sits behind */
-  /* Glow strongest at the TOP, fading toward the bottom — suits the CRT's
-     narrower base so the halo doesn't stick out past the bottom corners.
-     The negative vertical offset (-6px) pushes the glow upward; the
-     radial-gradient background fades it out toward the bottom. */
-  box-shadow:0 -6px 20px 5px rgba(150,200,255,.5);   /* glow biased upward — tune */
+ /* GLOW that fades on BOTH sides — no hard inner line.
+     A box-shadow alone peaks right at the box edge (that bright rectangle
+     was the harsh line). filter:blur() smears that peak inward + outward
+     so the glow melts into the TV instead of drawing an outline around it.
+       • blur radius 22px = how far the halo spreads — raise = softer/wider
+       • spread 0         = no solid bright ring at the edge
+       • alpha .42        = glow strength — lower = dimmer, raise = brighter
+       • filter blur 9px  = the inside-fade — raise to melt FURTHER into the
+                            set, lower for a tighter glow
+     If the glow pokes past the TV's narrower BASE at the bottom corners,
+     shrink the rule's height a touch (23.8% → ~22.8%) up where left/top/
+     width/height are set. */
+  box-shadow:0 0 22px 0 rgba(150,200,255,.42);
+  filter:blur(9px);
 }
 /* Show the glow when the TV screen is hovered, only off-Letterboxd. */
 .room-tv-screen:not(.is-letterboxd):hover ~ .room-tv-glow{
