@@ -113,19 +113,21 @@
      y% = (object_center_row / 2000) * 100 */
 #room-radio       { transform-origin: 14%  15%;   }
 #room-book-stack  { transform-origin: 15%  32.5%; }
-#room-cd-stack    { transform-origin: 8%   47%;   }
+#room-cd-stack    { transform-origin: 8.5% 46.5%; }
 
 .room-obj.room-obj-hover{
+  --room-scale:1.08;        /* how much it grows on hover (back like before) */
   animation:roomFloat 3s ease-in-out infinite;  /* slow continuous bob; bigger duration = slower */
   z-index:50;               /* lift the floating object above its neighbours */
 }
 
-/* The float shared by .room-obj and .room-vhs on hover. Rises and settles
-   forever. FLOAT HEIGHT = the -10px (more negative = floats higher);
-   SPEED is set per-rule via the animation duration above. */
+/* The float shared by .room-obj and .room-vhs on hover. Floats up and down
+   forever WHILE staying scaled up. FLOAT HEIGHT = the -10px (more negative =
+   floats higher); SCALE = --room-scale set per-rule below; SPEED = the
+   animation duration on each rule. */
 @keyframes roomFloat{
-  0%,100%{ transform:translateY(0); }
-  50%    { transform:translateY(-10px); }   /* peak of the float */
+  0%,100%{ transform:translateY(0)     scale(var(--room-scale,1.08)); }
+  50%    { transform:translateY(-10px) scale(var(--room-scale,1.08)); }  /* peak of the float */
 }
 
 /* When the book widget is showing, fade out the book stack image */
@@ -214,11 +216,11 @@
    3200x2000 canvas, so it grows in place. Auto-read from your exports. */
 #room-vhs-wwdits  { transform-origin:50.6% 32.2%; }
 #room-vhs-surfsup { transform-origin:54.9% 32.2%; }
-#room-vhs-jjba    { transform-origin:58.5% 32.3%; }
+#room-vhs-jjba    { transform-origin:59.8% 33.7%; }
 
 /* The hover snap. 1.07 = "slightly bigger" — tune to taste.
    z-index lift keeps the growing tape above its neighbours. */
-.room-vhs.is-hover{ animation:roomFloat 3s ease-in-out infinite; z-index:50; }  /* float instead of grow */
+.room-vhs.is-hover{ --room-scale:1.07; animation:roomFloat 3s ease-in-out infinite; z-index:50; }  /* float + grow */
 
 /* Invisible hit buttons for the interactive tapes only. Separate class
    from .room-hit so the old room-test handlers don't grab these. */
