@@ -4016,7 +4016,7 @@ html.cursor-move *,html.cursor-move{cursor:url('/cursors/move.png') 26 36,grabbi
   </div>
 
     <div id="envelope-wrap" data-tip="psst... click to open!">
-      <img id="envelope-img" src="images/envelope-closed.png" alt="open envelope" />
+      <img id="envelope-img" src="images/envelope-closed.webp" alt="open envelope" />
     </div>
   </div>
 </section>
@@ -5980,7 +5980,7 @@ function scatterPhotos(){
 function openLetter(){
   if(envOpen) return;
   envOpen=true;
-  envImg.src='images/envelope-open.png';
+  envImg.src='images/envelope-open.webp';
   letterOverlay.classList.add('open');
   scatterPhotos();
 }
@@ -5988,14 +5988,14 @@ function closeLetter(){
   if(!envOpen) return;
   envOpen=false;
   letterOverlay.classList.remove('open');
-  if(!envWrap.matches(':hover')) envImg.src='images/envelope-closed.png';
+  if(!envWrap.matches(':hover')) envImg.src='images/envelope-closed.webp';
   if(window.EggTracker) EggTracker.trigger('blog-open');
 }
 envWrap.addEventListener('mouseover',function(){
-  if(!envOpen) envImg.src='images/envelope-open.png';
+  if(!envOpen) envImg.src='images/envelope-open.webp';
 });
 envWrap.addEventListener('mouseout',function(){
-  if(!envOpen) envImg.src='images/envelope-closed.png';
+  if(!envOpen) envImg.src='images/envelope-closed.webp';
 });
 envWrap.addEventListener('click',function(e){
   e.stopPropagation();
